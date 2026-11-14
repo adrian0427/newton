@@ -272,3 +272,7 @@ first insertion and hosted anonymous/constraint checks were added, rerun
 successfully, and approved in the follow-up review. Private credential values
 were checked against staged contents and were absent; the local file remains
 ignored with mode 0600.
+
+## Google auth change
+
+The preceding C1 results are historical. The current hosted harness authenticates its disposable password fixtures via the Supabase SSR SDK and installs the resulting cookies into separate HTTP contexts; the app no longer accepts password POSTs. This preserves real Auth/database/route coverage without pretending to automate Google consent. Follow [Google setup and manual acceptance](google-auth.md) for the actual OAuth flow and test-project/provider settings.

@@ -6,7 +6,7 @@ Newton is an AI study companion for students in grades 9–12, built by **Twofol
 
 ## Current status
 
-This branch includes a responsive homepage, email/password authentication, strict TypeScript contracts, tests, and CI. Sign-in and sign-out are available at `/auth/sign-in`. C1's authenticated backend persistence is implemented and passed real two-account HTTP/helper and direct-client checks against hosted `newton-dev` on November 14, 2026: separate account access, append-only history, retry deduplication, and retrieval after sign-out/sign-in in a later session. Both migrations are applied. The local `/study` workspace is available; its tutoring, auth/session, and saved-history integration remains pending.
+This branch includes a responsive homepage, Google sign-in through Supabase, strict TypeScript contracts, tests, and CI. Sign-in and sign-out are available at `/auth/sign-in`; Google provider configuration and a real consent round-trip are still required. See [Google setup](docs/google-auth.md). C1's authenticated backend persistence is implemented and passed real two-account HTTP/helper and direct-client checks against hosted `newton-dev` on November 14, 2026: separate account access, append-only history, retry deduplication, and retrieval after sign-out/sign-in in a later session. Both migrations are applied. The local `/study` workspace is available; its tutoring, auth/session, and saved-history integration remains pending.
 
 The planned MVP combines natural voice conversation, a whiteboard with structured math fallback, controlled Socratic hints, and evidence-backed memory across sessions. The first domain is **Algebra I: the distributive property**.
 

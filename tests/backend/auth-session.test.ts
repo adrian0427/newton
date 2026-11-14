@@ -1,4 +1,4 @@
-import { beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { SupabaseConfigurationError } from "@/lib/supabase/config";
 import { bytes, streamedRequest } from "./helpers/requests";
 
@@ -15,11 +15,16 @@ function request(method: string, body?: unknown, origin = "http://localhost:3000
 
 beforeEach(() => {
   vi.resetAllMocks();
+  vi.stubEnv("NEWTON_SITE_URL", "http://localhost:3000");
+  vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co");
+  vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "test-public-key");
   mocks.create.mockResolvedValue({
-    supabase: { auth: { getUser: mocks.getUser, signInWithPassword: mocks.signIn, signOut: mocks.signOut } },
+    supabase: { auth: { getUser: mocks.getUser, signInWithOAuth: mocks.signIn, signOut: mocks.signOut } },
     headers: new Headers({ "Cache-Control": "private, no-store" }),
   });
 });
+
+afterEach(() => vi.unstubAllEnvs());
 
 it("rejects cross-origin login and logout before accessing auth", async () => {
   expect((await POST(request("POST", {}, "https://other.example"))).status).toBe(403);
@@ -48,27 +53,42 @@ it.each([undefined, "null", "not-a-url", "http://other.example", "http://localho
   },
 );
 
-it.each([null, {}, { email: 1, password: "x" }, { email: "bad", password: "x" }, { email: "test@example.com", password: "" }])(
-  "rejects invalid credentials input %j", async (body) => {
+it.each([null, {}, { email: 1, password: "x" }, { email: "bad", password: "x" }, { email: "test@example.com", password: "" }, { email: "test@example.com", password: "valid-test-password" }])(
+  "rejects password or other posted payload %j", async (body) => {
     expect((await POST(request("POST", body))).status).toBe(400);
     expect(mocks.create).not.toHaveBeenCalled();
   },
 );
 
-it("signs in without returning tokens and preserves the password exactly", async () => {
-  mocks.signIn.mockResolvedValue({ data: { user: { email: "test@example.com" }, session: { access_token: "secret" } }, error: null });
-  const result = await POST(request("POST", { email: " test@example.com ", password: " spaced password " }));
+it("starts only Google OAuth with a fixed PKCE callback and no tokens", async () => {
+  const url = "https://example.supabase.co/auth/v1/authorize?provider=google";
+  mocks.signIn.mockResolvedValue({ data: { url }, error: null });
+  const result = await POST(request("POST"));
   expect(result.status).toBe(200);
   expect(result.headers.get("Cache-Control")).toContain("no-store");
-  expect(await result.json()).toEqual({ user: { email: "test@example.com" } });
-  expect(mocks.signIn).toHaveBeenCalledWith({ email: "test@example.com", password: " spaced password " });
+  expect(await result.json()).toEqual({ url });
+  expect(mocks.signIn).toHaveBeenCalledWith({ provider: "google", options: { redirectTo: "http://localhost:3000/auth/callback", skipBrowserRedirect: true } });
 });
 
-it("sanitizes provider credential failures", async () => {
-  mocks.signIn.mockResolvedValue({ data: { user: null }, error: { status: 400, message: "private provider details" } });
-  const result = await POST(request("POST", { email: "test@example.com", password: "wrong" }));
-  expect(result.status).toBe(401);
+it.each(["https://evil.example/", "https://example.supabase.co/auth/v1/authorize?provider=github", null])("rejects an unexpected provider URL %s", async (url) => {
+  mocks.signIn.mockResolvedValue({ data: { url }, error: null });
+  const result = await POST(request("POST"));
+  expect(result.status).toBe(502);
+});
+
+it("sanitizes OAuth failures", async () => {
+  mocks.signIn.mockResolvedValue({ data: { url: null }, error: { message: "private provider details" } });
+  const result = await POST(request("POST"));
+  expect(result.status).toBe(502);
   expect(await result.text()).not.toContain("private provider details");
+});
+
+it("requires configured site origin and rejects mismatched request origin", async () => {
+  vi.stubEnv("NEWTON_SITE_URL", "https://newton.example");
+  expect((await POST(request("POST"))).status).toBe(403);
+  expect(mocks.signIn).not.toHaveBeenCalled();
+  vi.stubEnv("NEWTON_SITE_URL", "");
+  expect((await POST(request("POST"))).status).toBe(503);
 });
 
 it("distinguishes missing identity from unavailable auth", async () => {
@@ -126,11 +146,4 @@ it("rejects streamed sign-in overflow early without reaching Auth", async () => 
   expect(stream.cancel).toHaveBeenCalledOnce();
   expect(mocks.create).not.toHaveBeenCalled();
   expect(result.headers.get("Cache-Control")).toContain("no-store");
-});
-
-it("preserves previously valid multibyte passwords without normalization", async () => {
-  const password = "é".repeat(4096);
-  mocks.signIn.mockResolvedValue({ data: { user: { email: "test@example.com" } }, error: null });
-  expect((await POST(request("POST", { email: "test@example.com", password }))).status).toBe(200);
-  expect(mocks.signIn).toHaveBeenCalledWith({ email: "test@example.com", password });
 });

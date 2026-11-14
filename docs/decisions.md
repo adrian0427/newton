@@ -110,3 +110,7 @@ A already has implementation commit `1f7b031` on `feat/ai-tutoring`. Static insp
 | ID | Decision | Rationale and consequence |
 | --- | --- | --- |
 | 020 | Compact drawing controls and reversible focus mode | Collapse pen settings and advanced tools by default, retain accessible zoom and undo/redo, and let students expand the board without unmounting local work. Remove redundant pane title bars, sample equation, and local-workspace header label. |
+
+## 2026-11-14 — Google-only user-facing authentication
+
+The user selected Supabase Google OAuth for public sign-in instead of password registration. Keep existing SSR cookies, verified Auth IDs and user-scoped RLS. Replace the password form/POST handler with Google start and a PKCE callback, using a configured application origin and fixed redirects. Google secrets stay in Supabase provider settings. No A/B consumer or database schema changes are required. Hosted provider configuration and manual consent/account-isolation verification remain pending; password fixtures are retained only in the explicit disposable-project database acceptance harness.

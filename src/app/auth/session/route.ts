@@ -1,5 +1,6 @@
+import { getAuthOrigin } from "@/lib/supabase/auth-origin";
+import { getSupabaseConfig, SupabaseConfigurationError } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
-import { SupabaseConfigurationError } from "@/lib/supabase/config";
 import { isSameOrigin } from "@/lib/supabase/origin";
 import { isUnauthenticatedError } from "@/lib/supabase/auth-errors";
 import { readBoundedText, RequestBodyTooLargeError } from "@/lib/http/body";
@@ -33,36 +34,27 @@ export async function GET() {
 
 export async function POST(request: Request) {
   if (!isSameOrigin(request)) return failure("forbidden", "This request must come from Newton.", 403);
-  if (!request.headers.get("content-type")?.startsWith("application/json")) {
-    return failure("invalid-input", "Send an email address and password.", 400);
-  }
-  let input: unknown;
   try {
     const body = await readBoundedText(request, 8192);
-    input = JSON.parse(body);
+    if (body.trim()) return failure("invalid-input", "Use Continue with Google to sign in.", 400);
   } catch (error) {
-    if (error instanceof RequestBodyTooLargeError) return failure("invalid-input", "Sign-in details are too long.", 413);
-    return failure("invalid-input", "Send an email address and password.", 400);
-  }
-  if (!input || typeof input !== "object" || !("email" in input) || !("password" in input)
-    || typeof input.email !== "string" || typeof input.password !== "string"
-    || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email.trim()) || input.email.length > 254
-    || !input.password || input.password.length > 4096) {
-    return failure("invalid-input", "Enter a valid email address and password.", 400);
+    return failure("invalid-input", "Sign-in request could not be read.", error instanceof RequestBodyTooLargeError ? 413 : 400);
   }
   try {
+    const origin = getAuthOrigin();
+    if (request.headers.get("origin") !== origin) return failure("forbidden", "Open Newton at its configured address to sign in.", 403);
     const { supabase, headers } = await createClient();
-    const { data, error } = await supabase.auth.signInWithPassword({ email: input.email.trim(), password: input.password });
-    if (error) {
-      if (error.status === 429) return failure("rate-limited", "Too many attempts. Wait a moment, then try again.", 429, headers);
-      if (!error.status || error.status >= 500) return failure("auth-unavailable", "Sign-in is unavailable. Please retry.", 502, headers);
-      return failure("invalid-credentials", "Sign-in failed. Check your email and password and confirm the test account is enabled.", 401, headers);
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google", options: { redirectTo: `${origin}/auth/callback`, skipBrowserRedirect: true },
+    });
+    if (error || !data.url) return failure("auth-unavailable", "Google sign-in is unavailable. Please try again.", 502, headers);
+    const destination = new URL(data.url);
+    if (destination.origin !== new URL(getSupabaseConfig().url).origin || destination.pathname !== "/auth/v1/authorize"
+      || destination.username || destination.password || destination.searchParams.get("provider") !== "google") {
+      return failure("auth-unavailable", "Google sign-in could not be started. Please try again.", 502, headers);
     }
-    if (!data.user) return failure("auth-unavailable", "Sign-in could not be confirmed. Please retry.", 502, headers);
-    return Response.json({ user: { email: data.user.email } }, { headers });
-  } catch (error) {
-    return unavailable(error);
-  }
+    return Response.json({ url: destination.href }, { headers });
+  } catch (error) { return unavailable(error); }
 }
 
 export async function DELETE(request: Request) {
