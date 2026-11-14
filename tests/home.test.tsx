@@ -7,9 +7,9 @@ describe("credential-free homepage", () => {
     const html = renderToStaticMarkup(<Home />);
 
     expect(html.match(/<main\b/g)).toHaveLength(1);
-    expect(html).toMatch(/<a[^>]*aria-describedby="workspace-note"[^>]*href="\/study"/);
-    expect(html).toContain('id="workspace-note"');
-    expect(html).toContain("Open a local whiteboard.");
-    expect(html).toContain("Newton by Twofold");
+    expect(html).toMatch(/<a[^>]*href="\/study"/);
+    expect(html).toContain("Try the workspace");
+    expect(html).toContain("Sign in to Newton");
+    expect(html).toContain('aria-label="Newton home"');
   });
 });

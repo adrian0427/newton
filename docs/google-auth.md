@@ -43,3 +43,9 @@ The user reported a successful real Google sign-in, sign-out/sign-in and reload 
 `tests/hosted/auth.hosted.ts` independently passed against the running app and hosted Supabase using an isolated Chromium browser and a disposable SDK-authenticated fixture. It verified identity after reload and workspace navigation, real UI sign-out, signed-out reload, 401/no-store for identity/history after logout, and restored UI after fresh SDK authentication. It does not touch the user's browser or automate Google account selection/consent. The separate hosted two-account persistence/isolation scenario and four desktop/mobile auth UI checks also passed. Both live scenarios run with `npm run test:hosted`; Chromium must be installed for the browser scenario (`npx playwright install chromium`).
 
 A second real Google-account acceptance check and deployed HTTPS testing remain outstanding.
+
+## Integration with latest main — 2026-11-14
+
+Resolved four textual conflicts with main `6ffee9a`: README, architecture status, sign-in page and form. Retained main's SignInScreen, logo, comet background and stylesheet; threaded callback failure feedback through the screen and retained Google behavior in the styled form. Adapted password-specific expectations in the sign-in and landing browser tests while preserving layout, reduced motion, retry and navigation coverage. Voice, workspace, landing source and dependency manifests are identical to latest main.
+
+Verification: 336 unit/database/voice tests passed, plus lint, TypeScript, the normal production build, both live hosted scenarios and all 28 desktop/mobile browser scenarios (26 on the initial run; the two obsolete password-field expectations passed after updating to Google). Independent merge review found no code blockers. No provider secrets or database migrations were added.

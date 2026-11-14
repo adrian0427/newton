@@ -9,7 +9,7 @@ test("local workspace, real MathLive input, snapshot download and clear", async 
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
-  await page.getByRole("link", { name: "Student workspace" }).click();
+  await page.getByRole("link", { name: "Try the workspace" }).click();
   await expect(page.getByRole("heading", { name: "Bring something to work on." })).toBeVisible();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await page.getByRole("button", { name: "Open Newton" }).click();
