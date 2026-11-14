@@ -17,11 +17,14 @@
     "predev": "node scripts/prepare-workspace-assets.mjs",
     "prebuild": "node scripts/prepare-workspace-assets.mjs",
     "test:e2e": "playwright test",
+    "test:hosted": "node --env-file=.env.local --env-file=.env.hosted-test.local ./node_modules/vitest/vitest.mjs run --config vitest.hosted.config.mts",
     "voice:dev": "node scripts/dev-voice.mjs"
   },
   "dependencies": {
     "@deepgram/agents": "^0.2.0",
     "@excalidraw/excalidraw": "^0.18.1",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.119.0",
     "mathlive": "^0.111.4",
     "next": "^16.4.6",
     "pdfjs-dist": "^6.5.438",
@@ -30,6 +33,7 @@
     "server-only": "^0.0.1"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.16",
     "@playwright/test": "^1.65.1",
     "@tailwindcss/postcss": "^4.3.5",
     "@types/node": "^22.20.5",

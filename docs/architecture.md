@@ -2,9 +2,11 @@
 
 ## Status and boundaries
 
-This checkout implements the homepage, B1's local `/study` workspace, A1's Deepgram voice adapter and guarded local harness, shared TypeScript contracts, and developer tooling. The developer confirmed browser recognition and audible voice playback before this merge; the latest stability changes still need manual acoustic acceptance. The workspace and voice harness are separate: `/study` does not start voice or send work to tutoring. The token handler is local-development-only. Authenticated deployed voice, work analysis/verification, intervention, and persistent memory remain planned; no database migrations exist. The diagram below describes the target end-to-end design, not a completed integration. Keep one Next.js application.
+This checkout implements the homepage, B1's local `/study` workspace, A1's Deepgram voice adapter and guarded local harness, shared TypeScript contracts, developer tooling, Supabase client helpers, and email/password authentication. `/auth/sign-in` calls `/auth/session` for sign-in, verified current identity, and local sign-out. Auth checks and cookie refresh occur in writable Route Handlers; authenticated Server Component rendering and its refresh proxy are not implemented. C1's server-only helpers, session/event persistence, bounded context retrieval, migrations, and local PostgreSQL policy tests are implemented. Both migrations are applied to hosted `newton-dev`; SQL-role, anonymous API, and real signed-in two-account HTTP/helper/direct-client acceptance passed on 2026-11-14. The developer confirmed browser recognition and audible voice playback before this merge; the latest stability changes still need manual acoustic acceptance.
 
-The [workstream guide](workstreams/README.md) defines the implementation assignments, concrete boundary proposals, and initial timing/deduplication decisions. Its A01/B01/C01 specifications are the starting points for feature work; additional interface names there are proposals, not existing TypeScript exports.
+The workstreams are merged but not connected. `/study` does not start voice, create study sessions, or send work to tutoring. The token handler is local-development-only and does not yet call C's identity or session-ownership helpers. Voice tutoring does not write or retrieve learning events. Authenticated deployed voice, work analysis/verification, intervention, and tutoring use of persistent memory remain planned. The diagram below describes the target end-to-end design, not a completed integration. Keep one Next.js application; add dependencies only with the feature that uses them.
+
+The [workstream guide](workstreams/README.md) defines the implementation assignments, concrete boundary proposals, and initial timing/deduplication decisions. Its A01/B01/C01 specifications are the starting points for feature work; additional interface names there are proposals unless explicitly implemented below. `AuthContext` and `StudySession` are local module exports pending the coordinated shared-contract PR.
 
 ```mermaid
 flowchart TD
@@ -72,7 +74,7 @@ The default board shows selection, pen, and eraser tools, native undo/redo, and 
 
 ## Server and AI boundaries
 
-Developer A owns the existing local-only `/api/realtime/token` handler and proposed `/api/work/analyze` handler in `src/app/api/`, plus `src/lib/ai/` and `src/lib/math/`. Developer C owns auth, `/api/study-sessions`, and `/api/learning-context`. The workstream guide specifies request/response and error proposals for the first coordinated contract PR; only the local token endpoint is implemented on this branch; authenticated integration remains planned. Event writes initially use C's server-only function called by A, not a public event-write route.
+Developer A owns the existing local-only `/api/realtime/token` handler and proposed `/api/work/analyze` handler in `src/app/api/`, plus `src/lib/ai/` and `src/lib/math/`. Developer C owns auth (`/auth/session`), `/api/study-sessions`, and `/api/learning-context`. The workstream guide specifies request/response and error proposals for the first coordinated contract PR. Implemented on this branch: A's local-development token endpoint, C's `/auth/session`, `POST /api/study-sessions`, and `GET /api/learning-context`. `/api/work/analyze` remains proposed, and authenticated voice integration remains planned. Event writes initially use C's server-only function called by A, not a public event-write route.
 
 Future protected handlers must verify the Supabase session, validate request bodies at runtime, check session ownership, and return bounded errors. TypeScript types are not runtime validation. Keep permanent provider credentials server-side, limit request frequency and payload size, and avoid logging student content. Configure clients lazily within the integration so the homepage and CI do not require secrets.
 
@@ -84,7 +86,7 @@ We intend to fund voice with Deepgram trial credits because the available ChatGP
 
 A keeps the existing `/api/realtime/token` route name; its implementation is Deepgram-specific, not an OpenAI Realtime endpoint. The server uses `DEEPGRAM_API_KEY` with **Member-level permissions or higher** to call `POST https://api.deepgram.com/v1/auth/grant`. Return only the temporary token and normalized expiry with `Cache-Control: no-store`; never return the permanent key. Deepgram documents a default 30-second token TTL and bearer authentication for the browser. The token must be valid when connecting; expiry does not terminate an established connection or cap its cost. See [token-based authentication](https://developers.deepgram.com/guides/fundamentals/token-based-authentication).
 
-C will supply reusable authenticated-user and owned-session checks; A must call them before deployed issuance. Require same-origin requests, rate limits, and deployment-wide abuse protection before enabling billable deployed issuance. Until then, production and preview routes fail closed without provider calls, including for unauthenticated requests. Only a loopback, development-only harness may issue credentials before C's integration; it must be inaccessible in production/preview. See [A1 and the existing implementation audit](workstreams/A01-ai-tutoring.md#existing-implementation-and-migration-follow-up). C must not create a second token endpoint.
+C's reusable authenticated-user and owned-session checks (`requireUser()` and `requireOwnedSession()`) are now implemented; A must call them before deployed issuance and does not yet do so. Require same-origin requests, rate limits, and deployment-wide abuse protection before enabling billable deployed issuance. Until then, production and preview routes fail closed without provider calls, including for unauthenticated requests. Only a loopback, development-only harness may issue credentials before C's integration; it must be inaccessible in production/preview. See [A1 and the existing implementation audit](workstreams/A01-ai-tutoring.md#existing-implementation-and-migration-follow-up). C must not create a second token endpoint.
 
 Start only following explicit student input and microphone permission. Represent connecting, listening, speaking, interrupted, stopped, and failed states through the adapter. On stop, navigation, failure, or retry, release media tracks, playback/audio contexts, SDK connections, timers, and listeners. Wire user-speech interruption to immediate playback cancellation; allow the conversation to continue and prevent multiple concurrent sessions. Do not persist raw audio or full transcripts by default. A's later intervention controller passes verified analysis into the adapter only after checking the current revision; C's bounded evidence context can seed future tutoring sessions as quoted facts, never trusted instructions. These are separate integrations, not vision or persistent memory provided by the voice agent.
 
@@ -121,11 +123,15 @@ Use a small controller, not an orchestration framework. Analyze after a configur
 
 Initial shared vocabulary: concept `algebra.distributive-property`; misconception `distribution.missed-term`. The workstream specifications use these identifiers consistently. Keep IDs stable across all workstreams. Types are deliberately small; add fields when an integration needs them, with review from affected owners.
 
+`LearningEventRecord` is currently a local export from `src/lib/learning/events.ts`
+matching `LearningEventInput & { id: string; createdAt: string }`, pending the
+coordinated shared contract PR.
+
 ## Authentication and persistent memory (Developer C)
 
-Supabase Auth owns identity. Use cookie-aware server clients for Next.js, verify identity server-side, and execute student queries under the user's authenticated context so RLS applies. A publishable key is public project configuration, not authorization. Do not use privileged credentials to bypass student policies.
+Supabase Auth owns identity. `requireUser()` creates a fresh cookie-aware client and verifies identity with `auth.getUser()` on each request. `requireOwnedSession(auth, sessionId)` queries under that client and filters by both ID and verified owner, returning the same 404 for missing and foreign sessions. `createStudySession(auth)` generates a server UUID and lets database defaults assign ownership/time. All three helpers are server-only; callers must carry `auth.headers` into success and error responses. There is no service-role bypass. A publishable key is public project configuration, not authorization. Do not use privileged credentials to bypass student policies.
 
-Planned tables, not implemented migrations:
+Tables defined by migrations in `supabase/migrations/` (applied to hosted `newton-dev` on 2026-11-14):
 
 | Table | Proposed fields | Responsibility |
 | --- | --- | --- |
@@ -138,6 +144,33 @@ Server assigns owner and timestamps, checks the referenced session belongs to th
 Retrieve a bounded, recent set of events scoped to the authenticated user and relevant concept across sessions. Start with ordinary PostgreSQL queries; no vector store. Retain source session and evidence in retrieved context, distinguish correction with help from independent correction, and never infer lasting ability or mastery from one observation. Uncertain perception should not be saved as a confirmed misconception. Client evidence is untrusted: the server write path must validate it against session analysis rather than blindly trusting a posted claim.
 
 For the first integration, A produces eligible observations inside the server analysis path and calls C's writer; no client event-write route is exposed. User-scoped RLS prevents cross-account access but does not prove that a self-owned row inserted directly through Supabase came from the tutor. Treat all retrieved memory as advisory data. The C01 specification explicitly separates account-isolation testing from tamper-resistant provenance, which remains a requirement to resolve before real-student use.
+
+C's `recordLearningEvent(auth, input)` is implemented and locally tested. It
+rejects unknown fields, invalid UUIDs/vocabulary, and empty or over-500-character
+trimmed evidence. UUIDs are canonicalized and evidence length counts Unicode
+characters consistently with PostgreSQL. Only `practiced` and
+`misconception-observed` are enabled; the latter requires the supported
+misconception. Correction outcomes wait for A's trustworthy prior/hint evidence.
+The writer checks ownership before inserting, relies on database defaults for
+owner/ID/time, and handles unique conflicts by reading the full owner-scoped
+identity and comparing immutable evidence/misconception. It never upserts or
+updates a saved event. Identical retries return the original record; changed
+payloads return 409. A must still establish observation eligibility before
+calling this helper. Real signed-in hosted C1 acceptance passed; see
+[the verification record](backend-testing.md#real-two-account-acceptance--2026-11-14).
+
+`getLearningContext(auth, conceptId)` and `GET /api/learning-context` are now
+implemented independently of A/B. The query explicitly filters by verified
+owner and supported concept across sessions, orders by `created_at DESC, id
+DESC`, and returns at most ten rows. The shared stored-record decoder reads all
+four database outcomes while correction creation stays disabled in the writer.
+No owner fields reach the response. Empty history returns `events: []` and
+`summary: ""`; service failures remain distinct. The summary includes UTC dates,
+outcomes and JSON-quoted evidence excerpts, capped at 2,000 UTF-16 units without
+splitting Unicode characters or modifying the full source records. It makes no
+mastery inference. Evidence remains advisory data; future consumers must escape
+it and delimit it separately from instructions. `LearningContext` stays a local
+export pending the coordinated shared contract.
 
 Do not persist raw audio, screenshots, full conversations, or unnecessary personal information by default. Agree on retention, deletion, and student-facing memory controls before collecting real student data.
 

@@ -15,6 +15,54 @@ Accepted for the foundation on **2026-11-13**. Entries record accepted designs; 
 
 Add a short dated entry when a meaningful decision changes. Keep rationale and implementation consequences explicit; avoid speculative infrastructure.
 
+## 2026-11-14 — Bounded inputs and factual context
+
+Auth/session POSTs enforce the existing UTF-16 text limits incrementally while
+also bounding incoming UTF-8 bytes (`3 * character limit + 3` for an optional
+BOM). This closes unbounded buffering while preserving valid Unicode input.
+Cancellation is initiated without waiting on untrusted cleanup; headers and
+auth/Origin ordering remain unchanged.
+
+C01 retrieval uses the authenticated user's client, explicit owner/concept
+filters, latest-ten deterministic ordering and the shared database-record
+decoder. Summaries quote source evidence and shorten excerpts to fit 2,000
+UTF-16 units; full records are preserved. Reading four stored outcomes does not
+enable correction writes or establish AI provenance. A/B integration and real
+signed-in hosted acceptance remain separate milestones.
+
+## 2026-11-14 — Server-only learning event writer
+
+C01's writer validates a strict field allowlist, canonical UUIDs, supported
+vocabulary and trimmed evidence of 1–500 Unicode characters. It checks session
+ownership and inserts under the verified user's client with database defaults.
+Uniqueness arbitrates retries: read the full owner/session/revision/concept/
+outcome identity only after insert conflict, return the original record for an
+identical payload, and reject changed evidence/misconception with 409. Never
+upsert over history. Correction outcomes remain disabled until A supplies
+trustworthy earlier-step and delivered-hint evidence. No public write route or
+provenance claim is added; `LearningEventRecord` stays a local export pending
+the team's shared contract review.
+
+## 2026-11-14 — Local database foundation
+
+Two migrations create C01's tables, then constraints and owner-scoped access.
+The schema enables RLS and revokes legacy grants before any access is added.
+Column privileges prevent choosing owners/creation times; learning events have
+no normal update/delete grants. A composite session/owner FK and unique event
+identity enforce boundaries even under concurrent writers. Defaults derive
+ownership from `auth.uid()` and time from PostgreSQL.
+
+Development-only PGlite executes the migrations and SQL policy tests without
+hosted secrets or Docker. Its Auth boundary is simulated; hosted two-account
+HTTP/direct-client acceptance remains separate and incomplete. These migrations
+have not been applied to the team's hosted project.
+
+Verified-user and owned-session helpers use a fresh cookie client per request.
+Session creation accepts no client ownership/time fields and relies on database
+defaults under that user's context. Auth and session POSTs share the existing
+Origin/Host check. `AuthContext` and `StudySession` stay local exports until A/B
+review the additive shared contract; existing tutoring types are unchanged.
+
 ## 2026-11-13 — Workstream implementation baseline
 
 | ID | Decision | Rationale and consequence |
