@@ -35,3 +35,11 @@ A/B continue using verified identity/session helpers and do not need Google toke
 ## Code checkpoint — 2026-11-14
 
 Tests cover start restrictions, fixed redirects, rejected password payloads, cancelled/expired callbacks, verified identity, no-store responses and logout recovery. Independent code review found no blockers. The built app produced a real Supabase Google authorization URL, PKCE challenge/verifier cookie, and fixed cancellation redirect without contacting Google. The adapted hosted persistence scenario passed with two real test accounts. Desktop/mobile auth checks passed after scoping their alert locators to the form (Next also supplies an alert-based route announcer); all 20 existing workspace checks passed. Google consent and the successful provider-configured callback remain unverified pending team setup.
+
+## Live session regression — 2026-11-14
+
+The user reported a successful real Google sign-in, sign-out/sign-in and reload after configuring the provider. This is manual user evidence, not an automated Google-consent test.
+
+`tests/hosted/auth.hosted.ts` independently passed against the running app and hosted Supabase using an isolated Chromium browser and a disposable SDK-authenticated fixture. It verified identity after reload and workspace navigation, real UI sign-out, signed-out reload, 401/no-store for identity/history after logout, and restored UI after fresh SDK authentication. It does not touch the user's browser or automate Google account selection/consent. The separate hosted two-account persistence/isolation scenario and four desktop/mobile auth UI checks also passed. Both live scenarios run with `npm run test:hosted`; Chromium must be installed for the browser scenario (`npx playwright install chromium`).
+
+A second real Google-account acceptance check and deployed HTTPS testing remain outstanding.

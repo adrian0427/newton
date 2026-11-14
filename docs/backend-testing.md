@@ -210,7 +210,9 @@ independent HTTP cookie contexts against a locally running production app,
 the actual server writer/ownership helpers, and direct user-scoped SDK clients.
 Only the `server-only` import marker is replaced for Vitest execution; Auth,
 PostgREST, database rules, and the app routes are real. No service-role key,
-browser installation, voice/analysis service, or AI-provider call is needed.
+voice/analysis service, or AI-provider call is needed. The live auth browser
+scenario requires Chromium; install it with `npx playwright install chromium`
+if the matching Playwright browser is not already installed.
 
 With Node 22, `npm ci`, and `.env.local` pointing at `newton-dev`:
 
