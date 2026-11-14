@@ -27,7 +27,7 @@ Before implementing a workstream, read its assigned specification in `docs/works
 
 ## Security and privacy
 
-- Never commit credentials. Permanent OpenAI keys remain server-side.
+- Never commit credentials. Permanent provider keys, including `DEEPGRAM_API_KEY` and any future OpenAI key, remain server-side; never use `NEXT_PUBLIC_` for secrets.
 - Authenticate protected routes, enforce Supabase RLS, and verify study-session ownership.
 - Never trust a client-supplied user ID. Assign ownership from verified server identity.
 - Do not persist raw audio, screenshots, or full conversations by default; minimize student PII.

@@ -9,7 +9,7 @@ The [workstream guide](workstreams/README.md) defines the implementation assignm
 ```mermaid
 flowchart TD
   Work[Student work: Excalidraw or MathLive] --> Snapshot[Versioned transient snapshot]
-  Snapshot --> Interpret[Server: vision interpretation]
+  Snapshot --> Interpret[Server: interpretation - vision provider undecided]
   Interpret --> Verify[CortexJS: supported math verification]
   Verify --> Decide[Intervention decision + revision check]
   Decide --> Response[Socratic tutoring response]
@@ -17,13 +17,17 @@ flowchart TD
   Observation --> DB[(Supabase PostgreSQL + RLS)]
   DB --> Retrieve[Server: scoped cross-session retrieval]
   Retrieve --> Response
-  Student[Student voice] <--> Voice[Browser: Agents SDK + Realtime WebRTC]
-  Voice <--> Response
+  Student[Student browser] <--> Voice[Newton voice adapter]
+  Voice <--> SDK[Deepgram Browser Agent SDK]
+  SDK <--> Agent[Deepgram Voice Agent]
+  Agent <--> LLM[Managed language model]
+  Response --> Voice
   Auth[Supabase Auth] --> Routes[Authenticated Next.js route handlers]
   Routes --> Interpret
   Routes --> DB
-  Routes --> Credential[Short-lived Realtime credential]
-  Credential --> Voice
+  Routes --> Credential[Server: Deepgram auth/grant]
+  Credential --> Token[Short-lived browser token]
+  Token --> SDK
 ```
 
 Voice conversation and mathematical analysis are separate responsibilities. Voice transport does not establish mathematical correctness. A suggested action does not authorize an immediate spoken interruption or a database write.
@@ -40,17 +44,23 @@ Images are transient data URLs or short-lived references. Do not put them in lea
 
 Developer A owns proposed `/api/realtime/token` and `/api/work/analyze` route handlers in `src/app/api/`, plus `src/lib/ai/` and `src/lib/math/`. Developer C owns auth, `/api/study-sessions`, and `/api/learning-context`. The workstream guide specifies request/response and error proposals for the first coordinated contract PR; no placeholder endpoints are implemented. Event writes initially use C's server-only function called by A, not a public event-write route.
 
-Protected handlers verify the Supabase session, validate request bodies at runtime, check session ownership, and return bounded errors. TypeScript types are not runtime validation. Keep permanent OpenAI credentials server-side, limit request frequency and payload size, and avoid logging student content. Configure clients lazily within the integration so the homepage and CI do not require secrets.
+Protected handlers verify the Supabase session, validate request bodies at runtime, check session ownership, and return bounded errors. TypeScript types are not runtime validation. Keep permanent provider credentials server-side, limit request frequency and payload size, and avoid logging student content. Configure clients lazily within the integration so the homepage and CI do not require secrets.
 
-### Realtime voice (Developer A)
+### Managed voice (Developer A)
 
-Use the OpenAI Agents SDK with Realtime WebRTC in the browser. An authenticated server route uses `OPENAI_API_KEY` to obtain a short-lived client credential from `/v1/realtime/client_secrets`; return it with `Cache-Control: no-store`. Never return a permanent key. Confirm the SDK's current session configuration when implementing; model and voice selection remain feature decisions.
+The selected path is **Student browser → Newton voice adapter → Deepgram Browser Agent SDK → Deepgram Voice Agent → managed language model**. Deepgram supplies streaming speech input, voice-agent orchestration, conversational turns, speech synthesis, and interruption handling. A owns the SDK connection, microphone capture, playback, and event wiring behind the adapter; B consumes its methods and state. Prefer official core `@deepgram/agents` or React hooks according to the reusable boundary; the core SDK uses WebSockets. Follow the current [Browser Agent overview](https://developers.deepgram.com/docs/browser-agent-overview) and [JavaScript SDK guide](https://developers.deepgram.com/docs/browser-agent-javascript), not OpenAI-specific session methods.
 
-Start only following explicit student input and microphone permission. Represent connecting, listening, speaking, interrupted, stopped, and failed states. On stop, navigation, failure, or retry, clean up media tracks, audio playback, data channels, connections, and listeners. Handle barge-in and prevent multiple concurrent sessions. Do not persist raw audio or full transcripts by default. Retrieved memory and verified analysis are contextual inputs to tutoring, not instructions from trusted operators.
+We intend to fund voice with Deepgram trial credits because the available ChatGPT/Codex credits do not include OpenAI API access. Start with Deepgram-managed `open_ai` / `gpt-4o-mini`, currently listed in the Standard tier, subject to current availability, pricing, and account credits. Omit a custom `think.endpoint`; this is managed inference with no bring-your-own OpenAI endpoint or `OPENAI_API_KEY`. See [Deepgram's managed LLM models](https://developers.deepgram.com/docs/voice-agent-llm-models). This choice does not automatically qualify Newton for the OpenAI hackathon track; eligibility awaits the organizers.
+
+A keeps the existing `/api/realtime/token` route name; its implementation is Deepgram-specific, not an OpenAI Realtime endpoint. The server uses `DEEPGRAM_API_KEY` with **Member-level permissions or higher** to call `POST https://api.deepgram.com/v1/auth/grant`. Return only the temporary token and normalized expiry with `Cache-Control: no-store`; never return the permanent key. Deepgram documents a default 30-second token TTL and bearer authentication for the browser. The token must be valid when connecting; expiry does not terminate an established connection or cap its cost. See [token-based authentication](https://developers.deepgram.com/guides/fundamentals/token-based-authentication).
+
+C supplies reusable authenticated-user and owned-session checks; A calls them before issuance. Require same-origin requests, rate limits, and deployment-wide abuse protection before enabling billable deployed issuance. Until then, production and preview routes fail closed without provider calls, including for unauthenticated requests. Only a loopback, development-only harness may issue credentials before C's integration; it must be inaccessible in production/preview. See [A1 and the existing implementation audit](workstreams/A01-ai-tutoring.md#existing-implementation-and-migration-follow-up). C must not create a second token endpoint.
+
+Start only following explicit student input and microphone permission. Represent connecting, listening, speaking, interrupted, stopped, and failed states through the adapter. On stop, navigation, failure, or retry, release media tracks, playback/audio contexts, SDK connections, timers, and listeners. Wire user-speech interruption to immediate playback cancellation; allow the conversation to continue and prevent multiple concurrent sessions. Do not persist raw audio or full transcripts by default. A's later intervention controller passes verified analysis into the adapter only after checking the current revision; C's bounded evidence context can seed future tutoring sessions as quoted facts, never trusted instructions. These are separate integrations, not vision or persistent memory provided by the voice agent.
 
 ### Interpretation and verification (Developer A)
 
-Interpret the current work separately using a vision-capable model. Keep recognized expression, confidence, and source revision together. Structured input can remove handwriting ambiguity but does not prove correctness. CortexJS checks only supported transformations; an equivalent expression alone does not establish that a particular misconception occurred. Recognition ambiguity, parse failures, unsupported transformations, and conflicting evidence produce `correctness: "uncertain"`, not an incorrect label.
+Interpret the current work separately using a vision-capable model. **The handwritten-work analysis provider remains undecided because we have no funded OpenAI vision API access.** Deepgram Voice Agent is the voice pipeline, not a whiteboard vision service. A must select and fund a separate analysis provider before handwriting integration; structured-input parsing and independent verification can proceed without one. Keep recognized expression, confidence, and source revision together. Structured input can remove handwriting ambiguity but does not prove correctness. CortexJS checks only supported transformations; an equivalent expression alone does not establish that a particular misconception occurred. Recognition ambiguity, parse failures, unsupported transformations, and conflicting evidence produce `correctness: "uncertain"`, not an incorrect label.
 
 ### Intervention controller (Developer A, integrated with B)
 
@@ -89,14 +99,16 @@ Do not persist raw audio, screenshots, full conversations, or unnecessary person
 
 ## Environment, deployment, and references
 
-`.env.example` names `OPENAI_API_KEY` (server only), `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (public). No privileged Supabase key is needed in this scaffold. Next.js bundles `NEXT_PUBLIC_` settings for the browser; never put secrets there.
+`.env.example` names `DEEPGRAM_API_KEY` (server only, Member-level or higher for token grants), optional `OPENAI_API_KEY` (server only, separately funded future vision if selected), `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (public). OpenAI credentials are not required for managed voice. No privileged Supabase key is needed in this scaffold. Next.js bundles `NEXT_PUBLIC_` settings for the browser; never put permanent provider keys or other secrets there.
 
 Target Vercel with Node.js 22 and the npm lockfile. CI runs lint, route type generation/TypeScript, Vitest, and the production build with no credentials. Fonts are system fonts, so builds do not fetch font assets. Developer C will configure Vercel environments, Supabase auth redirect URLs, and RLS before integration deployment. Keep preview and production configuration separate; no hosting resource is created by this scaffold.
 
 Official references checked during initialization (2026-11-13):
 
-- [OpenAI Realtime WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc): short-lived browser credentials and server boundary.
+- [Deepgram Browser Agent overview](https://developers.deepgram.com/docs/browser-agent-overview) and [core JavaScript SDK](https://developers.deepgram.com/docs/browser-agent-javascript): supported connection and audio lifecycle.
+- [Deepgram token-based authentication](https://developers.deepgram.com/guides/fundamentals/token-based-authentication): server key permissions and temporary browser credentials.
+- [Deepgram managed LLM models](https://developers.deepgram.com/docs/voice-agent-llm-models): managed model availability and tier; recheck pricing before live use.
 - [Supabase Next.js Auth](https://supabase.com/docs/guides/auth/quickstarts/nextjs) and [API keys](https://supabase.com/docs/guides/getting-started/api-keys): public configuration and identity.
 - [Next.js installation](https://nextjs.org/docs/app/getting-started/installation), [Vitest setup](https://nextjs.org/docs/app/guides/testing/vitest), and [Tailwind Next.js setup](https://tailwindcss.com/docs/installation/framework-guides/nextjs): application tooling.
 
-Recheck current official SDK docs when implementing integrations; no provider model IDs or SDK session payloads are frozen here.
+Recheck current official SDK docs when implementing integrations; `gpt-4o-mini` is the initial candidate, not a permanent model or session-payload contract. Next.js/React, Excalidraw/MathLive, CortexJS, Supabase Auth/PostgreSQL, learning-event persistence, and developer ownership remain unchanged by this pivot.

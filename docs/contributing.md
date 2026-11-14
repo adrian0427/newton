@@ -14,11 +14,11 @@ The specifications define tasks, dependencies, acceptance criteria, and tests. P
 
 | Developer | Branch | Owns | First milestone |
 | --- | --- | --- | --- |
-| A — AI, Voice & Tutoring | `feat/ai-tutoring` | `src/lib/ai/`, `src/lib/math/`, AI-specific logic in `src/lib/learning/`, Realtime/analysis API handlers | Real voice connection that starts, handles interruption, stops, and cleans up safely |
+| A — AI, Voice & Tutoring | `feat/ai-tutoring` | `src/lib/ai/`, `src/lib/math/`, AI-specific logic in `src/lib/learning/`, voice-token/analysis API handlers | Real voice connection that starts, handles interruption, stops, and cleans up safely |
 | B — Frontend & Student Experience | `feat/student-workspace` | Student pages, `src/components/whiteboard/`, `src/components/tutor/`, `src/components/learning/` | Workspace exports a versioned whiteboard snapshot; edits invalidate earlier captures |
 | C — Backend, Authentication & Memory | `feat/backend-memory` | `src/lib/supabase/`, `supabase/migrations/`, auth routes, memory persistence/retrieval modules | Authenticated session and event persistence with proof that two accounts cannot access each other's records |
 
-A also owns Agents SDK, vision interpretation, CortexJS checks, Socratic prompts, intervention timing, and use of retrieved memory. B owns Excalidraw state/export, MathLive fallback, voice controls/status, history presentation, and responsive UX. C owns profiles, study sessions, RLS, cross-session queries, and deployment configuration.
+A also owns the Deepgram Browser Agent SDK integration, later vision interpretation (provider/funding undecided), CortexJS checks, Socratic prompts, intervention timing, and use of retrieved memory. B owns Excalidraw state/export, MathLive fallback, provider-independent voice controls/status, history presentation, and responsive UX. C owns profiles, study sessions, RLS, cross-session queries, reusable authentication helpers, and deployment configuration.
 
 `src/lib/learning/` is a boundary, not permission for duplicate implementations: A owns `observations.ts` for evidence eligibility; C owns `sessions.ts`, `events.ts`, and `context.ts` for persistence/retrieval. A owns voice lifecycle logic, while B owns the controls that call it. A owns `/api/realtime/token` and `/api/work/analyze`; C owns `/api/study-sessions`, `/api/learning-context`, and auth routes. Follow the workstream guide's interface proposals and coordinate their additive types before connecting consumers.
 
@@ -34,6 +34,8 @@ Shared ownership: `src/types/tutoring.ts`, `package.json` and lockfile, applicat
 6. Get at least one other developer's review; affected owners review shared interfaces. Resolve CI failures before merging. Merge one PR at a time, then update dependent branches from `main` and verify the connected flow.
 
 Prefer small integration slices over one end-of-hackathon merge. Start by agreeing snapshot/event contracts, then connect voice lifecycle to controls, analysis to current snapshots, and authenticated observations to memory retrieval. Keep `main` runnable without credentials on the landing page. Do not force-push or overwrite another developer's work; coordinate conflict resolution with the owner.
+
+The Deepgram decision changes voice infrastructure only. Preserve A's existing `1f7b031` implementation and tests; follow the [audit note](workstreams/A01-ai-tutoring.md#existing-implementation-and-migration-follow-up) before further provider changes. After these docs merge, all owners [update their existing branches](workstreams/README.md#updating-existing-feature-branches) and reconcile overlapping docs without copying or discarding another owner's implementation.
 
 ## Review expectations
 
