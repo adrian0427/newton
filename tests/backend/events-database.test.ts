@@ -7,11 +7,13 @@ import { createTestDatabase } from "./helpers/database";
 
 vi.mock("server-only", () => ({}));
 import { recordLearningEvent } from "@/lib/learning/events";
+import { getLearningContext } from "@/lib/learning/context";
 
 const ownerA = "00000000-0000-4000-8000-000000000001";
 const ownerB = "00000000-0000-4000-8000-000000000002";
 const sessionA = "10abcdef-0000-4000-8000-000000000001";
 const sessionB = "10abcdef-0000-4000-8000-000000000002";
+const laterSessionA = "10abcdef-0000-4000-8000-000000000003";
 const input: LearningEventInput = {
   sessionId: sessionA, sourceRevisionId: "20abcdef-0000-4000-8000-000000000001",
   conceptId: "algebra.distributive-property", outcome: "practiced", evidence: "Synthetic expansion evidence.",
@@ -21,7 +23,7 @@ let db: PGlite;
 beforeAll(async () => {
   db = await createTestDatabase();
   await db.query("insert into auth.users(id) values ($1), ($2)", [ownerA, ownerB]);
-  await db.query("insert into public.study_sessions(id, user_id) values ($1,$2), ($3,$4)", [sessionA, ownerA, sessionB, ownerB]);
+  await db.query("insert into public.study_sessions(id, user_id) values ($1,$2), ($3,$4), ($5,$2)", [sessionA, ownerA, sessionB, ownerB, laterSessionA]);
 }, 30_000);
 afterEach(async () => { await db.exec("delete from public.learning_events"); });
 afterAll(async () => { await db?.close(); });
@@ -57,6 +59,13 @@ function authFor(userId: string): AuthContext {
             values (${names.map((_, index) => `$${index + 1}`).join(",")}) returning *`, names.map((name) => body[name]))).rows;
         }
         if (url.pathname === "/rest/v1/learning_events" && request.method === "GET") {
+          if (!url.searchParams.has("outcome")) {
+            if (url.searchParams.get("order") !== "created_at.desc,id.desc" || url.searchParams.get("limit") !== "10") {
+              throw new Error("Context requests must specify deterministic recency and a ten-row limit");
+            }
+            return (await tx.query(`select * from public.learning_events where user_id=$1 and concept=$2
+              order by created_at desc, id desc limit $3`, [equality(url, "user_id"), equality(url, "concept"), Number(url.searchParams.get("limit"))])).rows;
+          }
           return (await tx.query(`select * from public.learning_events
             where user_id=$1 and session_id=$2 and source_revision_id=$3 and concept=$4 and outcome=$5`,
           ["user_id", "session_id", "source_revision_id", "concept", "outcome"].map((name) => equality(url, name)))).rows;
@@ -160,5 +169,46 @@ describe("writer with PostgreSQL enforcement and the installed Supabase query bu
     const evidence = "🧮".repeat(500);
     expect((await recordLearningEvent(authFor(ownerA), { ...input, evidence })).evidence).toBe(evidence);
     expect((await savedRows())[0].evidence).toBe(evidence);
+  });
+});
+
+describe("cross-session context with PostgreSQL enforcement", () => {
+  it("returns genuine empty history for an account without events", async () => {
+    expect(await getLearningContext(authFor(ownerA), input.conceptId)).toEqual({ conceptId: input.conceptId, events: [], summary: "" });
+  });
+
+  it("retrieves saved observations from both sessions and separates the next account", async () => {
+    const earlier = await recordLearningEvent(authFor(ownerA), input);
+    const later = await recordLearningEvent(authFor(ownerA), { ...input, sessionId: laterSessionA, evidence: "Synthetic second-session evidence." });
+    const a = await getLearningContext(authFor(ownerA), input.conceptId);
+    expect(new Set(a.events.map((event) => event.id))).toEqual(new Set([earlier.id, later.id]));
+    expect(new Set(a.events.map((event) => event.sessionId))).toEqual(new Set([sessionA, laterSessionA]));
+    expect(await getLearningContext(authFor(ownerB), input.conceptId)).toEqual({ conceptId: input.conceptId, events: [], summary: "" });
+    const b = await recordLearningEvent(authFor(ownerB), { ...input, sessionId: sessionB, evidence: "Synthetic B evidence." });
+    expect((await getLearningContext(authFor(ownerB), input.conceptId)).events).toEqual([b]);
+    expect((await getLearningContext(authFor(ownerA), input.conceptId)).events).toEqual(a.events);
+  });
+
+  it("returns exactly the latest ten with stable ID tie-breaking and excludes newer foreign rows", async () => {
+    await db.query(`insert into public.learning_events(id,user_id,session_id,source_revision_id,concept,outcome,evidence,created_at)
+      select ('30000000-0000-4000-8000-' || lpad(i::text,12,'0'))::uuid, $1,
+        case when i%2=0 then $2::uuid else $3::uuid end, gen_random_uuid(),
+        'algebra.distributive-property','practiced','Synthetic bounded history ' || i,
+        '2026-11-14T06:00:00Z'::timestamptz from generate_series(1,12) i`, [ownerA, sessionA, laterSessionA]);
+    await db.query(`insert into public.learning_events(user_id,session_id,source_revision_id,concept,outcome,evidence,created_at)
+      values ($1,$2,gen_random_uuid(),'algebra.distributive-property','practiced','Synthetic newer foreign row.','2026-11-15T00:00:00Z')`, [ownerB, sessionB]);
+    const context = await getLearningContext(authFor(ownerA), input.conceptId);
+    expect(context.events.map((event) => event.id)).toEqual(Array.from({ length: 10 }, (_, index) => `30000000-0000-4000-8000-${String(12 - index).padStart(12, "0")}`));
+    expect(context.summary).not.toContain("foreign");
+    expect(context.summary.length).toBeLessThanOrEqual(2000);
+  });
+
+  it("reads all database outcome vocabulary without allowing correction writes through the writer", async () => {
+    await db.query(`insert into public.learning_events(user_id,session_id,source_revision_id,concept,outcome,evidence)
+      values ($1,$2,gen_random_uuid(),'algebra.distributive-property','corrected-with-guidance','Synthetic historical guided correction.')`, [ownerA, sessionA]);
+    const result = await getLearningContext(authFor(ownerA), input.conceptId);
+    expect(result.events[0].outcome).toBe("corrected-with-guidance");
+    expect(result.summary).toContain("corrected-with-guidance");
+    await expect(recordLearningEvent(authFor(ownerA), { ...input, outcome: "corrected-with-guidance" })).rejects.toMatchObject({ status: 400 });
   });
 });

@@ -35,3 +35,10 @@ Two authorized Developer C checkpoints on `feat/backend-memory`; no A/B wiring.
 
 Hosted two-account signed-in HTTP acceptance remains a separate verification
 requirement. No new schema, service-role credentials, provider calls or A/B integration.
+
+Both checkpoints implemented. Body fix: 12 failing assertions → green, 197-test
+suite, lint/typecheck/build and independent security review passed (including
+4,000 reviewer differential decoding cases). Retrieval: 29 RED→GREEN cases and
+four PostgreSQL/SDK integration cases; final230-test suite, lint/typecheck/build
+and independent feature review passed. Built-app streaming sign-in rejected
+before body completion; anonymous context/session requests returned401/no-store.

@@ -15,6 +15,21 @@ Accepted for the foundation on **2026-11-13**. Integration decisions describe pl
 
 Add a short dated entry when a meaningful decision changes. Keep rationale and implementation consequences explicit; avoid speculative infrastructure.
 
+## 2026-11-14 — Bounded inputs and factual context
+
+Auth/session POSTs enforce the existing UTF-16 text limits incrementally while
+also bounding incoming UTF-8 bytes (`3 * character limit + 3` for an optional
+BOM). This closes unbounded buffering while preserving valid Unicode input.
+Cancellation is initiated without waiting on untrusted cleanup; headers and
+auth/Origin ordering remain unchanged.
+
+C01 retrieval uses the authenticated user's client, explicit owner/concept
+filters, latest-ten deterministic ordering and the shared database-record
+decoder. Summaries quote source evidence and shorten excerpts to fit 2,000
+UTF-16 units; full records are preserved. Reading four stored outcomes does not
+enable correction writes or establish AI provenance. A/B integration and real
+signed-in hosted acceptance remain separate milestones.
+
 ## 2026-11-14 — Server-only learning event writer
 
 C01's writer validates a strict field allowlist, canonical UUIDs, supported

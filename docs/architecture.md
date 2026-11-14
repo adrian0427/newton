@@ -130,7 +130,20 @@ owner/ID/time, and handles unique conflicts by reading the full owner-scoped
 identity and comparing immutable evidence/misconception. It never upserts or
 updates a saved event. Identical retries return the original record; changed
 payloads return 409. A must still establish observation eligibility before
-calling this helper. Context retrieval and hosted acceptance remain incomplete.
+calling this helper. Real signed-in hosted acceptance remains incomplete.
+
+`getLearningContext(auth, conceptId)` and `GET /api/learning-context` are now
+implemented independently of A/B. The query explicitly filters by verified
+owner and supported concept across sessions, orders by `created_at DESC, id
+DESC`, and returns at most ten rows. The shared stored-record decoder reads all
+four database outcomes while correction creation stays disabled in the writer.
+No owner fields reach the response. Empty history returns `events: []` and
+`summary: ""`; service failures remain distinct. The summary includes UTC dates,
+outcomes and JSON-quoted evidence excerpts, capped at 2,000 UTF-16 units without
+splitting Unicode characters or modifying the full source records. It makes no
+mastery inference. Evidence remains advisory data; future consumers must escape
+it and delimit it separately from instructions. `LearningContext` stays a local
+export pending the coordinated shared contract.
 
 Do not persist raw audio, screenshots, full conversations, or unnecessary personal information by default. Agree on retention, deletion, and student-facing memory controls before collecting real student data.
 

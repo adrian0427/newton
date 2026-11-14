@@ -53,7 +53,7 @@ and narrow column grants. Normal student access cannot choose owners/timestamps
 or edit/delete events. Deleting a disposable Auth account administratively
 cascades its data.
 
-C1 remains incomplete. After context retrieval is implemented, verify using
+C1 remains incomplete. Verify the full implemented backend using
 both pre-created adult test accounts and an anonymous
 caller through **HTTP/helpers and the direct authenticated Supabase client**:
 create a session, save a synthetic observation, sign out/in, retrieve it in a
@@ -178,4 +178,27 @@ pre-patch investigation and fresh candidate review found no surviving bypass
 or compatibility issue; the reviewer also checked 4,000 split-byte decoding
 cases against Request.text(). The original sealed audit describes the earlier
 source revision; this verification records its remediation rather than changing
-that historical report.
+that historical report. A live built-app check additionally received 413 for a
+chunked 8193-byte sign-in request before the sender ended its body; ordinary
+malformed JSON still returned 400. No load attack or hosted mutation was used.
+
+## Learning context verification — 2026-11-14
+
+The authenticated GET endpoint accepts exactly one supported `conceptId`,
+rejects ownership/session/unknown/duplicate parameters, and verifies identity
+on every request. Its private/no-store response carries refresh headers on
+success, validation failures, and service failures.
+
+Twenty-nine focused helper/route tests failed against the initial stubs and
+passed after implementation. Four additional PostgreSQL/SDK-transport cases
+cover empty history, writer-to-retrieval round trips across sessions/accounts,
+the latest-ten limit with timestamp/ID ties and newer foreign rows, and stored
+correction vocabulary without enabling correction writes. Summary tests cover
+quoted newlines/quotes/backslashes, Unicode-safe excerpts, stable output and
+the 2,000-unit bound. Full evidence and source IDs remain in returned records.
+
+Final full suite: 230 tests passed, plus lint, TypeScript, normal production
+build and a clean independent feature review. The built GET endpoint returned
+401/no-store without login. Local database identity/transport remains simulated;
+this is not a replacement for the pending real signed-in hosted HTTP tests.
+No A/B integration, new migration or provider call was required.

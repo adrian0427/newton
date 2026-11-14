@@ -15,8 +15,10 @@ session ownership, and saves under the verified user's database context.
 Identical retries return the original ID/time; conflicting evidence returns
 409 and preserves existing history. It is tested locally and awaits A's
 eligible-observation integration. Correction outcomes remain disabled, and
-cross-session retrieval is the next backend slice. No public event-write route
-is exposed.
+cross-session retrieval is available through C's authenticated
+`GET /api/learning-context?conceptId=algebra.distributive-property`. It returns
+the latest ten observations plus a bounded factual summary. No public
+event-write route is exposed; A/B integration remains pending.
 
 ## Local setup
 
