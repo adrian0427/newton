@@ -60,3 +60,7 @@ body {
   --keycap-text: var(--paper-text); --keycap-primary-background: var(--paper-selected);
   --keycap-primary-text: var(--paper-accent); --keyboard-accent-color: var(--paper-accent);
 }
+
+.brand-wordmark { display: block; line-height: 1; transform: translateY(0.08em); }
+
+.brand-continuation { transform: translateY(0.21em); margin-left: -1px; }

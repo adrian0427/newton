@@ -1,13 +1,14 @@
 import Link from "next/link";
+import AppleLogo from "@/components/AppleLogo";
 
 export default function Home() {
   return (
     <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-6 sm:px-10 lg:px-16">
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="flex items-center justify-between border-b border-line py-7">
-        <Link href="/" aria-label="Newton home" className="flex items-center gap-3 text-2xl font-semibold tracking-tight">
-          <span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-xl bg-ink font-serif text-3xl italic text-paper">n</span>
-          Newton<span className="text-leaf">.</span>
+        <Link href="/" aria-label="Newton home" className="flex items-center gap-0 text-2xl font-semibold tracking-tight">
+          <span aria-hidden="true" className="flex h-10 w-10 items-center justify-center"><AppleLogo size={38} /></span>
+          <span className="brand-wordmark brand-continuation">ewton!</span>
         </Link>
         <span className="text-xs font-medium tracking-wide text-muted sm:text-sm">A project by Twofold</span>
       </header>
