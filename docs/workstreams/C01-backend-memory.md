@@ -42,7 +42,7 @@ Default event writes use the authenticated user's Supabase context; no service-r
 
 ### C1 acceptance and tests
 
-A test account signs in, creates a session, saves a synthetic eligible event through the server function, signs out/in, creates another session, and retrieves the prior event plus a factual summary. Repeat with a second account and prove no cross-account exposure. B's UI and OpenAI are not required: use focused tests and the real auth/session/context endpoints.
+A test account signs in, creates a session, saves a synthetic eligible event through the server function, signs out/in, creates another session, and retrieves the prior event plus a factual summary. Repeat with a second account and prove no cross-account exposure. B's UI and voice/analysis providers are not required: use focused tests and the real auth/session/context endpoints.
 
 Automated unit tests cover request validation, empty context, summary bounds, deterministic ordering, duplicate/conflicting events, missing config, and auth failures with mocked clients. Keep these in `npm test`. Add a separate explicitly invoked database integration suite with documented setup/cleanup and disposable credentials; CI's default tests/build must not require Supabase.
 
@@ -59,6 +59,14 @@ Record actual real-database results separately from mocked tests. C1 is not comp
 ## Milestone C2: connect tutoring and student UI
 
 Hand A `requireUser`, owned-session validation, context retrieval, and event writer; A wires these into its token/analysis handlers. Hand B sign-in/out links, session creation, and context endpoint/types. Coordinate request limits/deployment access with A before enabling deployed credential issuance; C does not create another token endpoint. Verify a real verified step is saved once and retrieved on the next session. Memory write failure must not claim success or discard the student's work; use bounded explicit retries with the same event identity.
+
+### Deepgram credential integration
+
+A owns the sole `/api/realtime/token` handler and Deepgram-specific issuance; C owns reusable authenticated-user/session verification and deployment controls. A calls C's helpers before granting a browser credential; neither developer creates a second token endpoint. The route's historical name does not require OpenAI Realtime.
+
+Deepgram temporary-token issuance calls `POST https://api.deepgram.com/v1/auth/grant`. Its permanent `DEEPGRAM_API_KEY` must have **Member-level permissions or higher** and remain on the server. Only the short-lived token and normalized expiry reach the browser; no permanent key uses `NEXT_PUBLIC_`. See [Deepgram token-based authentication](https://developers.deepgram.com/guides/fundamentals/token-based-authentication).
+
+Production issuance requires verified identity, owned study session, same-origin validation, rate limiting, and reasonable deployment-wide abuse protection. Until these are integrated, production and preview issuance fail closed without provider calls; unauthenticated requests must never mint billable credentials. Coordinate the central five-per-user/per-ten-minute starting limit and additional account/deployment controls with A. Token expiry does not end an established connection, so it is not a session-cost limit. C1's schema, migrations, RLS, profiles, sessions, event persistence, and bounded memory retrieval are unchanged by this voice-provider decision.
 
 ## Retention and non-goals
 

@@ -14,6 +14,8 @@ The differentiator is **work-aware tutoring plus persistent, evidence-backed mem
 
 ## Hackathon MVP
 
+This remains the target experience. The selected Deepgram-managed voice model does not establish eligibility for the OpenAI Challenge; confirmation from the organizers is pending. Whiteboard interpretation still needs a separately selected, funded provider; see the [voice pivot decision](decisions.md#2026-11-13--deepgram-voice-pivot).
+
 For the Cal Poly AI Hackathon, November 13–15, 2026, and its OpenAI Challenge, demonstrate one coherent Algebra I distributive-property journey:
 
 1. The student starts `2(x + 3) = 14` and writes `2x + 3 = 14`.
