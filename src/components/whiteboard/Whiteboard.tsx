@@ -13,9 +13,12 @@ export type WhiteboardHandle = { capture(): Promise<WorkSnapshot>; clear(): void
 declare global { interface Window { EXCALIDRAW_ASSET_PATH: string } }
 if (typeof window !== "undefined") window.EXCALIDRAW_ASSET_PATH = "/vendor/excalidraw/";
 
-export default function Whiteboard({ ref, revisions, onContentChange, onActivityChange }: {
+export default function Whiteboard({ ref, revisions, onContentChange, onActivityChange, onCapture, capturing, captureDisabled }: {
   ref: Ref<WhiteboardHandle>;
   revisions: WorkRevision;
+  onCapture(): void;
+  capturing: boolean;
+  captureDisabled: boolean;
   onContentChange(): void;
   onActivityChange(active: boolean): void;
 }) {
@@ -62,8 +65,10 @@ export default function Whiteboard({ ref, revisions, onContentChange, onActivity
 
   return <div className={`board-canvas ${more ? "show-extra-tools" : "compact-tools"}`} aria-label="Student whiteboard" onPointerUp={() => onActivityChange(false)} onPointerCancel={() => onActivityChange(false)} onBlur={() => onActivityChange(false)}>
     <div className="board-options" aria-label="Drawing options">
+      <button className="small-button capture-button" type="button" disabled={captureDisabled} onClick={onCapture}>{capturing ? "Capturing..." : "Capture snapshot"}</button>
       <button ref={settingsButton} className="small-button" type="button" aria-expanded={settings} aria-controls="pen-settings" onClick={() => { setSettings(!settings); setMore(false); }}>Pen settings</button>
       <button className="small-button" type="button" aria-expanded={more} onClick={() => { setMore(!more); setSettings(false); }}>{more ? "Fewer tools" : "More tools"}</button>
+      <button className="small-button library-toggle" type="button" onClick={() => api.current?.toggleSidebar({ name: "default", tab: "library" })}>Library</button>
     </div>
     {settings && <section className="pen-settings" id="pen-settings" role="dialog" aria-label="Pen settings">
       <header><strong>Writing style</strong><button className="icon-button" type="button" aria-label="Close pen settings" onClick={() => { setSettings(false); settingsButton.current?.focus(); }}>×</button></header>

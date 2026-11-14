@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import TutorControls from "./TutorControls";
+import NewtonPeek, { indicatorDescriptions, type NewtonIndicator } from "./NewtonPeek";
 
-export default function TutorLauncher() {
+export default function TutorLauncher({ indicator = "idle" }: { indicator?: NewtonIndicator }) {
   const [open, setOpen] = useState(false);
   const launcher = useRef<HTMLButtonElement>(null);
   const close = useRef<HTMLButtonElement>(null);
@@ -17,7 +18,8 @@ export default function TutorLauncher() {
     return () => window.removeEventListener("keydown", key);
   }, [open]);
   return <>
-    <button ref={launcher} type="button" className="tutor-launcher" aria-label={open ? "Close Newton" : "Open Newton"} aria-expanded={open} aria-controls="newton-panel" onClick={() => setOpen((value) => !value)}><span aria-hidden="true">n</span></button>
+    <button ref={launcher} type="button" className="tutor-launcher" aria-label={open ? "Close Newton" : "Open Newton"} aria-expanded={open} aria-controls={open ? "newton-panel" : undefined} aria-describedby={indicator !== "idle" ? "newton-indicator-status" : undefined} onClick={() => setOpen((value) => !value)}><NewtonPeek indicator={indicator} /></button>
+    <span id="newton-indicator-status" className="visually-hidden" role="status">{indicatorDescriptions[indicator]}</span>
     {open && <section id="newton-panel" className="tutor-popover" role="dialog" aria-labelledby="newton-panel-title">
       <header><div><p className="eyebrow">Here when you need it</p><h2 id="newton-panel-title">A little guidance.</h2></div><button ref={close} type="button" className="icon-button" aria-label="Dismiss Newton" onClick={() => { setOpen(false); launcher.current?.focus(); }}>×</button></header>
       <TutorControls />
