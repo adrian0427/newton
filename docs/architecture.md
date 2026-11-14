@@ -2,7 +2,7 @@
 
 ## Status and boundaries
 
-This is a proposed MVP design. Only the homepage, shared TypeScript contracts, and developer tooling exist. There are no service clients, API implementations, or database migrations yet. Keep one Next.js application; add dependencies only with the feature that uses them.
+The tutoring and backend integrations below remain a proposed MVP design. The homepage, local `/study` workspace (B1), shared TypeScript contracts, and developer tooling are implemented. There are no connected tutoring services, API implementations, or database migrations yet. Keep one Next.js application; add dependencies only with the feature that uses them.
 
 The [workstream guide](workstreams/README.md) defines the implementation assignments, concrete boundary proposals, and initial timing/deduplication decisions. Its A01/B01/C01 specifications are the starting points for feature work; additional interface names there are proposals, not existing TypeScript exports.
 
@@ -35,6 +35,26 @@ App Router pages and layout remain Server Components by default. Developer B add
 Excalidraw owns freehand work; MathLive provides structured input when recognition is unreliable. Capture only the work region after a pause or explicit request, not continuous screenshots. Each edit, undo, and structured-input change gets a new `revisionId`; snapshot export must preserve the revision of the content actually exported. Reject an export if editing continued during capture. `capturedAt` is informational, not a distributed ordering mechanism.
 
 Images are transient data URLs or short-lived references. Do not put them in learning events, analytics, logs, or durable storage by default. Future handlers enforce content type, payload size, and allowed reference origins; never fetch arbitrary client URLs. Empty snapshots should be rejected before analysis.
+
+### Implemented local workspace (B1)
+
+`/study` mounts `StudentWorkspace`, with a client-only Excalidraw boundary and a dynamically imported MathLive field. B owns one `WorkRevision` clock. Excalidraw's live element IDs, versions, and version nonces identify content changes; selection and viewport state are excluded. Structured edits share the same clock. An export clones the scene and files before asynchronous PNG generation, checks the clock after image encoding, and checks the revision before publishing. Clear, source changes, replacement captures, and unmount invalidate pending work. Clear does not erase persistent history.
+
+Capture exports exactly one selected representation. PNGs cover drawing bounds with padding, exclude exercise/tutor UI, are bounded to 2048 pixels and 2 MiB, and do not embed the editable scene. Structured expressions are trimmed and limited to 500 characters. The supported notation fixture is `2(x+3)=14` from MathLive ASCIIMath, transported as `2*(x+3)=14`. The normalizer accepts only the initial Algebra I notation and rejects unsupported/incomplete syntax without asserting correctness. A must review these fixtures against its parser before B2.
+
+Snapshots remain transient until the student explicitly downloads JSON or PNG. Object URLs are revoked on replacement, edits, source changes, clear, and unmount. No upload, autosave, service call, microphone, synthetic session, or fabricated history is included. Newton stays behind a small side launcher and exposes unavailable voice/help controls on demand until A/C interfaces are merged. No persistent history panel is shown in the workspace. Local fonts are copied from installed packages by `scripts/prepare-workspace-assets.mjs` before development/build, with generated assets ignored by Git.
+
+Run `npm run test:e2e` after `npx playwright install chromium` for the credential-free browser checks at desktop and 360px widths. Unit tests cover revision invalidation, concurrent capture, payload limits, notation normalization, and download cleanup.
+
+### Worksheet reference and workspace layout
+
+The study page fills the viewport. Desktop uses a keyboard/pointer-resizable split between the worksheet reference and whiteboard; mobile switches panes without destroying their contents. The tutor opens from a compact side launcher with Escape/close focus restoration. Audio activation is pending A's real voice integration and microphone opt-in.
+
+`WorksheetPane` accepts one local PDF, PNG, JPEG, or WebP at a time through a file picker, file drop, or screenshot paste. Text paste inside drawing/math editors stays with those editors. Browser files are limited to 20 MiB and validated by signature; image decoding rejects damaged files and images above 32 megapixels. Blob URLs are revoked on replacement, removal, and unmount. A failed replacement preserves the previous worksheet. Request generations discard late file reads. Removing/replacing the reference invalidates pending work captures without clearing the board.
+
+PDF.js is loaded only for PDFs and renders individual pages locally with cancellable render tasks, page navigation, zoom, and an extracted-text reading option. Its worker, fonts, CMaps, and WASM are served locally from generated package assets. There is no remote URL import, document scripting, automatic upload, or persistence. The sample equation and worksheet/whiteboard title bars have been removed to prioritize working space.
+
+Worksheet files are reference material, separate from `WorkSnapshot`, which continues to capture only the student's selected work source. Before B2, A/B must agree how an explicitly requested hint receives worksheet/problem context; no new transport contract or automatic worksheet sharing is implemented here. The user-requested interaction supersedes B1's original permanent tutor/history sidebar layout while preserving capture behavior.
 
 ## Server and AI boundaries
 
@@ -100,3 +120,13 @@ Official references checked during initialization (2026-11-13):
 - [Next.js installation](https://nextjs.org/docs/app/getting-started/installation), [Vitest setup](https://nextjs.org/docs/app/guides/testing/vitest), and [Tailwind Next.js setup](https://tailwindcss.com/docs/installation/framework-guides/nextjs): application tooling.
 
 Recheck current official SDK docs when implementing integrations; no provider model IDs or SDK session payloads are frozen here.
+
+### Paper appearance
+
+Paper Light and graphite Paper Dark share semantic CSS colors across the homepage, workspace, worksheet viewer, tutor controls, and math/drawing tools. Appearance offers Light (default), Dark, and System, plus a screen-only comfort preview for worksheet pixels in dark mode. Excalidraw uses its native theme with Paper toolbar tokens; theme changes do not alter scene elements, revisions, or the white-background capture representation.
+
+Only the appearance preference is stored locally (`newton-appearance`); worksheets and student work remain transient. A bootstrap script applies the stored theme before hydration, and a subscribed store follows OS changes in System mode and cross-tab preference changes. Blocked storage falls back to a tab-local preference. PDF/image comfort filtering is presentation-only and never changes original files, mathematical content, or exports.
+
+### Compact drawing and focus mode
+
+The default board shows selection, pen, and eraser tools, native undo/redo, and a small zoom control. Pen settings open a compact color/width popover for subsequent strokes. More tools reveals the native advanced tools and editing controls. Focus mode hides the reference and secondary controls without unmounting either pane, preserving work and revision identity. Exit focus or Escape restores the split view. Worksheet replacement controls appear only when a file is loaded; redundant pane labels and the header's local-workspace status are removed.

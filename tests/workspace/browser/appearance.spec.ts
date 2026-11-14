@@ -1,0 +1,53 @@
+import { expect, test } from "@playwright/test";
+
+test("Paper light/dark settings preserve captured work and persist across reload", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/study");
+  const workTab = page.getByRole("button", { name: "Whiteboard", exact: true });
+  if (await workTab.isVisible()) await workTab.click();
+  await page.getByRole("radio", { name: "Structured input" }).check();
+  await page.locator("math-field").click();
+  await expect(page.locator("math-field")).toBeFocused();
+  await page.keyboard.type("2(x+3)=14");
+  await expect(page.getByText("Plain expression:")).toContainText("2*(x+3)=14");
+  await page.getByRole("button", { name: "Capture snapshot" }).click();
+  const download = page.getByRole("link", { name: "Download snapshot (JSON)" });
+  await expect(download).toBeVisible();
+  const url = await download.getAttribute("href");
+  await page.getByRole("button", { name: "Appearance", exact: true }).click();
+  await page.getByRole("radio", { name: "Dark", exact: true }).check();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(download).toHaveAttribute("href", url!);
+  await page.getByRole("button", { name: "Close appearance" }).click();
+  await page.getByRole("button", { name: "Dismiss snapshot" }).click();
+  await page.getByRole("radio", { name: "Whiteboard", exact: true }).check();
+  await expect(page.locator(".excalidraw.theme--dark")).toBeVisible();
+  await page.screenshot({ path: test.info().outputPath("paper-dark.png") });
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.getByRole("button", { name: "Appearance", exact: true }).click();
+  await expect(page.getByRole("radio", { name: "Dark", exact: true })).toBeChecked();
+  await page.getByRole("checkbox", { name: "Comfort preview in dark mode" }).uncheck();
+  await expect(page.locator("html")).toHaveAttribute("data-dim-worksheet", "false");
+  await page.getByRole("radio", { name: "Light", exact: true }).check();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.getByRole("button", { name: "Close appearance" }).click();
+  await page.screenshot({ path: test.info().outputPath("paper-light.png") });
+  expect(errors).toEqual([]);
+});
+
+test("System follows OS changes and blocked storage still allows theme changes", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/study");
+  await page.getByRole("button", { name: "Appearance", exact: true }).click();
+  await page.getByRole("radio", { name: "System", exact: true }).check();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.emulateMedia({ colorScheme: "light" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.evaluate(() => { Storage.prototype.setItem = () => { throw new Error("Storage blocked"); }; });
+  await page.getByRole("radio", { name: "Dark", exact: true }).check();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("button", { name: "Appearance", exact: true })).toBeFocused();
+});

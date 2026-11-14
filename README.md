@@ -22,7 +22,7 @@ npm ci
 npm run dev
 ```
 
-Open [localhost:3000](http://localhost:3000). No service credentials or environment file are needed for the scaffold. If already working in a checkout, start at `nvm use`.
+Open [localhost:3000](http://localhost:3000). Open `/study` for the full-page worksheet/whiteboard workspace and structured math input. No service credentials or environment file are needed for the homepage or workspace. If already working in a checkout, start at `nvm use`.
 
 | Command | Purpose |
 | --- | --- |
@@ -33,6 +33,7 @@ Open [localhost:3000](http://localhost:3000). No service credentials or environm
 | `npm run typecheck` | Generate Next.js route types, then check strict TypeScript |
 | `npm test` | Run Vitest once |
 | `npm run test:watch` | Watch focused tests while developing |
+| `npm run test:e2e` | Real drawing/input/download checks at desktop and 360px widths (first run `npx playwright install chromium`) |
 
 For later integrations, copy `.env.example` to `.env.local` and fill in:
 
@@ -46,11 +47,11 @@ Never expose permanent OpenAI keys or Supabase privileged keys. Local environmen
 
 ## Stack and layout
 
-Installed: Next.js App Router, React, TypeScript, Tailwind CSS, ESLint, and Vitest. The lockfile records exact dependency versions. Planned dependencies are added by their owners when needed: OpenAI Agents SDK and Realtime, Excalidraw, MathLive, CortexJS Compute Engine, and Supabase. Vercel is the intended deployment target; no deployment is provisioned.
+Installed: Next.js App Router, React, TypeScript, Tailwind CSS, Excalidraw, MathLive, PDF.js, ESLint, Vitest, and Playwright. The lockfile records exact dependency versions. Planned dependencies are added by their owners when needed: OpenAI Agents SDK and Realtime, CortexJS Compute Engine, and Supabase. Vercel is the intended deployment target; no deployment is provisioned.
 
 ```text
 src/app/                 Pages, layout, and future route handlers
-src/components/          Future whiteboard, tutor, and learning UI
+src/components/          Worksheet reference, whiteboard/input, and on-demand tutor UI
 src/lib/                 Future AI, math, learning, and Supabase modules
 src/types/tutoring.ts    Shared integration contracts
 supabase/migrations/     Reserved for Developer C; no schema yet
@@ -73,3 +74,11 @@ After the foundation is reviewed and merged, branch from `main`: A uses `feat/ai
 - [Agent instructions](AGENTS.md)
 
 Configuration follows the official [Next.js installation](https://nextjs.org/docs/app/getting-started/installation), [Tailwind setup](https://tailwindcss.com/docs/installation/framework-guides/nextjs), and [Next.js testing guidance](https://nextjs.org/docs/app/guides/testing/vitest). Integration references are maintained in the architecture document.
+
+## Local workspace (B1)
+
+At `/study`, upload or drop a local PDF/image worksheet, or paste a screenshot. Resize the desktop divider or switch panes on mobile. Draw, erase, undo/redo, or enter structured algebra alongside the reference. Choose a source and capture a step to preview it, then explicitly download JSON or PNG. Work is transient and is lost on reload; no server upload, autosave, microphone, authentication, or saved history is connected. Newton stays hidden behind its side icon until clicked. New edits and clear invalidate captures and revoke download URLs.
+
+The predev/prebuild script copies drawing/math fonts and PDF.js worker/rendering assets into ignored `public/vendor/` so the app serves them locally. The initial structured transport fixture is `2(x+3)=14` normalized to `2*(x+3)=14`; unsupported notation blocks capture. Review parser compatibility with Developer A before B2 integration.
+
+Scoped npm overrides update Excalidraw's pinned nanoid dependencies and its dependency tree's lodash-es to patched releases. The mermaid adapter uses nanoid's named `nanoid()` export, retained in version 5. The current audit still reports the existing lint-chain moderate findings and a low-severity KaTeX finding through Excalidraw's Mermaid dependency; Mermaid/formula import is not exposed by this workspace.
