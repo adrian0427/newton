@@ -16,7 +16,8 @@
     "test:watch": "vitest",
     "predev": "node scripts/prepare-workspace-assets.mjs",
     "prebuild": "node scripts/prepare-workspace-assets.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:hosted": "node --env-file=.env.local --env-file=.env.hosted-test.local ./node_modules/vitest/vitest.mjs run --config vitest.hosted.config.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

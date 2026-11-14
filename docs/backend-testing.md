@@ -28,7 +28,7 @@ The script creates synthetic Auth IDs, switches roles, checks isolation, and
 rolls back its fixtures. Do not commit connection strings. This is a SQL role
 test; it does not sign real users in or test Supabase's HTTP API.
 
-## Schema application and remaining acceptance
+## Schema application and acceptance
 
 Server helper and route tests run with `npm test -- tests/backend/learning.test.ts
 tests/backend/study-sessions-route.test.ts`. They mock the SDK boundary to check
@@ -53,19 +53,19 @@ and narrow column grants. Normal student access cannot choose owners/timestamps
 or edit/delete events. Deleting a disposable Auth account administratively
 cascades its data.
 
-C1 remains incomplete. Verify the full implemented backend using
-both pre-created adult test accounts and an anonymous
-caller through **HTTP/helpers and the direct authenticated Supabase client**:
-create a session, save a synthetic observation, sign out/in, retrieve it in a
-later session, and reject cross-account reads/writes, owner reassignment,
-append-only mutations, and duplicate/conflicting event retries. Record hosted
-results separately from local/mock results. PGlite does not test hosted Auth,
-PostgREST, refresh cookies, or the team's project settings.
+C1's real two-account acceptance passed on 2026-11-14 using pre-created test
+accounts and an anonymous caller through **HTTP/helpers and the direct
+authenticated Supabase client**. The reusable command and exact coverage are
+recorded below. PGlite remains a separate local check; it does not test hosted
+Auth, PostgREST, refresh cookies, or the team's project settings.
 
 Keep fixtures synthetic. RLS isolates accounts; it does not establish that
 self-owned evidence inserted directly through Supabase was produced by AI.
 
 ## Local verification record — 2026-11-14
+
+The following records describe earlier checkpoints. Later sections supersede
+their pending-verification statements.
 
 The final foundation passed 102 Vitest tests (including 31 PostgreSQL role and
 constraint cases plus the portable SQL script), ESLint, TypeScript, and
@@ -202,3 +202,73 @@ build and a clean independent feature review. The built GET endpoint returned
 401/no-store without login. Local database identity/transport remains simulated;
 this is not a replacement for the pending real signed-in hosted HTTP tests.
 No A/B integration, new migration or provider call was required.
+
+## Real two-account acceptance — 2026-11-14
+
+The explicitly invoked suite uses real Supabase email/password Auth, two
+independent HTTP cookie contexts against a locally running production app,
+the actual server writer/ownership helpers, and direct user-scoped SDK clients.
+Only the `server-only` import marker is replaced for Vitest execution; Auth,
+PostgREST, database rules, and the app routes are real. No service-role key,
+browser installation, voice/analysis service, or AI-provider call is needed.
+
+With Node 22, `npm ci`, and `.env.local` pointing at `newton-dev`:
+
+1. Create `.env.hosted-test.local` in the repository root with the following
+   names. Fill them locally with two distinct disposable test accounts; do not
+   paste passwords into chat or commit the file. It is ignored by `.gitignore`.
+   On macOS/Linux, run `chmod 600 .env.hosted-test.local`.
+
+   ```dotenv
+   NEWTON_TEST_EMAIL_A=
+   NEWTON_TEST_PASSWORD_A=
+   NEWTON_TEST_EMAIL_B=
+   NEWTON_TEST_PASSWORD_B=
+   ```
+
+2. In one terminal, run `npm run build`, then
+   `npm run start -- --hostname 127.0.0.1 --port 3107`.
+3. In another terminal at the repository root, run
+   `npm run test:hosted -- --reporter=verbose`.
+
+The guard restricts the project to the team's `newton-dev` reference and the app
+to a loopback origin; HTTP redirects are disabled. Optional `NEWTON_TEST_URL`
+can select another local port. The default `npm test` and CI do not discover
+the `.hosted.ts` suite or load these private credentials.
+
+The final hosted run passed one integration scenario, including:
+
+- Real Auth verification, separate cookie sign-ins, and one new session per account.
+- Two concurrent first writes with one persisted event and identical IDs/times;
+  sequential retry returns that record, while changed evidence returns 409.
+- Owner history and bounded summary retrieval; B cannot retrieve A's event,
+  profile, or session, and ownership-query tampering returns 400.
+- Anonymous reads on all three tables and session insertion denied (42501).
+- Direct blank/oversized evidence, unsupported outcome, and missing
+  misconception detail rejected by database constraints (23514).
+- Foreign-session event insertion denied by the composite FK (23503), owner
+  reassignment denied, and foreign session-ending affects zero rows.
+- Owner and foreign event UPDATE/DELETE denied (42501); personalized responses
+  checked for no-store headers.
+- Signed-out context denied (401); after sign-in and a new session, the original
+  observation remains retrievable.
+
+The suite signs its own SDK/HTTP clients out and disposes cookie contexts.
+Synthetic sessions/events remain deliberately append-only; it creates an owner
+profile only if missing and preserves existing preferences. Each successful
+run prints fixture event/session IDs for later administrative cleanup. Do not
+delete accounts that contain wanted data. After the demonstration, an
+administrator can remove disposable test accounts and their cascading records.
+
+C1 backend acceptance is complete. A/B integration (C2), deployed app testing,
+long-running refresh behavior, and trustworthy AI provenance remain separate.
+The test demonstrates account isolation and persistence, not readiness for real
+student data. No schema or production application behavior changed in this step.
+
+Final checkpoint checks: 238 default tests, the separate hosted integration
+scenario, ESLint, TypeScript, and the normal Turbopack production build passed
+on Node 22. Independent review identified two acceptance-test gaps; concurrent
+first insertion and hosted anonymous/constraint checks were added, rerun
+successfully, and approved in the follow-up review. Private credential values
+were checked against staged contents and were absent; the local file remains
+ignored with mode 0600.

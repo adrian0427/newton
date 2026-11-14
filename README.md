@@ -6,14 +6,14 @@ Newton is an AI study companion for students in grades 9–12, built by **Twofol
 
 ## Current status
 
-This branch includes a responsive homepage, email/password authentication, strict TypeScript contracts, tests, and CI. Sign-in and sign-out are available at `/auth/sign-in`; both team test accounts were manually verified against hosted Supabase on November 13, 2026. C's database migrations, local PostgreSQL policy tests, verified-user/session helpers, and `POST /api/study-sessions` are implemented. Both migrations were applied to hosted `newton-dev` on November 14, 2026; hosted SQL role tests and anonymous API-denial checks passed. The local `/study` workspace is available; its tutoring, auth/session, and saved-history integration remains pending. Real signed-in two-account HTTP isolation remains unverified.
+This branch includes a responsive homepage, email/password authentication, strict TypeScript contracts, tests, and CI. Sign-in and sign-out are available at `/auth/sign-in`. C1's authenticated backend persistence is implemented and passed real two-account HTTP/helper and direct-client checks against hosted `newton-dev` on November 14, 2026: separate account access, append-only history, retry deduplication, and retrieval after sign-out/sign-in in a later session. Both migrations are applied. The local `/study` workspace is available; its tutoring, auth/session, and saved-history integration remains pending.
 
 The planned MVP combines natural voice conversation, a whiteboard with structured math fallback, controlled Socratic hints, and evidence-backed memory across sessions. The first domain is **Algebra I: the distributive property**.
 
 C's server-only `recordLearningEvent()` validates supported observations, checks
 session ownership, and saves under the verified user's database context.
 Identical retries return the original ID/time; conflicting evidence returns
-409 and preserves existing history. It is tested locally and awaits A's
+409 and preserves existing history. It is tested locally and against hosted Supabase, and awaits A's
 eligible-observation integration. Correction outcomes remain disabled, and
 cross-session retrieval is available through C's authenticated
 `GET /api/learning-context?conceptId=algebra.distributive-property`. It returns
@@ -84,7 +84,7 @@ After the foundation is reviewed and merged, branch from `main`: A uses `feat/ai
 - [Ownership, milestones, and contribution workflow](docs/contributing.md)
 - [Three-developer workstream guide and implementation specifications](docs/workstreams/README.md)
 - [Initial decisions](docs/decisions.md)
-- [Backend database tests and remaining hosted verification](docs/backend-testing.md)
+- [Backend database tests and hosted verification](docs/backend-testing.md)
 - [Agent instructions](AGENTS.md)
 
 Configuration follows the official [Next.js installation](https://nextjs.org/docs/app/getting-started/installation), [Tailwind setup](https://tailwindcss.com/docs/installation/framework-guides/nextjs), and [Next.js testing guidance](https://nextjs.org/docs/app/guides/testing/vitest). Integration references are maintained in the architecture document.
@@ -106,8 +106,8 @@ and foreign sessions. The session endpoint accepts an empty body or `{}` and
 returns `{ session: { id, startedAt, endedAt } }` with status 201. It uses the
 verified request client and database defaults for ownership/time. Mutating
 requests require a matching Origin header; responses are private/no-store.
-See [backend verification](docs/backend-testing.md) for setup, limitations, and
-remaining hosted acceptance. The auth page uses a writable Route Handler; it
+See [backend verification](docs/backend-testing.md) for setup, hosted acceptance results, and
+remaining integration limits. The auth page uses a writable Route Handler; it
 does not use authenticated Server Component rendering.
 
 ## Local workspace (B1)

@@ -2,7 +2,7 @@
 
 ## Status and boundaries
 
-This is a proposed MVP design. The homepage, local `/study` workspace (B1), shared TypeScript contracts, developer tooling, Supabase client helpers, and email/password authentication are implemented. `/auth/sign-in` calls `/auth/session` for sign-in, verified current identity, and local sign-out. Auth checks and cookie refresh occur in writable Route Handlers; authenticated Server Component rendering and its refresh proxy are not implemented. Server-only verified-user/owned-session helpers, `POST /api/study-sessions`, database migrations, and local PostgreSQL policy tests are implemented; both migrations are applied to hosted `newton-dev`; hosted SQL-role/anonymous API checks passed, while signed-in HTTP acceptance and persistent-history integration remain incomplete. Keep one Next.js application; add dependencies only with the feature that uses them.
+This is a proposed MVP design. The homepage, local `/study` workspace (B1), shared TypeScript contracts, developer tooling, Supabase client helpers, and email/password authentication are implemented. `/auth/sign-in` calls `/auth/session` for sign-in, verified current identity, and local sign-out. Auth checks and cookie refresh occur in writable Route Handlers; authenticated Server Component rendering and its refresh proxy are not implemented. C1's server-only helpers, session/event persistence, bounded context retrieval, migrations, and local PostgreSQL policy tests are implemented. Both migrations are applied to hosted `newton-dev`; SQL-role, anonymous API, and real signed-in two-account HTTP/helper/direct-client acceptance passed on 2026-11-14. Tutoring/workspace integration remains incomplete. Keep one Next.js application; add dependencies only with the feature that uses them.
 
 The [workstream guide](workstreams/README.md) defines the implementation assignments, concrete boundary proposals, and initial timing/deduplication decisions. Its A01/B01/C01 specifications are the starting points for feature work; additional interface names there are proposals unless explicitly implemented below. `AuthContext` and `StudySession` are local module exports pending the coordinated shared-contract PR.
 
@@ -130,7 +130,8 @@ owner/ID/time, and handles unique conflicts by reading the full owner-scoped
 identity and comparing immutable evidence/misconception. It never upserts or
 updates a saved event. Identical retries return the original record; changed
 payloads return 409. A must still establish observation eligibility before
-calling this helper. Real signed-in hosted acceptance remains incomplete.
+calling this helper. Real signed-in hosted C1 acceptance passed; see
+[the verification record](backend-testing.md#real-two-account-acceptance--2026-11-14).
 
 `getLearningContext(auth, conceptId)` and `GET /api/learning-context` are now
 implemented independently of A/B. The query explicitly filters by verified
