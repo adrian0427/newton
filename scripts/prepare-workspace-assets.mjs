@@ -6,7 +6,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const copies = [
   ["node_modules/@excalidraw/excalidraw/dist/prod/fonts", "public/vendor/excalidraw/fonts"],
   ["node_modules/mathlive/fonts", "public/vendor/mathlive/fonts"],
-  ["node_modules/pdfjs-dist/build/pdf.worker.min.mjs", "public/vendor/pdfjs/pdf.worker.min.mjs"],
+  // Legacy worker to match the legacy main build used by PdfPage (older Safari/iPadOS support).
+  ["node_modules/pdfjs-dist/legacy/build/pdf.worker.min.mjs", "public/vendor/pdfjs/pdf.worker.min.mjs"],
   ["node_modules/pdfjs-dist/cmaps", "public/vendor/pdfjs/cmaps"],
   ["node_modules/pdfjs-dist/standard_fonts", "public/vendor/pdfjs/standard_fonts"],
   ["node_modules/pdfjs-dist/wasm", "public/vendor/pdfjs/wasm"],

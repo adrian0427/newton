@@ -3,12 +3,30 @@ import type { WorkSnapshot } from "@/types/tutoring";
 export const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 export const MAX_EXPRESSION_LENGTH = 500;
 
+/**
+ * Unique identifier for a local workspace revision. Prefers crypto.randomUUID,
+ * but falls back for older browsers (e.g. Safari before 15.4) where it is
+ * undefined; uniqueness only needs to hold within this one browser workspace.
+ */
+function randomRevisionId(): string {
+  const cryptoObj = typeof crypto !== "undefined" ? crypto : undefined;
+  if (cryptoObj && typeof cryptoObj.randomUUID === "function") return cryptoObj.randomUUID();
+  if (cryptoObj && typeof cryptoObj.getRandomValues === "function") {
+    const bytes = cryptoObj.getRandomValues(new Uint8Array(16));
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0"));
+    return `${hex.slice(0, 4).join("")}-${hex.slice(4, 6).join("")}-${hex.slice(6, 8).join("")}-${hex.slice(8, 10).join("")}-${hex.slice(10, 16).join("")}`;
+  }
+  return `rev-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`;
+}
+
 /** One clock per local workspace. Content edits, including undo, invalidate captures. */
 export class WorkRevision {
-  private revision = crypto.randomUUID();
+  private revision = randomRevisionId();
   private generation = 0;
   get current() { return this.revision; }
-  edit() { this.revision = crypto.randomUUID(); this.generation++; }
+  edit() { this.revision = randomRevisionId(); this.generation++; }
   invalidate() { this.generation++; }
   async capture(content: () => Promise<Pick<WorkSnapshot, "image" | "structuredExpression">>): Promise<WorkSnapshot> {
     const revisionId = this.revision;

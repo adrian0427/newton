@@ -19,7 +19,9 @@ export default function PdfPage({ file, page, zoom, onPageCount }: {
     let task: PDFDocumentLoadingTask | undefined;
     async function load() {
       try {
-        const pdfjs = await import("pdfjs-dist");
+        // Legacy build: bundles polyfills (e.g. Map/WeakMap getOrInsertComputed) that
+        // older Safari/iPadOS lacks. The worker copied in prepare-workspace-assets matches.
+        const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
         if (disposed) return;
         pdfjs.GlobalWorkerOptions.workerSrc = "/vendor/pdfjs/pdf.worker.min.mjs";
         const data = new Uint8Array(await file.arrayBuffer());
