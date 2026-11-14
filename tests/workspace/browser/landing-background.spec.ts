@@ -4,8 +4,8 @@ test("landing sign-in background is decorative, respects reduced motion, and lea
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.route("**/auth/session", route => route.fulfill({ status: 401, json: { error: { message: "Not signed in" } } }));
   await page.goto("/");
-  await expect(page.getByLabel("Username")).toBeVisible();
-  await expect(page.getByLabel("Password", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Continue with Google" })).toBeVisible();
+  await expect(page.locator("input[type=email], input[type=password]")).toHaveCount(0);
   await expect(page.getByText("Space to think.")).toBeVisible();
   const decoration = page.locator(".sign-in-comets");
   await expect(decoration).toHaveAttribute("aria-hidden", "true");

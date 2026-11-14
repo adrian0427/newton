@@ -210,7 +210,9 @@ independent HTTP cookie contexts against a locally running production app,
 the actual server writer/ownership helpers, and direct user-scoped SDK clients.
 Only the `server-only` import marker is replaced for Vitest execution; Auth,
 PostgREST, database rules, and the app routes are real. No service-role key,
-browser installation, voice/analysis service, or AI-provider call is needed.
+voice/analysis service, or AI-provider call is needed. The live auth browser
+scenario requires Chromium; install it with `npx playwright install chromium`
+if the matching Playwright browser is not already installed.
 
 With Node 22, `npm ci`, and `.env.local` pointing at `newton-dev`:
 
@@ -272,3 +274,7 @@ first insertion and hosted anonymous/constraint checks were added, rerun
 successfully, and approved in the follow-up review. Private credential values
 were checked against staged contents and were absent; the local file remains
 ignored with mode 0600.
+
+## Google auth change
+
+The preceding C1 results are historical. The current hosted harness authenticates its disposable password fixtures via the Supabase SSR SDK and installs the resulting cookies into separate HTTP contexts; the app no longer accepts password POSTs. This preserves real Auth/database/route coverage without pretending to automate Google consent. Follow [Google setup and manual acceptance](google-auth.md) for the actual OAuth flow and test-project/provider settings.

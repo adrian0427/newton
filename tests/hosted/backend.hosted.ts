@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
+import { createServerClient } from "@supabase/ssr";
 import { request as playwrightRequest, type APIRequestContext, type APIResponse } from "@playwright/test";
 import { it, vi } from "vitest";
 import type { AuthContext } from "@/lib/supabase/auth";
@@ -15,7 +16,21 @@ function check(ok: unknown, message: string): asserts ok { if (!ok) throw new Er
 
 it("verifies hosted Auth, cookie routes, writer retries, cross-session retrieval and direct-client account isolation", async () => {
   const config = hostedConfig(process.env);
-  const clients = config.accounts.map(() => createClient(config.projectUrl, config.publishableKey, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }));
+  // Password accounts are test fixtures only; the app exposes Google sign-in.
+  const jars = config.accounts.map(() => new Map<string, string>());
+  const clients = jars.map((jar) => createServerClient(config.projectUrl, config.publishableKey, {
+    cookies: {
+      getAll: () => [...jar].map(([name, value]) => ({ name, value })),
+      setAll: (cookies) => cookies.forEach(({ name, value }) => jar.set(name, value)),
+    },
+  }));
+  const browserFor = (i: number) => playwrightRequest.newContext({
+    baseURL: config.appUrl, extraHTTPHeaders: { Origin: config.appUrl }, maxRedirects: 0,
+    storageState: { origins: [], cookies: [...jars[i]].map(([name, value]) => ({
+      name, value, domain: new URL(config.appUrl).hostname, path: "/", expires: -1,
+      httpOnly: false, secure: false, sameSite: "Lax" as const,
+    })) },
+  });
   const browsers: APIRequestContext[] = [];
   const auth: AuthContext[] = [];
   const sessions: string[] = [];
@@ -27,10 +42,8 @@ it("verifies hosted Auth, cookie routes, writer retries, cross-session retrieval
       const verified = await clients[i].auth.getUser();
       check(!verified.error && verified.data.user, "Hosted Auth could not verify the test identity.");
       auth.push({ userId: verified.data.user.id, supabase: clients[i], headers: new Headers() });
-      const browser = await playwrightRequest.newContext({ baseURL: config.appUrl, extraHTTPHeaders: { Origin: config.appUrl }, maxRedirects: 0 });
+      const browser = await browserFor(i);
       browsers.push(browser);
-      const login = await browser.post("/auth/session", { data: config.accounts[i] });
-      assert.equal(login.status(), 200, `Account ${i === 0 ? "A" : "B"} app sign-in failed`); noStore(login);
       const identity = await browser.get("/auth/session");
       assert.equal(identity.status(), 200, "Cookie identity did not persist"); noStore(identity);
       const created = await browser.post("/api/study-sessions");
@@ -40,7 +53,7 @@ it("verifies hosted Auth, cookie routes, writer retries, cross-session retrieval
       sessions.push(data.session.id);
     }
     check(auth[0].userId !== auth[1].userId, "The two credentials resolved to the same Auth account.");
-    console.log("PASS: two real Auth identities; separate cookie sign-ins and study sessions.");
+    console.log("PASS: two real Auth identities; separate verified SSR cookie sessions and study sessions.");
 
     const profile = await clients[0].from("student_profiles").select("user_id").eq("user_id", auth[0].userId);
     check(!profile.error, "Owner profile lookup failed.");
@@ -106,7 +119,11 @@ it("verifies hosted Auth, cookie routes, writer retries, cross-session retrieval
 
     const out = await browsers[0].delete("/auth/session"); assert.equal(out.status(), 200);
     assert.equal((await browsers[0].get(historyPath)).status(), 401, "Signed-out history must be inaccessible");
-    const again = await browsers[0].post("/auth/session", { data: config.accounts[0] }); assert.equal(again.status(), 200);
+    const again = await clients[0].auth.signInWithPassword(config.accounts[0]);
+    check(!again.error, "Test SDK reauthentication failed.");
+    await browsers[0].dispose();
+    browsers[0] = await browserFor(0);
+    assert.equal((await browsers[0].get("/auth/session")).status(), 200);
     const later = await browsers[0].post("/api/study-sessions"); assert.equal(later.status(), 201);
     const laterId = (await later.json()).session.id;
     check(laterId !== sessions[0], "New study attempt reused the original session ID.");
