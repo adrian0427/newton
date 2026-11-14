@@ -112,3 +112,7 @@ B's workspace and A's voice implementation coexist after this merge, but `/study
 | ID | Decision | Rationale and consequence |
 | --- | --- | --- |
 | 020 | Compact drawing controls and reversible focus mode | Collapse pen settings and advanced tools by default, retain accessible zoom and undo/redo, and let students expand the board without unmounting local work. Remove redundant pane title bars, sample equation, and local-workspace header label. |
+
+## 2026-11-14 — Google-only user-facing authentication
+
+The user selected Supabase Google OAuth for public sign-in instead of password registration. Keep existing SSR cookies, verified Auth IDs and user-scoped RLS. Replace the password form/POST handler with Google start and a PKCE callback, using a configured application origin and fixed redirects. Google secrets stay in Supabase provider settings. No A/B consumer or database schema changes are required. The developer has configured the hosted Google provider and reported successful manual Google sign-in, logout/relogin and reload. Automated live fixture-session and database isolation checks passed; a second actual Google-account and deployed HTTPS acceptance remain pending. Password fixtures are retained only in the explicit disposable-project database acceptance harness.

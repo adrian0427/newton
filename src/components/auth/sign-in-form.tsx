@@ -1,14 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 
-export function SignInForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export function SignInForm({ oauthFailed = false }: { oauthFailed?: boolean }) {
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [checking, setChecking] = useState(true);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(oauthFailed ? "Google sign-in was cancelled or could not be completed. Please try again." : "");
   const [notice, setNotice] = useState("");
 
   useEffect(() => {
@@ -30,21 +29,20 @@ export function SignInForm() {
     setBusy(true);
     setError("");
     setNotice("");
+    let redirecting = false;
     try {
       const response = await fetch("/auth/session", {
         method: user ? "DELETE" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: user ? undefined : JSON.stringify({ email, password }),
       });
       const body = await response.json();
       if (!response.ok) { setError(body.error.message); return; }
-      setUser(body.user ?? null);
-      setPassword("");
+      if (!user) { window.location.assign(body.url); redirecting = true; return; }
+      setUser(null);
       setNotice(body.signedOut ? "You’re signed out." : "You’re signed in.");
     } catch {
       setError("Unable to connect. Check your connection and try again.");
     } finally {
-      setBusy(false);
+      if (!redirecting) setBusy(false);
     }
   }
 
@@ -53,25 +51,13 @@ export function SignInForm() {
   return (
     <form onSubmit={submit} className="sign-in-form" aria-busy={busy}>
       {user ? (
-        <div><p className="text-sm text-muted">Signed in as</p><p className="mt-1 break-all font-medium">{user.email ?? "your test account"}</p>
-          <p className="mt-4 text-sm leading-relaxed text-muted">Your login is working. Study sessions and learning history are still in development.</p></div>
-      ) : (
-        <>
-          <div><label htmlFor="email" className="block text-sm font-medium">Username</label>
-            <input id="email" name="email" type="email" autoComplete="username" required maxLength={254}
-              value={email} onChange={(event) => setEmail(event.target.value)} disabled={busy}
-              placeholder="Account email" aria-describedby="username-hint" className="sign-in-input" />
-            <span id="username-hint" className="sr-only">Use your account email to sign in.</span></div>
-          <div><label htmlFor="password" className="block text-sm font-medium">Password</label>
-            <input id="password" name="password" type="password" autoComplete="current-password" required maxLength={4096}
-              value={password} onChange={(event) => setPassword(event.target.value)} disabled={busy}
-              className="sign-in-input" /></div>
-        </>
-      )}
+        <div><p className="text-sm text-muted">Signed in as</p><p className="mt-1 break-all font-medium">{user.email ?? "your account"}</p>
+          <Link href="/study" className="mt-4 inline-block underline underline-offset-4">Open study workspace</Link></div>
+      ) : <p className="text-sm leading-relaxed text-muted">Continue with your Google account to sign in or create an account.</p>}
       {error && <p role="alert" className="text-sm leading-relaxed">{error}</p>}
       <p role="status" className="sign-in-notice text-sm">{notice}</p>
       <button disabled={busy} className="sign-in-submit">
-        {busy ? (user ? "Signing out…" : "Signing in…") : (user ? "Sign out" : "Sign in")}
+        {busy ? (user ? "Signing out…" : "Opening Google…") : (user ? "Sign out" : "Continue with Google")}
       </button>
     </form>
   );
