@@ -3,8 +3,8 @@
 Design base created on 2026-11-14 on `codex/landing-ink-motion`.
 
 [Open the Figma design](https://www.figma.com/design/0KbQ5fD5OnoOjtzUWv1DjZ?node-id=5-38).
-The file belongs to mphan21's student team. This is a Figma design and motion
-prototype. The website still uses its existing comet background.
+The file belongs to mphan21's student team. The design is implemented on the same branch for the homepage and sign-in page.
+InkBackground replaces the original comet background with local SVG artwork and CSS.
 
 ## Frames
 
@@ -46,9 +46,12 @@ PATH_TRIM_END, and its containing mark uses OPACITY:
 
 The timeline is deterministic, with several marks active at once. An exported
 HTML video preview uses autoplay, muted playback, and loop for continuous replay.
-Future browser implementation can vary the sequence without moving the marks
-through the form. Target a 36-second CSS loop with staggered stroke reveals.
-Under reduced motion, disable reveals and fades and show static ink at 6%.
+The browser implementation uses a 36-second CSS loop with staggered stroke
+reveals. Equations, diagrams, and notes vary in scale, with gentler size changes
+on smaller screens. Local ink-artwork.json preserves the exported Figma SVGs;
+ink-motion.css contains their deduplicated animation tracks. There are no
+remote artwork URLs, video playback, animation dependencies, or animation timers.
+Under reduced motion, disable reveals and fades and show only the first pass as static gray ink at 30% opacity.
 Decoration must remain hidden from assistive technology and ignore pointers.
 
 ## Validation
@@ -56,5 +59,5 @@ Decoration must remain hidden from assistive technology and ignore pointers.
 The frames use editable text, vector paths, and shared component instances;
 none contains a flattened UI image. Desktop, phone, and graphite compositions
 were reviewed visually. The animation was exported to video for checking the
-stroke reveal, hold, and fade phases. iPad is a layout study, not a claim of
+stroke reveal, hold, and fade phases. iPad remains a layout study, not a claim of
 real-device compatibility. Authentication behavior has not changed.

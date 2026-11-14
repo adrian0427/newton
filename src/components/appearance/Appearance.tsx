@@ -46,7 +46,6 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
 export const useAppearance = () => useContext(AppearanceContext);
 
 export function AppearanceSettings() {
-  const { mode, dim } = useAppearance();
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
@@ -63,9 +62,17 @@ export function AppearanceSettings() {
     <button ref={button} className="small-button" type="button" aria-expanded={open} aria-controls="appearance-panel" onClick={() => setOpen(!open)}>Appearance</button>
     {open && <section className="appearance-panel" id="appearance-panel" role="dialog" aria-labelledby="appearance-title">
       <header><div><p className="eyebrow">PAPER THEME</p><h2 id="appearance-title">Make room for your focus.</h2></div><button ref={close} className="icon-button" type="button" aria-label="Close appearance" onClick={() => { setOpen(false); button.current?.focus(); }}>×</button></header>
+      <AppearanceControls />
+    </section>}
+  </div>;
+}
+
+/** Shared preferences for appearance and account settings surfaces. */
+export function AppearanceControls() {
+  const { mode, dim } = useAppearance();
+  return <>
       <fieldset><legend>Color mode</legend><div className="appearance-options">{(["light", "dark", "system"] as const).map((option) => <label key={option}><input type="radio" name="appearance" value={option} checked={mode === option} onChange={() => save({ mode: option, dim })} /><span>{option[0].toUpperCase() + option.slice(1)}</span></label>)}</div></fieldset>
       <label className="dim-worksheet"><span>Comfort preview in dark mode</span><input type="checkbox" checked={dim} onChange={(event) => save({ mode, dim: event.target.checked })} /></label>
       <p>Softens worksheet colors on screen. Your original file and exported work stay unchanged.</p>
-    </section>}
-  </div>;
+  </>;
 }

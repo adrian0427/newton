@@ -47,28 +47,48 @@
 }
 .sign-in-submit:hover { opacity: .9; }
 .sign-in-submit:disabled { cursor: wait; opacity: .7; }
-.sign-in-comets {
+.sign-in-ink {
   position: absolute;
   inset: 0;
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  mask-image: radial-gradient(ellipse 220px 260px at center, transparent 70%, black 130%);
+  user-select: none;
+  color: #909399;
+  mask-image: radial-gradient(ellipse 200px 240px at center, transparent 80%, black 110%);
 }
-.sign-in-comet {
+:root[data-theme="dark"] .sign-in-ink { color: #92969b; }
+.ink-drawing {
   position: absolute;
-  height: 1px;
-  border-radius: 100%;
-  background: linear-gradient(90deg, transparent, var(--paper-muted));
+  left: var(--ink-x);
+  top: var(--ink-y);
+  width: var(--ink-width);
+  height: var(--ink-height);
   opacity: 0;
-  transform: rotate(var(--comet-angle));
-  animation: comet-drift 16s var(--comet-delay) ease-in-out infinite;
+  transform-origin: 0 0;
+  transform: rotate(var(--ink-angle)) scale(var(--ink-scale));
 }
-@keyframes comet-drift {
-  0%, 8%, 65%, 100% { opacity: 0; transform: translate(-28px, 12px) rotate(var(--comet-angle)); }
-  25% { opacity: .25; }
-  52% { opacity: .12; transform: translate(34px, -15px) rotate(var(--comet-angle)); }
+.ink-drawing svg { display: block; overflow: visible; }
+.ink-drawing path { stroke: currentColor; }
+@media (min-width: 768px) and (max-width: 1199px) {
+  .ink-drawing { display: none; }
+  .ink-tablet {
+    display: block;
+    left: var(--tablet-x); top: var(--tablet-y);
+    transform: rotate(var(--ink-angle)) scale(calc(var(--tablet-scale) * var(--compact-scale)));
+  }
+}
+@media (max-width: 767px) {
+  .ink-drawing { display: none; }
+  .ink-mobile {
+    display: block;
+    left: var(--mobile-x); top: var(--mobile-y);
+    transform: rotate(var(--ink-angle)) scale(calc(var(--mobile-scale) * var(--compact-scale)));
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .sign-in-comet { animation: none; opacity: .12; }
+  .sign-in-ink .ink-drawing, .sign-in-ink path { animation: none; }
+  .sign-in-ink .ink-drawing { opacity: 0; }
+  .sign-in-ink .ink-first-pass { opacity: .3; }
+  .sign-in-ink path { stroke-dasharray: 1 1; stroke-dashoffset: 0; }
 }
