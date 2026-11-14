@@ -1,6 +1,6 @@
 # Contributing to Newton
 
-Twofold has three workstreams. Start feature development after the foundation is reviewed and merged into `main`. Read the product, architecture, decisions, and relevant shared contracts first.
+Twofold has three workstreams. Start feature development after the foundation is reviewed and merged into `main`. Read the product, architecture, decisions, and relevant shared contracts first. See the [workstream guide](workstreams/README.md) and [A01 voice specification](workstreams/A01-ai-tutoring.md).
 
 ## Ownership and first milestones
 
@@ -10,7 +10,7 @@ Twofold has three workstreams. Start feature development after the foundation is
 | B — Frontend & Student Experience | `feat/student-workspace` | Student pages, `src/components/whiteboard/`, `src/components/tutor/`, `src/components/learning/` | Workspace exports a versioned whiteboard snapshot; edits invalidate earlier captures |
 | C — Backend, Authentication & Memory | `feat/backend-memory` | `src/lib/supabase/`, `supabase/migrations/`, auth routes, memory persistence/retrieval modules | Authenticated session and event persistence with proof that two accounts cannot access each other's records |
 
-A also owns Agents SDK, vision interpretation, CortexJS checks, Socratic prompts, intervention timing, and use of retrieved memory. B owns Excalidraw state/export, MathLive fallback, voice controls/status, history presentation, and responsive UX. C owns profiles, study sessions, RLS, cross-session queries, and deployment configuration.
+A also owns Deepgram Voice Agent SDK, vision interpretation, CortexJS checks, Socratic prompts, intervention timing, and use of retrieved memory. B owns Excalidraw state/export, MathLive fallback, voice controls/status, history presentation, and responsive UX. C owns profiles, study sessions, RLS, cross-session queries, and deployment configuration.
 
 `src/lib/learning/` is a boundary, not permission for duplicate implementations: A owns learning interpretation/tutoring decisions; C owns persistence and retrieval. Agree filenames and exported interfaces before adding modules. A owns voice lifecycle logic, while B owns the controls that call it. Agree route names before adding files under `src/app/api/`.
 

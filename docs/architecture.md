@@ -2,7 +2,7 @@
 
 ## Status and boundaries
 
-This is a proposed MVP design. Only the homepage, shared TypeScript contracts, and developer tooling exist. There are no service clients, API implementations, or database migrations yet. Keep one Next.js application; add dependencies only with the feature that uses them.
+This is a proposed MVP design. The homepage, shared TypeScript contracts, developer tooling, and A1 Deepgram voice adapter/local harness exist. Live microphone acceptance remains unverified; analysis and memory are planned. The credential route is local-development-only; no database migrations exist. Keep one Next.js application; add dependencies only with the feature that uses them.
 
 ```mermaid
 flowchart TD
@@ -15,12 +15,12 @@ flowchart TD
   Observation --> DB[(Supabase PostgreSQL + RLS)]
   DB --> Retrieve[Server: scoped cross-session retrieval]
   Retrieve --> Response
-  Student[Student voice] <--> Voice[Browser: Agents SDK + Realtime WebRTC]
+  Student[Student voice] <--> Voice[Browser: Deepgram Agent SDK + WebSocket]
   Voice <--> Response
   Auth[Supabase Auth] --> Routes[Authenticated Next.js route handlers]
   Routes --> Interpret
   Routes --> DB
-  Routes --> Credential[Short-lived Realtime credential]
+  Routes --> Credential[Short-lived Deepgram JWT]
   Credential --> Voice
 ```
 
@@ -36,15 +36,21 @@ Images are transient data URLs or short-lived references. Do not put them in lea
 
 ## Server and AI boundaries
 
-Developer A owns proposed Realtime credential and work-analysis route handlers in `src/app/api/`, plus `src/lib/ai/` and `src/lib/math/`. Developer C owns auth and memory handlers. Exact URLs and error payloads must be agreed before connecting features; no placeholder endpoints are implemented.
+Developer A owns the voice credential handler and proposed work-analysis route handlers in `src/app/api/`, plus `src/lib/ai/` and `src/lib/math/`. Developer C owns auth and memory handlers. Exact URLs and error payloads must be agreed before connecting features; no placeholder endpoints are implemented.
 
-Protected handlers verify the Supabase session, validate request bodies at runtime, check session ownership, and return bounded errors. TypeScript types are not runtime validation. Keep permanent OpenAI credentials server-side, limit request frequency and payload size, and avoid logging student content. Configure clients lazily within the integration so the homepage and CI do not require secrets.
+Protected handlers verify the Supabase session, validate request bodies at runtime, check session ownership, and return bounded errors. TypeScript types are not runtime validation. Keep permanent provider credentials server-side, limit request frequency and payload size, and avoid logging student content. Configure clients lazily within the integration so the homepage and CI do not require secrets.
 
 ### Realtime voice (Developer A)
 
-Use the OpenAI Agents SDK with Realtime WebRTC in the browser. An authenticated server route uses `OPENAI_API_KEY` to obtain a short-lived client credential from `/v1/realtime/client_secrets`; return it with `Cache-Control: no-store`. Never return a permanent key. Confirm the SDK's current session configuration when implementing; model and voice selection remain feature decisions.
+Use Deepgram Voice Agent through the official `@deepgram/agents` Browser Agent SDK. A1 uses managed `open_ai` / `gpt-4o-mini` in the Standard tier, Nova-3 STT, and Aura-2 Thalia speech. No BYO endpoint or `OPENAI_API_KEY` is configured for voice. This approved provider change addresses unavailable OpenAI credits while preserving the tutoring design and team ownership.
 
-Start only following explicit student input and microphone permission. Represent connecting, listening, speaking, interrupted, stopped, and failed states. On stop, navigation, failure, or retry, clean up media tracks, audio playback, data channels, connections, and listeners. Handle barge-in and prevent multiple concurrent sessions. Do not persist raw audio or full transcripts by default. Retrieved memory and verified analysis are contextual inputs to tutoring, not instructions from trusted operators.
+A owns `POST /api/realtime/token`; its retained path is provider-neutral despite the historical name. `DEEPGRAM_API_KEY` stays server-side and grants a 30-second JWT through `https://api.deepgram.com/v1/auth/grant`. Until C integrates verified identity/session ownership and deployment-wide abuse controls, only the loopback harness can mint tokens: a random per-run capability, exact same-origin POST, bounded payload, and a local five-attempt/ten-minute limit are required. Production/previews/CI and ordinary dev servers fail closed before provider calls. All credential responses use `no-store`.
+
+Start follows explicit student input and microphone permission. The SDK manages WebSocket protocol, PCM input/output, and server turn-taking. The wrapper waits for settings acknowledgement, stops playback on natural speech, and disposes microphone/player/session resources on stop, failure, or unmount, including late microphone permission results. Auto-reconnect is disabled. Manual diagnostics silence/drop the current playback turn; they do not claim to cancel remote generation. The app does not persist audio/transcripts; provider-side retention is governed by Deepgram settings/policies.
+
+The A-owned voice adapter preserves `start`, `stop`, `interrupt`, state snapshots, and subscriptions for B. Later verified `WorkAnalysis` will reach the voice adapter through a reviewed delivery/context interface after session/revision checks. C's bounded learning evidence will be supplied as contextual data alongside the base Socratic prompt via a prompt update/context mechanism. Neither context path is implemented in A1, and voice does not establish mathematical truth. See [A01 specification](workstreams/A01-ai-tutoring.md) and [setup/handoff](ai-voice.md).
+
+Managed OpenAI models through Deepgram do not automatically establish OpenAI Challenge or other hackathon-track eligibility. The team must confirm organizer rules separately.
 
 ### Interpretation and verification (Developer A)
 
@@ -85,13 +91,13 @@ Do not persist raw audio, screenshots, full conversations, or unnecessary person
 
 ## Environment, deployment, and references
 
-`.env.example` names `OPENAI_API_KEY` (server only), `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (public). No privileged Supabase key is needed in this scaffold. Next.js bundles `NEXT_PUBLIC_` settings for the browser; never put secrets there.
+`.env.example` names `DEEPGRAM_API_KEY` (server only), `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (public). No privileged Supabase key is needed in this scaffold. Next.js bundles `NEXT_PUBLIC_` settings for the browser; never put secrets there.
 
 Target Vercel with Node.js 22 and the npm lockfile. CI runs lint, route type generation/TypeScript, Vitest, and the production build with no credentials. Fonts are system fonts, so builds do not fetch font assets. Developer C will configure Vercel environments, Supabase auth redirect URLs, and RLS before integration deployment. Keep preview and production configuration separate; no hosting resource is created by this scaffold.
 
 Official references checked during initialization (2026-11-13):
 
-- [OpenAI Realtime WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc): short-lived browser credentials and server boundary.
+- [Deepgram Browser Agent SDK](https://developers.deepgram.com/docs/browser-agent-javascript), [temporary-token auth](https://developers.deepgram.com/guides/fundamentals/token-based-authentication), and [managed LLMs](https://developers.deepgram.com/docs/voice-agent-llm-models): current voice provider. Earlier OpenAI Realtime selection is superseded for A1.
 - [Supabase Next.js Auth](https://supabase.com/docs/guides/auth/quickstarts/nextjs) and [API keys](https://supabase.com/docs/guides/getting-started/api-keys): public configuration and identity.
 - [Next.js installation](https://nextjs.org/docs/app/getting-started/installation), [Vitest setup](https://nextjs.org/docs/app/guides/testing/vitest), and [Tailwind Next.js setup](https://tailwindcss.com/docs/installation/framework-guides/nextjs): application tooling.
 

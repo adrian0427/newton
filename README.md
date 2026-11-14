@@ -6,7 +6,9 @@ Newton is an AI study companion for students in grades 9–12, built by **Twofol
 
 ## Current status
 
-This repository is the foundation only: a responsive homepage, strict TypeScript contracts, agent guidance, tests, and CI. The student workspace button is intentionally disabled. There is no authentication, microphone access, AI connection, whiteboard, or saved learning history yet.
+This repository includes a responsive homepage, strict TypeScript contracts, agent guidance, tests, and CI. A01 adds an Deepgram Voice Agent adapter and a local diagnostic harness; live microphone behavior still requires manual verification. The student workspace button is intentionally disabled. Authentication, whiteboarding, deployed voice, and saved learning history are not implemented yet.
+
+For voice development, see [A01 setup, adapter interface, and manual testing](docs/ai-voice.md). Run `npm run voice:dev` for the local diagnostic page after setting server-only `DEEPGRAM_API_KEY` in `.env.local`. The harness obtains short-lived tokens on Start; production and preview issuance stay closed until authentication and abuse controls are integrated.
 
 The planned MVP combines natural voice conversation, a whiteboard with structured math fallback, controlled Socratic hints, and evidence-backed memory across sessions. The first domain is **Algebra I: the distributive property**.
 
@@ -38,15 +40,15 @@ For later integrations, copy `.env.example` to `.env.local` and fill in:
 
 | Variable | Exposure | Purpose |
 | --- | --- | --- |
-| `OPENAI_API_KEY` | Server only | OpenAI requests and short-lived Realtime credentials |
+| `DEEPGRAM_API_KEY` | Server only | Short-lived Deepgram tokens for local voice testing; managed LLM needs no OpenAI key |
 | `NEXT_PUBLIC_SUPABASE_URL` | Public | Supabase project endpoint |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public | Supabase client initialization; requires auth and RLS for student data |
 
-Never expose permanent OpenAI keys or Supabase privileged keys. Local environment files are ignored. The scaffold does not read these values or contact external services.
+Never expose permanent provider keys or Supabase privileged keys. Local environment files are ignored. The homepage and default tests need no credentials. Only the guarded local voice flow contacts Deepgram.
 
 ## Stack and layout
 
-Installed: Next.js App Router, React, TypeScript, Tailwind CSS, ESLint, and Vitest. The lockfile records exact dependency versions. Planned dependencies are added by their owners when needed: OpenAI Agents SDK and Realtime, Excalidraw, MathLive, CortexJS Compute Engine, and Supabase. Vercel is the intended deployment target; no deployment is provisioned.
+Installed: Next.js App Router, React, TypeScript, Tailwind CSS, Deepgram Browser Agent SDK, ESLint, and Vitest. The lockfile records exact dependency versions. Planned dependencies are added by their owners when needed: Excalidraw, MathLive, CortexJS Compute Engine, and Supabase. Vercel is the intended deployment target; no deployment is provisioned.
 
 ```text
 src/app/                 Pages, layout, and future route handlers

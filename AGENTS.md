@@ -25,7 +25,7 @@ Read `docs/product.md`, `docs/architecture.md`, and `docs/decisions.md`; inspect
 
 ## Security and privacy
 
-- Never commit credentials. Permanent OpenAI keys remain server-side.
+- Never commit credentials. Permanent provider keys, including `DEEPGRAM_API_KEY`, remain server-side.
 - Authenticate protected routes, enforce Supabase RLS, and verify study-session ownership.
 - Never trust a client-supplied user ID. Assign ownership from verified server identity.
 - Do not persist raw audio, screenshots, or full conversations by default; minimize student PII.
