@@ -278,3 +278,61 @@ ignored with mode 0600.
 ## Google auth change
 
 The preceding C1 results are historical. The current hosted harness authenticates its disposable password fixtures via the Supabase SSR SDK and installs the resulting cookies into separate HTTP contexts; the app no longer accepts password POSTs. This preserves real Auth/database/route coverage without pretending to automate Google consent. Follow [Google setup and manual acceptance](google-auth.md) for the actual OAuth flow and test-project/provider settings.
+
+## Hosted migration ledger and Google-account acceptance — 2026-11-14
+
+The two C1 migrations had been applied manually, but the hosted migration-history
+relation was absent. Before recording them, a fresh PGlite database built from
+both checked-in migrations was compared with hosted `newton-dev`. Canonical
+fingerprints matched for columns (17), explicit constraints (17), column grants
+(29), indexes (8), policies (8), and RLS settings (3). PostgreSQL 18's implicit
+not-null constraint records were excluded from the constraint comparison;
+column nullability was compared separately.
+
+A guarded SQL transaction in the authenticated Supabase SQL Editor created the
+private `supabase_migrations.schema_migrations` ledger and recorded versions
+`20261114000000` (`learning_schema`) and `20261114000100` (`learning_access`),
+including their source SQL. It aborted if a ledger already existed or the
+schema fingerprints differed. This was a metadata reconciliation, not a
+migration rerun or a CLI `db push`/`migration repair` execution. The statement
+shape follows the Supabase CLI's [migration-history implementation](https://github.com/supabase/cli/blob/main/apps/cli/src/command-internal/migration-history.ts).
+
+Afterward, all six fingerprints still matched and row counts were unchanged:
+21 sessions, 7 learning events, and 1 profile. The ledger contained exactly the
+two expected versions and no PUBLIC, anonymous, or authenticated table grants.
+The ledger repair did not change learning-table definitions, policies, or data.
+
+Actual Google OAuth acceptance then used two different accounts, with the user
+completing Google's login and consent screens. A temporary, Git-ignored local
+route exercised the existing verified-user, session-ownership, and event-writer
+helpers. It ran only on localhost in development, rejected cross-origin POSTs,
+and called no voice or model providers. Synthetic records were explicitly
+labelled as acceptance fixtures, not student learning evidence.
+
+Observed results on application revision `252b1d0`:
+
+- Each account created a session through `POST /api/study-sessions`, saved one
+  synthetic observation through `recordLearningEvent`, and could access its own
+  session through `requireOwnedSession`.
+- After reloading, each account's observation remained available through the
+  real learning-context endpoint.
+- Unfiltered session/event reads using each account's authenticated client
+  excluded the other account's fixture, independently exercising hosted RLS.
+- Both directions of foreign-session lookup returned 404. Neither account's
+  history response included the other account's observation.
+- After signing back into the first account, its original observation remained
+  available and the second account's fixture remained hidden.
+- After logout, the verified-user check and learning-context endpoint returned
+  401.
+
+The temporary route was removed and its URL returned 404. The two synthetic
+sessions and observations remain in their respective hosted accounts; existing
+records were preserved. No passwords, tokens, account emails, or raw student
+work are included in this record.
+
+Focused regression verification on the same application revision passed all
+118 tests across database, learning helpers, context helpers/routes,
+study-session routes, and voice-session authorization. This does not establish
+the complete A/B tutoring integration, production deployment behavior,
+long-running refresh behavior, or trustworthy AI provenance. No production
+application source changed for this acceptance check.
