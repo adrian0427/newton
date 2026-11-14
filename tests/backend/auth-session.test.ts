@@ -77,6 +77,21 @@ it("distinguishes missing identity from unavailable auth", async () => {
   expect((await GET()).status).toBe(502);
 });
 
+it.each(["refresh_token_not_found", "refresh_token_already_used", "session_expired"])(
+  "returns a non-retryable 401 for terminal refresh failure %s", async (code) => {
+    mocks.getUser.mockResolvedValue({ data: { user: null }, error: { name: "AuthApiError", status: 400, code } });
+    const response = await GET();
+    expect(response.status).toBe(401);
+    expect(await response.json()).toEqual({ error: { code: "unauthenticated", message: "Please sign in.", retryable: false } });
+    expect(response.headers.get("Cache-Control")).toContain("no-store");
+  },
+);
+
+it("does not classify unexpected Auth 400 responses as missing sessions", async () => {
+  mocks.getUser.mockResolvedValue({ data: { user: null }, error: { name: "AuthApiError", status: 400, code: "validation_failed" } });
+  expect((await GET()).status).toBe(502);
+});
+
 it("uses server verification for identity", async () => {
   mocks.getUser.mockResolvedValue({ data: { user: { id: "internal-id", email: "test@example.com" } }, error: null });
   const result = await GET();

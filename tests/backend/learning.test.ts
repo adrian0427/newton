@@ -51,6 +51,24 @@ describe("verified request identity", () => {
     await expect(requireUser()).rejects.toMatchObject({ status: 502, code: "auth-unavailable", headers: expect.any(Headers) });
   });
 
+  it.each(["refresh_token_not_found", "refresh_token_already_used", "session_expired"])(
+    "treats terminal refresh failure %s as signed out and retains refresh headers", async (code) => {
+      mocks.getUser.mockResolvedValue({ data: { user: null }, error: { name: "AuthApiError", status: 400, code } });
+      try {
+        await requireUser();
+        expect.fail("Expected expired identity to be rejected");
+      } catch (error) {
+        expect(error).toMatchObject({ status: 401, code: "unauthenticated" });
+        expect((error as { headers: Headers }).headers.get("Pragma")).toBe("no-cache");
+      }
+    },
+  );
+
+  it("keeps unexpected Auth 400 responses distinct from terminal sessions", async () => {
+    mocks.getUser.mockResolvedValue({ data: { user: null }, error: { name: "AuthApiError", status: 400, code: "validation_failed" } });
+    await expect(requireUser()).rejects.toMatchObject({ status: 502, code: "auth-unavailable" });
+  });
+
   it("distinguishes missing config and network errors without leaking details", async () => {
     mocks.create.mockRejectedValueOnce(new SupabaseConfigurationError());
     await expect(requireUser()).rejects.toMatchObject({ status: 503, code: "not-configured" });

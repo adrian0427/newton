@@ -67,7 +67,7 @@ self-owned evidence inserted directly through Supabase was produced by AI.
 
 ## Local verification record — 2026-11-14
 
-The initial foundation passed 94 Vitest tests (including 31 PostgreSQL role and
+The final foundation passed 102 Vitest tests (including 31 PostgreSQL role and
 constraint cases plus the portable SQL script), ESLint, TypeScript, and
 `npm run build -- --webpack` on Node 22. The built app returned 200 for home and
 sign-in, 401 for anonymous identity/session creation, 403 for cross-origin
@@ -75,3 +75,31 @@ creation, and 405 for unsupported session GET. No signed-in writes were made.
 The default Turbopack build previously hit a sandbox worker/port restriction on
 this Mac; webpack production compilation passed. Hosted schema/HTTP acceptance
 has not been run.
+
+The final independent branch review found one important issue: terminal refresh
+token failures arrived as Auth HTTP 400 and were misclassified as retryable
+service failures. Three terminal codes now return 401 in both the identity
+helper and auth session GET; unexpected Auth 400s remain 502. Six regression
+cases failed before the fix and passed afterward, with two additional cases
+checking that genuine unexpected responses remain distinguishable.
+
+### Review scope decisions
+
+- Event writing, conflicting retry comparison, concurrent writer tests, and
+  context retrieval remain the next C01 slice. Database uniqueness is present;
+  a complete memory workflow is not yet available.
+- Hosted Auth/PostgREST and signed-in API acceptance remain unverified because
+  schema application was not authorized tonight. Local tests cannot establish
+  hosted readiness.
+- Direct self-owned evidence, including correction outcomes, remains untrusted
+  advisory data. Strong provenance is required before real-student use.
+- Authenticated Server Components and their refresh proxy remain unsupported;
+  use the writable Route Handler boundary to avoid unsaved refresh cookies.
+- Request lengths are checked after buffering and after authentication. This
+  local test-account slice does not establish protection from large-body memory
+  pressure; enforce deployment/stream limits before public use.
+- Owners may change or clear their session end time; C01 allows ending a session
+  and does not use it as an immutable audit or billing boundary.
+- The migration gap was reviewed directly in the transactional SQL. There is
+  no separate test paused between migrations; the schema immediately enables
+  RLS and revokes student grants before committing.

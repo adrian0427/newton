@@ -2,6 +2,7 @@ import "server-only";
 
 import { SupabaseConfigurationError } from "./config";
 import { createClient } from "./server";
+import { isUnauthenticatedError } from "./auth-errors";
 
 /** Only bounded, student-safe messages belong in this error. */
 export class BackendError extends Error {
@@ -30,7 +31,7 @@ export async function requireUser(): Promise<AuthContext> {
     headers = request.headers;
     // getSession() alone would trust unverified cookie data.
     const { data, error } = await request.supabase.auth.getUser();
-    if (error && error.name !== "AuthSessionMissingError" && error.status !== 401 && error.status !== 403) {
+    if (error && !isUnauthenticatedError(error)) {
       throw new BackendError(502, "auth-unavailable", "Unable to verify your sign-in. Please retry.", headers);
     }
     if (error || !data.user?.id) {

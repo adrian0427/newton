@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { SupabaseConfigurationError } from "@/lib/supabase/config";
 import { isSameOrigin } from "@/lib/supabase/origin";
+import { isUnauthenticatedError } from "@/lib/supabase/auth-errors";
 
 function failure(code: string, message: string, status: number, headers?: Headers) {
   return Response.json({ error: { code, message, retryable: status >= 500 || status === 429 } }, {
@@ -19,7 +20,7 @@ export async function GET() {
     const { supabase, headers } = await createClient();
     // Verify with Auth rather than trusting the user object in a session cookie.
     const { data, error } = await supabase.auth.getUser();
-    if (error && error.name !== "AuthSessionMissingError" && error.status !== 401 && error.status !== 403) {
+    if (error && !isUnauthenticatedError(error)) {
       return failure("auth-unavailable", "Unable to check your sign-in. Please retry.", 502, headers);
     }
     if (!data.user || error) return failure("unauthenticated", "Please sign in.", 401, headers);

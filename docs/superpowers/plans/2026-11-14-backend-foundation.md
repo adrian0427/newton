@@ -42,7 +42,14 @@ Interfaces: `requireUser()` returns a server-only context with verified user ID,
 
 - [x] Add failing tests for identity verification, anonymous/missing config/service failure, malformed and foreign sessions, and request/body checks.
 - [x] Implement the minimum server-only helpers and endpoint, without connecting B's UI or enabling provider credentials.
-- [ ] Run affected/full checks, inspect final diff and secret/config exclusions, perform a final independent review, fix material findings, and commit locally.
+- [x] Run affected/full checks, inspect final diff and secret/config exclusions, perform a final independent review, fix material findings, and commit locally.
+
+Final review: one important expired-session error-classification defect fixed
+with six RED→GREEN cases; two negative classification cases also pass. Final
+suite: 102 tests, plus lint, typecheck, and webpack production build. The local
+HTTP smoke check passed without signed-in writes. Review limits and scope
+decisions are recorded in `docs/backend-testing.md`. No push or hosted schema
+change was made.
 
 ## Deferred
 
