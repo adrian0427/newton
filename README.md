@@ -6,7 +6,7 @@ Newton is an AI study companion for students in grades 9–12, built by **Twofol
 
 ## Current status
 
-This branch includes a responsive homepage, email/password authentication, strict TypeScript contracts, tests, and CI. Sign-in and sign-out are available at `/auth/sign-in`; both team test accounts were manually verified against hosted Supabase on November 13, 2026. C's database migrations, local PostgreSQL policy tests, verified-user/session helpers, and `POST /api/study-sessions` are implemented. The migrations remain unapplied to hosted Supabase, so session creation cannot succeed there yet. Saved history, AI, voice, and whiteboard integration are not connected on this branch; the workspace button remains disabled. Hosted database ownership isolation is still unverified.
+This branch includes a responsive homepage, email/password authentication, strict TypeScript contracts, tests, and CI. Sign-in and sign-out are available at `/auth/sign-in`; both team test accounts were manually verified against hosted Supabase on November 13, 2026. C's database migrations, local PostgreSQL policy tests, verified-user/session helpers, and `POST /api/study-sessions` are implemented. The migrations remain unapplied to hosted Supabase, so session creation cannot succeed there yet. The local `/study` workspace is available; its tutoring, auth/session, and saved-history integration remains pending. Hosted database ownership isolation is still unverified.
 
 The planned MVP combines natural voice conversation, a whiteboard with structured math fallback, controlled Socratic hints, and evidence-backed memory across sessions. The first domain is **Algebra I: the distributive property**.
 
@@ -22,7 +22,7 @@ npm ci
 npm run dev
 ```
 
-Open [localhost:3000](http://localhost:3000). No service credentials or environment file are needed for the scaffold. If already working in a checkout, start at `nvm use`.
+Open [localhost:3000](http://localhost:3000). Open `/study` for the full-page worksheet/whiteboard workspace and structured math input. No service credentials or environment file are needed for the homepage or workspace. If already working in a checkout, start at `nvm use`.
 
 | Command | Purpose |
 | --- | --- |
@@ -33,24 +33,28 @@ Open [localhost:3000](http://localhost:3000). No service credentials or environm
 | `npm run typecheck` | Generate Next.js route types, then check strict TypeScript |
 | `npm test` | Run Vitest once |
 | `npm run test:watch` | Watch focused tests while developing |
+| `npm run test:e2e` | Real drawing/input/download checks at desktop and 360px widths (first run `npx playwright install chromium`) |
 
 For later integrations, copy `.env.example` to `.env.local` and fill in:
 
 | Variable | Exposure | Purpose |
 | --- | --- | --- |
-| `OPENAI_API_KEY` | Server only | OpenAI requests and short-lived Realtime credentials |
+| `DEEPGRAM_API_KEY` | Server only | Deepgram managed voice; Member-level or higher key for temporary browser-token issuance |
+| `OPENAI_API_KEY` | Server only, optional | Not needed for managed voice; separately funded future vision only if OpenAI is selected |
 | `NEXT_PUBLIC_SUPABASE_URL` | Public | Supabase project endpoint |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public | Supabase client initialization; requires auth and RLS for student data |
 
-Never expose permanent OpenAI keys or Supabase privileged keys. Local environment files are ignored. The homepage does not read these values or contact external services. Supabase connection helpers read them lazily when called. Auth and study-session routes require configuration; study-session creation also requires the reviewed migrations to be applied.
+Never expose permanent provider keys through `NEXT_PUBLIC_` variables or browser responses. Supabase privileged keys remain server-side too. Local environment files are ignored. The homepage and local workspace need no service credentials. Supabase helpers read configuration lazily; auth routes require it and session creation also requires the migrations to be applied. Deployed voice-token issuance stays disabled until authentication, session ownership, and abuse controls are integrated; preview deployments are included.
 
 ## Stack and layout
 
-Installed: Next.js App Router, React, TypeScript, Tailwind CSS, ESLint, Vitest, and the Supabase client/SSR libraries. The lockfile records exact dependency versions. Planned dependencies are added by their owners when needed: OpenAI Agents SDK and Realtime, Excalidraw, MathLive, and CortexJS Compute Engine. Vercel is the intended deployment target; no deployment is provisioned.
+Installed: Next.js App Router, React, TypeScript, Tailwind CSS, Excalidraw, MathLive, PDF.js, the Supabase client/SSR libraries, ESLint, Vitest, and Playwright. The lockfile records exact dependency versions. Planned dependencies are added by their owners when needed: the official Deepgram Browser Agent SDK and CortexJS Compute Engine. Vercel is the intended deployment target; no deployment is provisioned.
+
+The hackathon voice selection is Deepgram Voice Agent using intended trial credits and a managed OpenAI model, initially `gpt-4o-mini`, subject to availability and pricing. It needs no separate OpenAI API key. Whiteboard vision is a separate, undecided provider choice because funded OpenAI vision API access is unavailable. Using OpenAI through Deepgram does not establish OpenAI Challenge eligibility; ask the organizers. See [decision 013](docs/decisions.md#2026-11-13--deepgram-voice-pivot) and [A's existing implementation audit](docs/workstreams/A01-ai-tutoring.md#existing-implementation-and-migration-follow-up).
 
 ```text
 src/app/                 Pages, layout, authentication and session routes
-src/components/          Future whiteboard, tutor, and learning UI
+src/components/          Worksheet reference, whiteboard/input, and on-demand tutor UI
 src/lib/                 Supabase/auth and learning-session modules
 src/types/tutoring.ts    Shared integration contracts
 supabase/migrations/     Unapplied schema, constraints, grants, and RLS
@@ -95,3 +99,11 @@ requests require a matching Origin header; responses are private/no-store.
 See [backend verification](docs/backend-testing.md) for setup, limitations, and
 remaining hosted acceptance. The auth page uses a writable Route Handler; it
 does not use authenticated Server Component rendering.
+
+## Local workspace (B1)
+
+At `/study`, upload or drop a local PDF/image worksheet, or paste a screenshot. Resize the desktop divider or switch panes on mobile. Draw, erase, undo/redo, or enter structured algebra alongside the reference. Choose a source and capture a step to preview it, then explicitly download JSON or PNG. Work is transient and is lost on reload; no server upload, autosave, microphone, authentication, or saved history is connected to the workspace. The separate auth screen is available at `/auth/sign-in`. Newton stays hidden behind its side icon until clicked. New edits and clear invalidate captures and revoke download URLs.
+
+The predev/prebuild script copies drawing/math fonts and PDF.js worker/rendering assets into ignored `public/vendor/` so the app serves them locally. The initial structured transport fixture is `2(x+3)=14` normalized to `2*(x+3)=14`; unsupported notation blocks capture. Review parser compatibility with Developer A before B2 integration.
+
+Scoped npm overrides update Excalidraw's pinned nanoid dependencies and its dependency tree's lodash-es to patched releases. The mermaid adapter uses nanoid's named `nanoid()` export, retained in version 5. The current audit still reports the existing lint-chain moderate findings and a low-severity KaTeX finding through Excalidraw's Mermaid dependency; Mermaid/formula import is not exposed by this workspace.

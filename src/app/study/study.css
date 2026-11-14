@@ -1,0 +1,207 @@
+.study-shell { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; background: var(--paper-shell); }
+.study-header { height: 58px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 24px; border-bottom: 1px solid var(--color-line); background: var(--color-paper); }
+.study-brand { display: inline-flex; align-items: center; gap: 9px; font-size: 19px; font-weight: 600; text-decoration: none; letter-spacing: -.8px; }
+.study-brand > span { display: grid; place-items: center; width: 29px; height: 29px; border-radius: 8px; background: var(--color-ink); color: var(--color-paper); font: italic 24px Georgia, serif; }
+.study-header-note { font: italic 14px Georgia, serif; color: var(--paper-muted); }
+.study-session-status { display: inline-flex; align-items: center; gap: 7px; color: var(--color-muted); font-size: 11px; }
+.study-session-status > span { width: 5px; height: 5px; background: var(--paper-accent); border-radius: 50%; }
+#study-main { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.workspace-split { display: grid; grid-template-columns: minmax(0, var(--worksheet-width)) 9px minmax(0, 1fr); flex: 1; min-height: 0; }
+.worksheet-column, .work-area { min-width: 0; min-height: 0; }
+.worksheet-column { display: flex; }
+.worksheet-pane { position: relative; display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0; background: var(--paper-reference); outline-offset: -3px; }
+.pane-toolbar { min-height: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 18px; border-bottom: 1px solid var(--paper-line); background: var(--paper-shell); }
+.pane-title { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.pane-title h1, .pane-title h2 { font-size: 12px; font-weight: 600; margin: 0; letter-spacing: .1px; }
+.pane-title > span:first-child { color: var(--paper-muted); font-size: 17px; }
+.worksheet-name { font-size: 11px; color: var(--color-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+.toolbar-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.small-button, .icon-button, .text-button, .zoom-label { background: none; border: 0; cursor: pointer; color: var(--color-muted); font: inherit; }
+.small-button { min-height: 32px; padding: 6px 10px; border: 1px solid var(--paper-line); border-radius: 6px; background: var(--paper-canvas); font-size: 11px; font-weight: 500; white-space: nowrap; }
+.small-button:hover:enabled { background: var(--paper-selected); border-color: var(--paper-line); }
+.icon-button { display: inline-grid; place-items: center; min-width: 32px; height: 32px; border-radius: 6px; font-size: 21px; line-height: 1; }
+.icon-button:hover:enabled { background: var(--paper-selected); }
+button:disabled { cursor: not-allowed; opacity: .5; }
+.worksheet-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex: 1; padding: 30px 18px; overflow: auto; }
+.empty-page-icon { display: grid; place-items: center; width: 86px; height: 96px; margin-bottom: 27px; color: var(--paper-muted); background: var(--paper-selected); border: 1px solid var(--paper-line); border-radius: 15px; transform: rotate(-5deg); }
+.worksheet-empty h2 { font: 25px/1.3 Georgia, serif; letter-spacing: -.7px; margin: 0 0 12px; }
+.worksheet-empty > p:not(.worksheet-privacy) { color: var(--paper-muted); font-size: 13px; line-height: 1.9; margin: 0 0 22px; }
+.worksheet-empty kbd { font: 11px Arial, sans-serif; }
+.workspace-button { display: inline-flex; justify-content: center; align-items: center; gap: 20px; min-height: 42px; padding: 10px 18px; background: var(--paper-accent); color: var(--paper-on-accent); border: 1px solid var(--color-ink); border-radius: 7px; font-size: 12px; cursor: pointer; }
+.workspace-button:hover:enabled { background: var(--color-leaf); }
+.file-formats { margin-top: 13px; font-size: 10px; color: var(--paper-muted); }
+.worksheet-privacy { font-size: 10px; color: var(--paper-muted); line-height: 1.8; margin: 38px 0 0; }
+.split-divider { background: var(--paper-selected); border-left: 1px solid var(--paper-line); border-right: 1px solid var(--paper-line); cursor: col-resize; display: grid; place-items: center; touch-action: none; z-index: 2; }
+.split-divider > span { display: block; width: 3px; height: 30px; border-radius: 3px; background: var(--paper-line); }
+.split-divider:hover, .split-divider:focus-visible { background: var(--paper-selected); outline-offset: -3px; }
+.work-area { position: relative; display: flex; flex-direction: column; background: var(--paper-canvas); }
+.practice-prompt { font: 14px Georgia, serif; color: var(--paper-muted); }
+.work-toolbar { flex-shrink: 0; min-height: 42px; padding: 4px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--paper-line); }
+.source-picker { display: flex; align-items: center; gap: 12px; padding: 0; margin: 0; border: 0; }
+.source-picker legend { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; }
+.source-picker label { display: flex; align-items: center; gap: 5px; min-height: 30px; font-size: 10px; color: var(--color-muted); cursor: pointer; }
+.source-picker input { accent-color: var(--color-leaf); width: 11px; height: 11px; }
+.text-button { display: inline-flex; align-items: center; min-height: 30px; font-size: 10px; text-decoration: underline; text-underline-offset: 3px; }
+.whiteboard-frame { flex: 1; min-height: 0; position: relative; }
+.whiteboard-frame[hidden] { display: none; }
+.board-canvas { height: 100%; width: 100%; color: var(--paper-muted); }
+.board-canvas .excalidraw { --color-primary: var(--paper-accent); --color-primary-darker: var(--paper-text); }
+.board-loading { height: 100%; min-height: 180px; display: flex; flex-direction: column; gap: 14px; align-items: center; justify-content: center; padding: 24px; font-size: 12px; text-align: center; }
+.expression-area { flex: 1; overflow: auto; padding: 36px 24px; min-height: 0; }
+.expression-area[hidden] { display: none; }
+.expression-area h3 { font-size: 13px; font-weight: 500; margin: 0 0 20px; }
+.math-input math-field { display: block; width: 100%; min-height: 68px; padding: 12px; margin: 16px 0; border: 1px solid var(--color-line); border-radius: 8px; font-size: 25px; background: var(--paper-reference); color: var(--color-ink); }
+.math-input math-field:focus-within { outline: 2px solid var(--color-leaf); outline-offset: 2px; }
+.helper { font-size: 10px; line-height: 1.8; color: var(--paper-muted); }
+.expression-preview { font-size: 11px; line-height: 1.8; margin-top: 26px; overflow-wrap: anywhere; }
+.capture-button { color: var(--color-ink); }
+.capture-popover { position: absolute; top: 106px; left: 16px; right: 64px; padding: 20px; z-index: 6; background: var(--paper-shell); border: 1px solid var(--paper-line); border-radius: 10px; box-shadow: 0 8px 40px #0000001c; max-height: 55%; overflow: auto; }
+.dismiss-capture { position: absolute; right: 5px; top: 5px; }
+.capture-feedback { padding-right: 18px; font-size: 11px; line-height: 1.8; }
+.input-error { color: var(--paper-error); font-size: 12px; line-height: 1.7; }
+.snapshot-result { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin-top: 16px; }
+.eyebrow { font-size: 9px; text-transform: uppercase; letter-spacing: 1.6px; color: var(--paper-muted); margin: 0; }
+.revision-label { font-size: 9px; max-width: 100%; overflow-wrap: anywhere; color: var(--color-muted); }
+.snapshot-preview { display: block; max-width: 100%; max-height: 140px; object-fit: contain; background: var(--paper-canvas); border: 1px solid var(--color-line); }
+.captured-expression { overflow-wrap: anywhere; max-width: 100%; font-family: monospace; }
+.document-viewport { position: relative; flex: 1; min-height: 0; overflow: auto; padding: 24px 0; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.worksheet-image-wrap { min-width: 50%; padding: 0 24px; margin: 0 auto; }
+.worksheet-image { width: 100%; height: auto; display: block; box-shadow: 0 3px 18px #00000014; }
+.pdf-page-host { width: 100%; min-width: 0; display: grid; justify-items: start; }
+.pdf-page-host canvas { display: block; margin: 0 24px; background: white; box-shadow: 0 3px 18px #00000014; }
+.viewer-status, .file-loading { margin: 10px 24px; font-size: 11px; line-height: 1.6; color: var(--color-muted); }
+.page-text { margin: 24px; font-size: 11px; color: var(--color-muted); line-height: 1.8; }
+.page-text summary { cursor: pointer; }
+.document-controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 47px; flex-shrink: 0; padding: 5px 15px; border-top: 1px solid var(--paper-line); background: var(--paper-shell); }
+.zoom-controls, .page-controls { display: flex; gap: 3px; align-items: center; font-size: 11px; }
+.zoom-label { font-size: 10px; padding: 6px; }
+.local-file-note { font-size: 9px; color: var(--paper-muted); }
+.worksheet-error { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 16px; background: var(--paper-error-bg); color: var(--paper-error); font-size: 11px; line-height: 1.6; }
+.drop-overlay { position: absolute; inset: 7px; z-index: 9; display: grid; place-items: center; border: 2px dashed var(--paper-accent); border-radius: 10px; background: var(--paper-reference); pointer-events: none; font-size: 18px; color: var(--color-leaf); }
+.tutor-launcher { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 15; display: block; width: 56px; height: 88px; padding: 0; border: 0; border-radius: 0; background: transparent; cursor: pointer; overflow: hidden; }
+.tutor-launcher:hover { background: transparent; }
+.tutor-launcher:focus-visible { outline-offset: -3px; border-radius: 8px 0 0 8px; }
+.tutor-popover { position: fixed; top: 50%; transform: translateY(-50%); right: 66px; width: min(330px, calc(100vw - 86px)); max-height: calc(100dvh - 100px); overflow: auto; z-index: 16; padding: 24px; border: 1px solid var(--paper-line); border-radius: 14px; background: var(--paper-shell); box-shadow: 0 12px 70px #00000026; }
+.tutor-popover > header { display: flex; justify-content: space-between; gap: 10px; }
+.tutor-popover h2 { font: 22px Georgia, serif; margin: 8px 0 0; }
+.workspace-panel { margin-top: 22px; }
+.panel-heading { display: none; }
+.connection-label { display: block; font-size: 10px; color: var(--paper-muted); }
+.workspace-panel > p { font-size: 12px; line-height: 1.8; color: var(--color-muted); margin: 12px 0 20px; }
+.workspace-panel .workspace-button { width: 100%; margin: 0 0 8px; font-size: 11px; }
+.workspace-panel .workspace-button:disabled { background: var(--paper-selected); border-color: var(--paper-line); color: var(--paper-muted); opacity: 1; }
+.workspace-panel p.helper, .tutor-privacy { font-size: 10px; line-height: 1.8; color: var(--paper-muted); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.mobile-workspace-tabs { display: none; }
+@media (max-width: 760px) {
+  .study-header { height: 52px; padding: 0 16px; }
+  .study-header-note { display: none; }
+  .study-session-status { font-size: 10px; margin-right: 46px; }
+  .mobile-workspace-tabs { display: flex; flex-shrink: 0; height: 44px; border-bottom: 1px solid var(--paper-line); background: var(--paper-shell); padding: 0 12px; gap: 22px; }
+  .mobile-workspace-tabs button { border: 0; border-bottom: 2px solid transparent; background: none; color: var(--paper-muted); font-size: 12px; padding: 0 5px; cursor: pointer; }
+  .mobile-workspace-tabs button[aria-pressed="true"] { border-bottom-color: var(--color-leaf); color: var(--color-ink); }
+  .workspace-split { display: flex; }
+  .split-divider { display: none; }
+  .worksheet-column, .work-area { width: 100%; flex: 1; }
+  .workspace-split[data-mobile-pane="worksheet"] > .work-area, .workspace-split[data-mobile-pane="work"] > .worksheet-column { display: none; }
+  .pane-toolbar { padding: 6px 14px; gap: 8px; }
+  .worksheet-name { max-width: 100px; }
+  .toolbar-actions { gap: 0; }
+  .toolbar-actions .small-button { border: 0; background: none; padding: 5px; font-size: 10px; }
+  .work-toolbar { padding: 4px 12px; gap: 7px; }
+  .source-picker { gap: 10px; }
+  .capture-popover { right: 16px; max-height: 60%; }
+  .tutor-launcher { right: 0; top: 50%; bottom: auto; width: 56px; height: 88px; }
+  .tutor-popover { right: 62px; top: 50%; bottom: auto; transform: translateY(-50%); width: calc(100vw - 76px); padding: 20px; }
+  .worksheet-empty h2 { font-size: 24px; }
+  .practice-prompt { font-size: 13px; }
+  .document-controls { padding: 5px 10px; }
+}
+@media (prefers-reduced-motion: no-preference) { .tutor-popover { animation: tutor-appear .18s ease-out; } @keyframes tutor-appear { from { opacity: 0; margin-right: -5px; } to { opacity: 1; margin-right: 0; } } }
+
+.study-header-actions { display: flex; align-items: center; gap: 16px; }
+.appearance-control { position: relative; }
+.appearance-panel { position: absolute; right: 0; top: 42px; z-index: 30; width: 350px; max-width: calc(100vw - 32px); padding: 24px; background: var(--paper-shell); border: 1px solid var(--paper-line); border-radius: 14px; box-shadow: 0 12px 48px #0003; }
+.appearance-panel header { display: flex; justify-content: space-between; gap: 8px; }
+.appearance-panel h2 { margin: 10px 0 24px; font: 23px/1.3 Georgia, serif; }
+.appearance-panel fieldset { border: 0; padding: 0; margin: 0 0 24px; }
+.appearance-panel legend { font-size: 12px; margin-bottom: 12px; }
+.appearance-options { display: flex; padding: 5px; gap: 5px; border-radius: 8px; background: var(--paper-reference); }
+.appearance-options label { position: relative; flex: 1; cursor: pointer; }
+.appearance-options input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+.appearance-options span { display: block; text-align: center; padding: 10px 5px; border-radius: 6px; font-size: 12px; }
+.appearance-options input:checked + span { color: var(--paper-accent); background: var(--paper-selected); }
+.appearance-options input:focus-visible + span { outline: 2px solid var(--paper-accent); }
+.dim-worksheet { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 11px; }
+.dim-worksheet input { accent-color: var(--paper-accent); width: 16px; height: 16px; }
+.appearance-panel > p { font-size: 10px; line-height: 1.8; color: var(--paper-muted); margin: 16px 0 0; }
+:root[data-theme="dark"][data-dim-worksheet="true"] .worksheet-image,
+:root[data-theme="dark"][data-dim-worksheet="true"] .pdf-page-host canvas { filter: invert(.82) hue-rotate(180deg) brightness(1.05) saturate(.25); }
+.board-canvas .excalidraw, .board-canvas .excalidraw.theme--dark {
+  --color-primary: var(--paper-accent); --color-primary-darker: var(--paper-text);
+  --color-primary-light: var(--paper-selected); --color-primary-light-darker: var(--paper-line);
+  --color-surface-low: var(--paper-shell); --color-surface-mid: var(--paper-reference); --color-surface-high: var(--paper-selected); --color-surface-lowest: var(--paper-canvas);
+  --default-bg-color: var(--paper-shell); --island-bg-color: var(--paper-shell); --text-primary-color: var(--paper-text);
+}
+.math-input math-field { --caret-color: var(--paper-accent); --selection-background-color: var(--paper-selected); --contains-highlight-background-color: var(--paper-selected); color-scheme: inherit; }
+@media (max-width: 760px) {
+  .study-header-actions { gap: 8px; }
+  .study-header-actions .study-session-status { display: none; }
+  .appearance-panel { position: fixed; top: 60px; right: 12px; }
+}
+
+.board-canvas .excalidraw.theme--dark { --theme-filter: invert(85.3%) hue-rotate(180deg); }
+.study-brand > span { background: var(--paper-accent); color: var(--paper-on-accent); }
+.board-canvas .excalidraw, .board-canvas .excalidraw.theme--dark {
+  --color-surface-primary-container: var(--paper-selected); --color-on-primary-container: var(--paper-accent);
+  --color-on-surface: var(--paper-text); --color-on-surface-variant: var(--paper-muted);
+  --color-primary-hover: var(--paper-accent); --color-primary-darkest: var(--paper-accent);
+  --color-brand-active: var(--paper-accent); --color-brand-hover: var(--paper-accent); --color-selection: var(--paper-accent);
+  --button-hover-bg: var(--paper-selected); --button-active-border: var(--paper-accent);
+}
+/* Compact by default; preserve the editor's native actions and shortcuts. */
+.worksheet-file-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 14px; border-bottom: 1px solid var(--paper-line); background: var(--paper-shell); }
+.workspace-split[data-focus="true"] { display: flex; }
+.workspace-split[data-focus="true"] > .worksheet-column,
+.workspace-split[data-focus="true"] > .split-divider,
+.workspace-split[data-focus="true"] .work-toolbar > :not(.focus-toggle) { display: none; }
+.workspace-split[data-focus="true"] > .work-area { display: flex; flex: 1; }
+.mobile-workspace-tabs[hidden] { display: none; }
+.work-toolbar .focus-toggle { margin-right: auto; }
+.board-canvas { position: relative; }
+.board-options { display: flex; flex-shrink: 0; align-items: center; justify-content: flex-end; gap: 6px; padding: 12px 14px 0; }
+.board-options .small-button { min-height: 28px; font-size: 10px; padding: 4px 8px; }
+.pen-settings { position: absolute; top: 60px; right: 14px; z-index: 7; width: 220px; padding: 14px; border: 1px solid var(--paper-line); background: var(--paper-shell); color: var(--paper-text); border-radius: 10px; box-shadow: 0 8px 28px #0002; }
+.pen-settings header { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
+.pen-settings label { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 11px; margin-top: 14px; }
+.pen-settings input[type="range"] { width: 100%; accent-color: var(--paper-accent); }
+.pen-settings input[type="color"] { width: 38px; height: 28px; border: 0; padding: 0; background: none; cursor: pointer; }
+.compact-tools .selected-shape-actions, .compact-tools .excalidraw button[aria-label="Edit"], .compact-tools .excalidraw button[title="Edit"] { display: none !important; }
+.compact-tools .App-toolbar label.ToolIcon:not(:has([data-testid="toolbar-freedraw"], [data-testid="toolbar-eraser"], [data-testid="toolbar-selection"])) { display: none; }
+.compact-tools .App-toolbar button[aria-label="More tools"] { display: none; }
+.board-canvas .excalidraw .zoom-actions, .board-canvas .excalidraw .undo-redo-buttons { --lg-button-size: 26px; --lg-icon-size: 13px; }
+.board-canvas .excalidraw .reset-zoom-button { min-width: 42px; font-size: 10px !important; }
+@media (max-width: 760px) { .work-toolbar { flex-wrap: wrap; } .work-toolbar .focus-toggle { padding: 4px 7px; font-size: 10px; } }
+.compact-tools .App-toolbar__extra-tools-trigger { display: none !important; }
+.work-area[data-source="expression"] .capture-popover { top: auto; bottom: 58px; }
+.compact-tools .mobile-misc-tools-container, .compact-tools .HintViewer { display: none !important; }
+.compact-tools .App-bottom-bar > .Island, .compact-tools .App-bottom-bar .App-toolbar { background: transparent !important; box-shadow: none !important; }
+.compact-tools .App-bottom-bar .dropdown-menu-button { display: none !important; }
+.board-canvas .zoom-actions { display: none !important; }
+.board-zoom { position: absolute; left: 16px; bottom: 20px; z-index: 5; display: flex; align-items: center; border: 1px solid var(--paper-line); border-radius: 7px; overflow: hidden; background: var(--paper-shell); }
+.board-zoom button { min-width: 28px; height: 28px; border: 0; background: none; color: var(--paper-muted); font-size: 10px; cursor: pointer; }
+.board-zoom button:hover { background: var(--paper-selected); }
+.board-zoom button:nth-child(2) { min-width: 42px; }
+.compact-tools .App-bottom-bar { left: auto !important; right: 16px !important; width: 70px !important; }
+.compact-tools .App-bottom-bar .App-toolbar-content { display: flex; justify-content: flex-end; }
+.show-extra-tools .board-zoom { bottom: 72px; }
+
+.expression-actions { display: flex; justify-content: flex-end; margin-bottom: 18px; }
+.workspace-split[data-focus="true"] .capture-button { display: none; }
+.work-area[data-source="expression"] .capture-popover { top: 106px; bottom: auto; }
+
+.board-canvas { display: flex; flex-direction: column; }
+.board-canvas > .excalidraw { flex: 1; min-height: 0; height: auto; }
+.board-canvas .excalidraw .default-sidebar-trigger { display: none !important; }
+.board-options .library-toggle { min-width: 52px; }
+@media (max-width: 760px) { .board-options { gap: 4px; padding: 10px 10px 0; } .board-options .small-button { padding: 4px 6px; font-size: 10px; } }

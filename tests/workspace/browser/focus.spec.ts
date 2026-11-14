@@ -1,0 +1,32 @@
+import { expect, test } from "@playwright/test";
+
+test("compact tools and focus mode keep work intact and controls recoverable", async ({ page }) => {
+  await page.goto("/study");
+  const tab = page.getByRole("button", { name: "Whiteboard", exact: true });
+  if (await tab.isVisible()) await tab.click();
+  await expect(page.getByText("Local workspace", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("2(x + 3) = 14", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("radio", { name: "Rectangle", exact: true })).toBeHidden();
+  await page.getByRole("button", { name: "Pen settings", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Pen settings" })).toBeVisible();
+  await page.getByRole("slider", { name: "Stroke width" }).fill("3");
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog", { name: "Pen settings" })).toHaveCount(0);
+  await page.getByRole("button", { name: "More tools", exact: true }).click();
+  await expect(page.getByRole("radio", { name: "Rectangle", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Fewer tools" }).click();
+  await page.getByRole("radio", { name: "Structured input" }).check();
+  await page.locator("math-field").click();
+  await expect(page.locator("math-field")).toBeFocused();
+  await page.keyboard.type("x=4");
+  await page.getByRole("button", { name: "Focus mode", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Worksheet", exact: true })).toBeHidden();
+  await expect(page.getByRole("button", { name: "Exit focus" })).toBeVisible();
+  await expect(page.getByText("Plain expression:")).toContainText("x=4");
+  await expect(page.getByRole("button", { name: "Capture snapshot" })).toBeHidden();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("button", { name: "Focus mode", exact: true })).toBeVisible();
+  await expect(page.getByText("Plain expression:")).toContainText("x=4");
+  await page.getByRole("radio", { name: "Whiteboard", exact: true }).check();
+  await page.screenshot({ path: test.info().outputPath("compact-board.png") });
+});

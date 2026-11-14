@@ -25,10 +25,10 @@ export default function Home() {
               work through the tricky parts, and find your own way forward.
             </p>
             <div className="mt-9">
-              <button type="button" disabled aria-describedby="workspace-note" className="inline-flex min-h-12 items-center gap-8 rounded-full bg-ink px-6 py-3 text-sm font-medium text-paper disabled:cursor-not-allowed">
+              <Link href="/study" aria-describedby="workspace-note" className="inline-flex min-h-12 items-center gap-8 rounded-full bg-ink px-6 py-3 text-sm font-medium text-paper">
                 Student workspace <span aria-hidden="true">↗</span>
-              </button>
-              <p id="workspace-note" className="mt-3 text-sm text-muted">Coming soon. A little space for big ideas.</p>
+              </Link>
+              <p id="workspace-note" className="mt-3 text-sm text-muted">Open a local whiteboard. A little space for big ideas.</p>
             </div>
           </section>
 
