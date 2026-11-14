@@ -39,3 +39,51 @@ Unit tests cover exact/unsupported mathematics, targeted hints, bounded context,
 Official APIs: [Update Think](https://developers.deepgram.com/docs/voice-agent-update-think), [Update Prompt](https://developers.deepgram.com/docs/voice-agent-update-prompt), [Inject User](https://developers.deepgram.com/docs/voice-agent-inject-user-message), [initial History](https://developers.deepgram.com/docs/voice-agent-history), and [browser JavaScript SDK](https://developers.deepgram.com/docs/browser-agent-javascript). Installed `@deepgram/agents` 0.2.0 exposes `updateThink` and `think-updated`; its runtime update storage keeps the latest update of each type. Automatic reconnection remains disabled.
 
 The original missing-context cause was reproducible from the data flow: Check work only set component state, the initial prompt had no workspace data, and only the explicit hint button called sendText/injectUserMessage. The button path did include the correct problem/step/result; ordinary microphone turns had no such delivery. Mocked tests now inspect actual SDK configuration and browser WebSocket payloads for both paths, including acknowledgement gating, clearing revisions, retries, failed updates, and no duplicate injection. These tests prove delivery/lifecycle wiring, not the quality of a live model's hint. Real microphone/model behavior still requires the manual test above.
+
+## Authenticated workspace sessions
+
+`/study` checks `GET /auth/session` and keeps the local whiteboard available to
+signed-out visitors. A signed-in student explicitly chooses **Start study
+session**. `POST /api/study-sessions` receives no body; the returned UUID stays
+in memory for this workspace mount, including panel toggles and voice restarts.
+Concurrent start clicks are suppressed. Reloading or leaving the workspace ends
+this local attempt; starting again creates a new session. A lost network response
+can leave an unused server session; this does not claim exactly-once delivery.
+
+In local development, Start voice uses that UUID with the ordinary credential
+provider and no harness capability header. Production/preview issuance remains
+disabled by A's existing token route. `/dev/study` retains its isolated capability
+and `local-study-test` ID and does not create account sessions.
+
+The workspace exposes Sign out in Matthew’s Settings menu. It stops/cancels voice before requesting
+`DELETE /auth/session`, rejects late session responses, and remounts the local
+workspace to clear in-memory worksheets, snapshots, tutor state, and work after confirmed
+logout. Device-local work is stored separately by verified account email; a different
+account or guest cannot restore it through the application. Signing back into the
+same account restores its work on this browser. Existing unscoped work remains
+guest work; it is not silently assigned to an account. This is local UI separation,
+not encrypted storage or protection from someone with access to browser storage. Failed logout preserves work and offers retry. Returning focus rechecks
+login; expired or changed accounts invalidate the previous account's session
+and workspace. These are browser lifecycle controls; server authentication,
+owned-session checks, and RLS remain the actual permission boundaries.
+
+This slice creates study-session metadata in Supabase. Matthew’s local work
+persistence remains in IndexedDB, with account separation; it is not cloud-synced.
+Validated observation writing/history retrieval are still separate A/C
+integration tasks. Local tests mock voice credentials/providers; no paid call is
+required to verify the connection.
+
+Verification for this connection: all 411 default tests, ESLint, TypeScript,
+and the production build passed on Node 22. The full desktop/mobile suite
+initially passed 50 cases and skipped four opt-in harness cases; two worksheet
+cases still referenced the renamed Appearance button. After updating those
+selectors to Settings, all six worksheet regressions passed, covering the two
+failed cases. Across these runs, all 52 applicable browser scenarios were
+verified. The built production app separately passed six account/session/local
+storage scenarios and kept voice disabled; its four local-voice cases were
+intentionally skipped. Local active-voice tests used the real SDK with fake media
+and intercepted token/WebSocket responses, proving logout releases microphone
+tracks and closes the connection without making paid provider calls. The actual
+signed-in Google browser also created a hosted session from the new workspace.
+No new Google consent, live Deepgram speech, deployed-host testing, or live
+`/dev/study` acceptance was performed in this slice.

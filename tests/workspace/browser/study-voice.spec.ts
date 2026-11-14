@@ -66,6 +66,7 @@ test("workspace uses one real SDK session, recovers from credential failure, and
   });
   await page.goto("/dev/study");
   await expect(page.locator(".excalidraw")).toBeAttached();
+  await expect(page.locator(".workspace-split")).toBeAttached();
   const tab = page.getByRole("button", { name: "Whiteboard", exact: true });
   if (await tab.isVisible()) await tab.click();
   await page.getByRole("radio", { name: "Structured input" }).check();
@@ -160,6 +161,7 @@ test("Check work silently updates active spoken context; edits clear evidence an
   });
   await page.goto("/dev/study");
   await expect(page.locator(".excalidraw")).toBeAttached();
+  await expect(page.locator(".workspace-split")).toBeAttached();
   const tab = page.getByRole("button", { name: "Whiteboard", exact: true });
   if (await tab.isVisible()) await tab.click();
   await page.getByRole("radio", { name: "Structured input" }).check();

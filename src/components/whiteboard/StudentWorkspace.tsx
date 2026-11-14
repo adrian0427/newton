@@ -13,7 +13,7 @@ import { loadPart, savePart } from "./persistence";
 
 const Whiteboard = dynamic(() => import("./Whiteboard"), { ssr: false, loading: () => <div className="board-loading" role="status">Opening your whiteboard...</div> });
 
-export default function StudentWorkspace({ developmentVoiceCapability }: { developmentVoiceCapability?: string } = {}) {
+export default function StudentWorkspace({ developmentVoiceCapability, storageScope }: { developmentVoiceCapability?: string; storageScope?: string } = {}) {
   const [revisions] = useState(() => new WorkRevision());
   const [revisionId, setRevisionId] = useState(revisions.current);
   const [downloads] = useState(() => new SnapshotDownload());
@@ -42,18 +42,18 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
   const [restored, setRestored] = useState(false);
   useEffect(() => {
     let active = true;
-    void loadPart("work").then((saved) => {
+    void loadPart("work", storageScope).then((saved) => {
       if (!active) return;
       if (saved) { setExpression(saved.expression); setSource(saved.source); setSplitWidth(saved.splitWidth); }
       setRestored(true);
     });
     return () => { active = false; };
-  }, []);
+  }, [storageScope]);
   useEffect(() => {
     if (!restored) return;
-    const timer = setTimeout(() => void savePart("work", { expression, source, splitWidth }), 300);
+    const timer = setTimeout(() => void savePart("work", { expression, source, splitWidth }, storageScope), 300);
     return () => clearTimeout(timer);
-  }, [restored, expression, source, splitWidth]);
+  }, [restored, expression, source, splitWidth, storageScope]);
 
   const changed = useCallback(() => {
     revisions.edit();
@@ -106,13 +106,15 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
     } finally { if (alive.current) setCapturing(false); }
   }
 
+  if (!restored) return <p role="status">Restoring local work…</p>;
+
   return <>
     <nav hidden={focusMode} className="mobile-workspace-tabs" aria-label="Workspace panels">
       <button type="button" aria-pressed={mobilePane === "worksheet"} onClick={() => setMobilePane("worksheet")}>Worksheet</button>
       <button type="button" aria-pressed={mobilePane === "work"} onClick={() => setMobilePane("work")}>Whiteboard</button>
     </nav>
     <div ref={split} className="workspace-split" data-focus={focusMode} data-mobile-pane={mobilePane} style={{ "--worksheet-width": `${splitWidth}%` } as CSSProperties}>
-      <div className="worksheet-column"><WorksheetPane onDocumentChange={worksheetChanged} /></div>
+      <div className="worksheet-column"><WorksheetPane storageScope={storageScope} onDocumentChange={worksheetChanged} /></div>
       <div className="split-divider" role="separator" tabIndex={0} aria-label="Resize worksheet and whiteboard" aria-orientation="vertical" aria-valuemin={30} aria-valuemax={70} aria-valuenow={Math.round(splitWidth)}
         onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); }}
         onPointerMove={(event) => {
@@ -138,7 +140,7 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
             <path d="M19.3 12a7.5 7.5 0 1 0-1.8 5.3M20 12l-3-3" />
           </svg>
         </button></div>
-        <div className="whiteboard-frame" hidden={source !== "whiteboard"}><WorkspaceBoundary><Whiteboard ref={board} revisions={revisions} onContentChange={changed} onActivityChange={setEditing} onCapture={capture} capturing={capturing} captureDisabled={capturing || editing} /></WorkspaceBoundary></div>
+        <div className="whiteboard-frame" hidden={source !== "whiteboard"}><WorkspaceBoundary><Whiteboard storageScope={storageScope} ref={board} revisions={revisions} onContentChange={changed} onActivityChange={setEditing} onCapture={capture} capturing={capturing} captureDisabled={capturing || editing} /></WorkspaceBoundary></div>
         <div className="expression-area" hidden={source !== "expression"}>
           <div className="expression-actions"><button className="small-button capture-button" type="button" disabled={capturing} onClick={capture}>{capturing ? "Capturing..." : "Capture snapshot"}</button></div>
           <h3>Your next step</h3><MathInput key={inputKey} value={expression} onChange={(value, error) => { changed(); setExpression(value); setInputError(error ?? ""); }} onActivityChange={setEditing} />

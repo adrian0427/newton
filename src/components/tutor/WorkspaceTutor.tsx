@@ -6,17 +6,22 @@ import { createSdkVoiceConnection } from "@/lib/ai/sdk-voice-connection";
 import { PRACTICE_EXPRESSION, checkDistribution, distributionVoiceMessage, unsupportedWork, type DistributionCheck } from "@/lib/math/check-distribution";
 import { submittedContext, type TutoringContext } from "@/lib/ai/tutoring-context";
 import TutorControls from "./TutorControls";
+import { useWorkspaceAccount } from "../whiteboard/workspace-account-context";
 import TutorLauncher from "./TutorLauncher";
 
 export type TutorWork = { revisionId: string; source: "whiteboard" | "expression"; expression: string; inputError: string };
 
 /** Owns a single A01 session outside the open/closed guidance panel lifecycle. */
 export default function WorkspaceTutor({ work, developmentVoiceCapability }: { work: TutorWork; developmentVoiceCapability?: string }) {
-  const voiceAvailable = process.env.NODE_ENV === "development" && !!developmentVoiceCapability;
+  const account = useWorkspaceAccount();
+  const accountState = useSyncExternalStore(account?.subscribe ?? noSubscribe, account?.getSnapshot ?? noAccount, account?.getSnapshot ?? noAccount);
+  const harness = process.env.NODE_ENV === "development" && !!developmentVoiceCapability;
+  const voiceAvailable = process.env.NODE_ENV === "development" && (harness || (!!accountState?.sessionId && !accountState.busy && !accountState.error));
   const [session] = useState(() => createVoiceSession({
     createConnection: () => createSdkVoiceConnection(),
-    credentialProvider: voiceAvailable ? createCredentialProvider({ "X-Newton-Voice-Dev": developmentVoiceCapability! }) : undefined,
+    credentialProvider: harness ? createCredentialProvider({ "X-Newton-Voice-Dev": developmentVoiceCapability! }) : undefined,
   }));
+  useEffect(() => account?.registerStop(() => session.stop()), [account, session]);
   const voice = useSyncExternalStore(session.subscribe, session.getSnapshot, session.getSnapshot);
   const workKey = JSON.stringify([work.revisionId, work.source, work.expression, work.inputError]);
   const [feedback, setFeedback] = useState<{ key: string; result: DistributionCheck; showHint: boolean; delivery: string } | null>(null);
@@ -79,9 +84,21 @@ export default function WorkspaceTutor({ work, developmentVoiceCapability }: { w
     });
   }
 
+  function startVoice() {
+    if (!voiceAvailable) return;
+    const currentAccount = account?.getSnapshot();
+    const sessionId = harness ? "local-study-test" : currentAccount?.sessionId;
+    if (!sessionId || (!harness && (currentAccount?.busy || currentAccount?.error))) return;
+    void session.updateContext(context);
+    void session.start({ sessionId }).catch(() => {});
+  }
+
   return <TutorLauncher indicator={voice.state === "error" ? "error" : current?.result.status === "incorrect" ? "question" : "idle"}
     controls={<TutorControls voice={voice} voiceAvailable={voiceAvailable} feedback={current}
-      onStart={() => { if (voiceAvailable) { void session.updateContext(context); void session.start({ sessionId: "local-study-test" }).catch(() => {}); } }}
+      onStart={startVoice}
       onStop={() => { spokenHint.current = null; void session.stop(); }} onInterrupt={() => session.interrupt()}
       onCheck={() => check(false)} onHint={() => check(true)} />} />;
 }
+
+const noSubscribe = () => () => {};
+const noAccount = () => null;

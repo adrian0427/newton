@@ -9,7 +9,7 @@ const PdfPage = dynamic(() => import("./PdfPage"), { ssr: false, loading: () => 
 
 type Worksheet = { file: File; kind: "pdf" | "image"; url: string };
 
-export default function WorksheetPane({ onDocumentChange }: { onDocumentChange(present: boolean): void }) {
+export default function WorksheetPane({ onDocumentChange, storageScope }: { onDocumentChange(present: boolean): void; storageScope?: string }) {
   const [worksheet, setWorksheet] = useState<Worksheet | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -48,19 +48,19 @@ export default function WorksheetPane({ onDocumentChange }: { onDocumentChange(p
       setWorksheet({ file, kind, url });
       setZoom(1); setPage(1); setPageCount(0);
       onDocumentChange(true);
-      if (persist) void savePart("worksheet", { name: file.name, type: file.type, blob: file });
+      if (persist) void savePart("worksheet", { name: file.name, type: file.type, blob: file }, storageScope);
     } catch (reason) {
       if (generation === request.current) setError(reason instanceof Error ? reason.message : "This file could not be opened. Try a different PDF or image.");
     } finally { if (generation === request.current) setLoading(false); }
-  }, [onDocumentChange]);
+  }, [onDocumentChange, storageScope]);
 
   useEffect(() => {
     let active = true;
-    void loadPart("worksheet").then((saved) => {
+    void loadPart("worksheet", storageScope).then((saved) => {
       if (active && saved && !currentUrl.current) void accept([new File([saved.blob], saved.name, { type: saved.type })], false);
     });
     return () => { active = false; };
-  }, [accept]);
+  }, [accept, storageScope]);
 
   useEffect(() => {
     function pasteWithoutEditor(event: globalThis.ClipboardEvent) {
@@ -73,7 +73,7 @@ export default function WorksheetPane({ onDocumentChange }: { onDocumentChange(p
     }
     document.addEventListener("paste", pasteWithoutEditor);
     return () => document.removeEventListener("paste", pasteWithoutEditor);
-  }, [accept]);
+  }, [accept, storageScope]);
 
   function remove() {
     request.current++;
@@ -81,7 +81,7 @@ export default function WorksheetPane({ onDocumentChange }: { onDocumentChange(p
     currentUrl.current = null;
     setWorksheet(null); setError(""); setLoading(false); setPageCount(0);
     onDocumentChange(false);
-    void deletePart("worksheet");
+    void deletePart("worksheet", storageScope);
   }
   function paste(event: ClipboardEvent) {
     // Leave ordinary text paste alone; files are only read inside this pane.

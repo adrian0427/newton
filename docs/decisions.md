@@ -137,3 +137,20 @@ Edits invalidate visible feedback. Editing while a work hint is pending/playing 
 ## 2026-11-14 — Local authenticated voice authorization
 
 Connect C's verified-user/session-ownership helpers to A's existing token route for local requests without a harness capability. Keep the explicitly guarded capability harness as an independent development path and retain all production/preview/CI/non-loopback restrictions. Do not introduce a new endpoint or change the rate-limit policy: the existing local process-wide limit remains pending team agreement on deployed controls. Workspace session-ID wiring remains Matthew's integration step.
+
+## 2026-11-14 — Owned workspace sessions and device-local account separation
+
+The workspace reuses C's verified auth/session endpoints and A's ordinary
+credential provider. An explicit start action creates one confirmed session per
+workspace mount; voice restarts reuse its UUID. The isolated development harness
+keeps its capability/demo-ID flow, and deployed voice remains disabled.
+
+Matthew's Settings panel shares the workspace account lifecycle. Voice stops
+before logout, late responses cannot revive a logged-out session, and successful
+logout remounts the working area. Matthew's IndexedDB persistence is retained
+with optional compound account/part keys; unscoped legacy records remain guest
+work. Account identity comes from the verified endpoint's Google email, not a
+posted owner. This separates application views on a shared browser; it is not
+local encryption, device-access protection, or cloud work synchronization. Auth,
+owned-session checks, and database RLS remain server-side boundaries. Existing
+work is preserved, and no service-role credentials or new schema are required.

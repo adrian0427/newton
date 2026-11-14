@@ -69,14 +69,14 @@ async function run<T>(mode: IDBTransactionMode, action: (store: IDBObjectStore) 
 }
 
 /** Returns null when absent, invalid, or storage is unavailable (private mode, quota, etc.). */
-export async function loadPart<K extends PartKey>(key: K): Promise<Parts[K] | null> {
-  try { return parsers[key](await run("readonly", (store) => store.get(key))); } catch { return null; }
+export async function loadPart<K extends PartKey>(key: K, scope?: string): Promise<Parts[K] | null> {
+  try { return parsers[key](await run("readonly", (store) => store.get(scope ? [scope, key] : key))); } catch { return null; }
 }
 
-export async function savePart<K extends PartKey>(key: K, value: Parts[K]): Promise<void> {
-  try { await run("readwrite", (store) => store.put(value, key)); } catch { /* Persistence is best effort; the live workspace still works. */ }
+export async function savePart<K extends PartKey>(key: K, value: Parts[K], scope?: string): Promise<void> {
+  try { await run("readwrite", (store) => store.put(value, scope ? [scope, key] : key)); } catch { /* Persistence is best effort; the live workspace still works. */ }
 }
 
-export async function deletePart(key: PartKey): Promise<void> {
-  try { await run("readwrite", (store) => store.delete(key)); } catch { /* best effort */ }
+export async function deletePart(key: PartKey, scope?: string): Promise<void> {
+  try { await run("readwrite", (store) => store.delete(scope ? [scope, key] : key)); } catch { /* best effort */ }
 }
