@@ -6,6 +6,8 @@ Newton is the student-facing product; Twofold is the three-developer team. This 
 
 Read `docs/product.md`, `docs/architecture.md`, and `docs/decisions.md`; inspect relevant types in `src/types/tutoring.ts`. Identify affected modules and owners in `docs/contributing.md`. Respect the requested scope and coordinate shared contracts, dependencies, layouts, and configuration.
 
+Before implementing a workstream, read its assigned specification in `docs/workstreams/` alongside the architecture and shared contracts.
+
 ## Engineering
 
 - Prefer simple, modular implementations and established libraries over custom infrastructure.
@@ -25,7 +27,7 @@ Read `docs/product.md`, `docs/architecture.md`, and `docs/decisions.md`; inspect
 
 ## Security and privacy
 
-- Never commit credentials. Permanent provider keys, including `DEEPGRAM_API_KEY`, remain server-side.
+- Never commit credentials. Permanent provider keys, including `DEEPGRAM_API_KEY` and any future OpenAI key, remain server-side; never use `NEXT_PUBLIC_` for secrets.
 - Authenticate protected routes, enforce Supabase RLS, and verify study-session ownership.
 - Never trust a client-supplied user ID. Assign ownership from verified server identity.
 - Do not persist raw audio, screenshots, or full conversations by default; minimize student PII.

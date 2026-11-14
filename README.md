@@ -6,9 +6,9 @@ Newton is an AI study companion for students in grades 9–12, built by **Twofol
 
 ## Current status
 
-This repository includes a responsive homepage, strict TypeScript contracts, agent guidance, tests, and CI. A01 adds an Deepgram Voice Agent adapter and a local diagnostic harness; live microphone behavior still requires manual verification. The student workspace button is intentionally disabled. Authentication, whiteboarding, deployed voice, and saved learning history are not implemented yet.
+This branch includes a responsive homepage, strict TypeScript contracts, agent guidance, tests, and CI, plus A01's Deepgram voice adapter and guarded local diagnostic harness from `1f7b031`. Live microphone, audio, and natural-interruption acceptance still requires manual verification. The student workspace button is intentionally disabled. Authentication, deployed voice, whiteboarding, analysis, and saved learning history remain planned.
 
-For voice development, see [A01 setup, adapter interface, and manual testing](docs/ai-voice.md). Run `npm run voice:dev` for the local diagnostic page after setting server-only `DEEPGRAM_API_KEY` in `.env.local`. The harness obtains short-lived tokens on Start; production and preview issuance stay closed until authentication and abuse controls are integrated.
+For local setup, adapter handoff, and manual acceptance, see [A01 voice development](docs/ai-voice.md). Set server-only `DEEPGRAM_API_KEY` in `.env.local` and run `npm run voice:dev`; open the printed loopback address at `/dev/voice`. The harness obtains temporary tokens on Start. Ordinary dev, production, and preview issuance remain closed until the appropriate authentication and abuse controls are integrated.
 
 The planned MVP combines natural voice conversation, a whiteboard with structured math fallback, controlled Socratic hints, and evidence-backed memory across sessions. The first domain is **Algebra I: the distributive property**.
 
@@ -40,15 +40,18 @@ For later integrations, copy `.env.example` to `.env.local` and fill in:
 
 | Variable | Exposure | Purpose |
 | --- | --- | --- |
-| `DEEPGRAM_API_KEY` | Server only | Short-lived Deepgram tokens for local voice testing; managed LLM needs no OpenAI key |
+| `DEEPGRAM_API_KEY` | Server only | Deepgram managed voice; Member-level or higher key for temporary browser-token issuance |
+| `OPENAI_API_KEY` | Server only, optional | Not needed for managed voice; separately funded future vision only if OpenAI is selected |
 | `NEXT_PUBLIC_SUPABASE_URL` | Public | Supabase project endpoint |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public | Supabase client initialization; requires auth and RLS for student data |
 
-Never expose permanent provider keys or Supabase privileged keys. Local environment files are ignored. The homepage and default tests need no credentials. Only the guarded local voice flow contacts Deepgram.
+Never expose permanent provider keys through `NEXT_PUBLIC_` variables or browser responses. Supabase privileged keys remain server-side too. Local environment files are ignored. The homepage and default tests need no credentials. Only the guarded local voice flow contacts Deepgram. Deployed voice-token issuance stays disabled until authentication, session ownership, and abuse controls are integrated; preview deployments are included.
 
 ## Stack and layout
 
-Installed: Next.js App Router, React, TypeScript, Tailwind CSS, Deepgram Browser Agent SDK, ESLint, and Vitest. The lockfile records exact dependency versions. Planned dependencies are added by their owners when needed: Excalidraw, MathLive, CortexJS Compute Engine, and Supabase. Vercel is the intended deployment target; no deployment is provisioned.
+Installed: Next.js App Router, React, TypeScript, Tailwind CSS, the official core Deepgram Browser Agent SDK (`@deepgram/agents`), ESLint, and Vitest. The lockfile records exact dependency versions. Planned dependencies are added by their owners when needed: Excalidraw, MathLive, CortexJS Compute Engine, and Supabase. Vercel is the intended deployment target; no deployment is provisioned.
+
+The hackathon voice selection is Deepgram Voice Agent using intended trial credits and a managed OpenAI model, initially `gpt-4o-mini`, subject to availability and pricing. It needs no separate OpenAI API key. Whiteboard vision is a separate, undecided provider choice because funded OpenAI vision API access is unavailable. Using OpenAI through Deepgram does not establish OpenAI Challenge eligibility; ask the organizers. See [decision 013](docs/decisions.md#2026-11-13--deepgram-voice-pivot) and [A's existing implementation audit](docs/workstreams/A01-ai-tutoring.md#existing-implementation-and-migration-follow-up).
 
 ```text
 src/app/                 Pages, layout, and future route handlers
@@ -70,6 +73,7 @@ After the foundation is reviewed and merged, branch from `main`: A uses `feat/ai
 - [Product and MVP](docs/product.md)
 - [Architecture and data boundaries](docs/architecture.md)
 - [Ownership, milestones, and contribution workflow](docs/contributing.md)
+- [Three-developer workstream guide and implementation specifications](docs/workstreams/README.md)
 - [Initial decisions](docs/decisions.md)
 - [Agent instructions](AGENTS.md)
 
