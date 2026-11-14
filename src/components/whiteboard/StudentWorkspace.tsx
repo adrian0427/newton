@@ -7,13 +7,14 @@ import type { WhiteboardHandle } from "./Whiteboard";
 import { WorkRevision, SnapshotDownload, expressionContent } from "./snapshots";
 import MathInput from "./MathInput";
 import WorkspaceBoundary from "./WorkspaceBoundary";
-import TutorLauncher from "../tutor/TutorLauncher";
+import WorkspaceTutor from "../tutor/WorkspaceTutor";
 import WorksheetPane from "../worksheet/WorksheetPane";
 
 const Whiteboard = dynamic(() => import("./Whiteboard"), { ssr: false, loading: () => <div className="board-loading" role="status">Opening your whiteboard...</div> });
 
-export default function StudentWorkspace() {
+export default function StudentWorkspace({ developmentVoiceCapability }: { developmentVoiceCapability?: string } = {}) {
   const [revisions] = useState(() => new WorkRevision());
+  const [revisionId, setRevisionId] = useState(revisions.current);
   const [downloads] = useState(() => new SnapshotDownload());
   const board = useRef<WhiteboardHandle>(null);
   const alive = useRef(true);
@@ -38,6 +39,7 @@ export default function StudentWorkspace() {
 
   const changed = useCallback(() => {
     revisions.edit();
+    setRevisionId(revisions.current);
     downloads.clear();
     setDownload(null);
     setMessage("");
@@ -136,6 +138,6 @@ export default function StudentWorkspace() {
         </section>}
       </section>
     </div>
-    <TutorLauncher />
+    <WorkspaceTutor work={{ revisionId, source, expression, inputError }} developmentVoiceCapability={developmentVoiceCapability} />
   </>;
 }

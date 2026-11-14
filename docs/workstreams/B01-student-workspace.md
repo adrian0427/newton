@@ -21,6 +21,10 @@ Use `tests/workspace/` for capture/state tests. A owns SDK connections and inter
 
 The Deepgram pivot does not expand B1. B does not implement Deepgram networking, credential fetching, microphone lifecycle, or provider-specific imports throughout the UI; consume A's small provider-independent adapter. Whiteboard PNG and structured-expression exports remain `WorkSnapshot` data for a separately selected analysis provider.
 
+## First integration status
+
+The [structured-work slice](../study-tutoring.md) now connects normalized MathLive work/revisions to exact local linear-expansion checks and targeted guidance. The real workspace uses A01's single voice session on the guarded `/dev/study` entry point, with additive bounded `sendText` context through the actual SDK. Public `/study` receives no development capability. C's auth/session APIs, server analysis, image recognition and learning memory remain absent; no local check authorizes persistence. Full milestone requirements below remain broader than this slice.
+
 ## Milestone B1: useful workspace without services
 
 1. Build `/study` with a clear Algebra I prompt (`2(x + 3) = 14`), working area, structured input fallback, and honest unavailable tutor/history panels. Enable homepage navigation only when the study page works. Keep keyboard labels, visible focus, status announcements, and mobile layout usable.

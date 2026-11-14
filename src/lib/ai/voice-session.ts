@@ -1,6 +1,9 @@
+import { validTutoringContext, type TutoringContext } from "./tutoring-context";
+
+export type ContextDelivery = Readonly<{ revisionId: string; status: "stored" | "pending" | "applied" | "failed"; code?: "CONTEXT_DELIVERY_FAILED" }>;
 /** A-owned adapter types; proposed additive integration API, not new tutoring contracts. */
 export type VoiceState = "unavailable" | "idle" | "connecting" | "listening" | "speaking" | "interrupted" | "stopping" | "error";
-export type VoiceSnapshot = Readonly<{ state: VoiceState; error?: string }>;
+export type VoiceSnapshot = Readonly<{ state: VoiceState; error?: string; context?: ContextDelivery }>;
 export type VoiceCredential = Readonly<{ clientSecret: string; expiresAt: string }>;
 export type CredentialProvider = (request: { sessionId: string; signal: AbortSignal }) => Promise<VoiceCredential>;
 
@@ -10,9 +13,12 @@ export type VoiceConnectionEvent =
 
 /** Provider-neutral seam for real SDK connections and mocked lifecycle tests. */
 export interface VoiceConnection {
-  connect(clientSecret: string): Promise<void>;
+  connect(clientSecret: string, context?: TutoringContext): Promise<void>;
   close(): void;
   interrupt(): void;
+  /** Optional bounded text input on the current connection; no new session. */
+  sendText?(message: string): boolean;
+  updateContext?(context: TutoringContext): Promise<boolean>;
   subscribe(listener: (event: VoiceConnectionEvent) => void): () => void;
 }
 
@@ -20,6 +26,10 @@ export interface VoiceSession {
   start(input: { sessionId: string }): Promise<void>;
   stop(): Promise<void>;
   interrupt(): void;
+  /** True means submitted to the adapter, not proof of delivery or audible speech. */
+  sendText(message: string): boolean;
+  /** Store for the next start, or await acknowledgement on the active connection. */
+  updateContext(context: TutoringContext): Promise<boolean>;
   getState(): VoiceState;
   getSnapshot(): VoiceSnapshot;
   subscribe(listener: () => void): () => void;
@@ -80,9 +90,13 @@ export function createVoiceSession(options: {
   const listeners = new Set<() => void>();
   type Attempt = { controller: AbortController; connection?: VoiceConnection; unsubscribe?: () => void; task?: Promise<void>; failure?: string; activity?: "listening" | "speaking" | "interrupted" };
   let active: Attempt | undefined;
+  let context: TutoringContext | undefined;
+  let contextDelivery: ContextDelivery | undefined;
+  let contextTask: Promise<boolean> | undefined;
+  let contextGeneration = 0;
 
   function publish(next: VoiceSnapshot) {
-    snapshot = Object.freeze(next);
+    snapshot = Object.freeze({ ...next, ...(contextDelivery ? { context: contextDelivery } : {}) });
     for (const listener of listeners) listener();
   }
 
@@ -99,6 +113,7 @@ export function createVoiceSession(options: {
     if (active !== attempt) return;
     attempt.failure = message;
     active = undefined;
+    if (context && contextDelivery?.status === "pending") contextDelivery = { revisionId: context.revisionId, status: "failed", code: "CONTEXT_DELIVERY_FAILED" };
     cleanup(attempt);
     publish({ state: "error", error: message });
   }
@@ -115,8 +130,11 @@ export function createVoiceSession(options: {
 
   function start({ sessionId }: { sessionId: string }): Promise<void> {
     if (active) return active.task ?? Promise.resolve();
+    contextGeneration++;
+    contextTask = undefined;
     const attempt: Attempt = { controller: new AbortController() };
     active = attempt;
+    if (context) contextDelivery = { revisionId: context.revisionId, status: "pending" };
     publish({ state: "connecting" });
     attempt.task = (async () => {
       const timer = setTimeout(() => fail(attempt, "Voice connection timed out. End the attempt and try again."), options.connectTimeoutMs ?? 30_000);
@@ -147,8 +165,11 @@ export function createVoiceSession(options: {
             if (snapshot.state !== "connecting") publish({ state: event.type });
           }
         });
-        await wait(connection.connect(credential.clientSecret), attempt.controller.signal);
-        if (active === attempt) publish({ state: attempt.activity ?? "listening" });
+        await wait(context ? connection.connect(credential.clientSecret, context) : connection.connect(credential.clientSecret), attempt.controller.signal);
+        if (active === attempt) {
+          if (context) contextDelivery = { revisionId: context.revisionId, status: "applied" };
+          publish({ state: attempt.activity ?? "listening" });
+        }
       } catch (error) {
         if (active === attempt) fail(attempt, safeError(error));
         if (attempt.failure) throw new Error(attempt.failure);
@@ -165,6 +186,9 @@ export function createVoiceSession(options: {
     async stop() {
       const attempt = active;
       active = undefined;
+      contextGeneration++;
+      contextTask = undefined;
+      if (context) contextDelivery = { revisionId: context.revisionId, status: "stored" };
       if (attempt) {
         publish({ state: "stopping" });
         cleanup(attempt);
@@ -178,6 +202,47 @@ export function createVoiceSession(options: {
         attempt.connection?.interrupt();
         if (active === attempt) publish({ state: "interrupted" });
       } catch (error) { fail(attempt, safeError(error)); }
+    },
+    sendText(message) {
+      if (!active?.connection || contextDelivery?.status === "pending" || !["listening", "interrupted"].includes(snapshot.state) || !message.trim() || message.length > 2000) return false;
+      const attempt = active;
+      try { return attempt.connection?.sendText?.(message) ?? false; }
+      catch (error) { fail(attempt, safeError(error)); return false; }
+    },
+    updateContext(next) {
+      if (!validTutoringContext(next)) return Promise.resolve(false);
+      if (JSON.stringify(context) === JSON.stringify(next)) return contextTask ?? Promise.resolve(contextDelivery?.status !== "failed");
+      context = JSON.parse(JSON.stringify(next)) as TutoringContext;
+      const generation = ++contextGeneration;
+      const attempt = active;
+      contextDelivery = { revisionId: context.revisionId, status: attempt ? "pending" : snapshot.state === "error" ? "failed" : "stored",
+        ...(snapshot.state === "error" ? { code: "CONTEXT_DELIVERY_FAILED" as const } : {}) };
+      publish(snapshot);
+      if (!attempt) { contextTask = undefined; return Promise.resolve(true); }
+      const failed = () => {
+        if (generation !== contextGeneration || active !== attempt) return false;
+        contextDelivery = { revisionId: next.revisionId, status: "failed", code: "CONTEXT_DELIVERY_FAILED" };
+        fail(attempt, "Work context could not be safely updated. Voice ended to prevent outdated guidance. Start voice again to use the latest submission.");
+        return false;
+      };
+      if (snapshot.state === "connecting" || !attempt.connection?.updateContext) return Promise.resolve(failed());
+      const previous = contextTask;
+      contextTask = (async () => {
+        try {
+          // Serial acknowledgements have no revision IDs. Coalesce edits arriving
+          // during a request, then send only the newest revision after its ack.
+          if (previous) await previous;
+          if (generation !== contextGeneration || active !== attempt) return false;
+          const applied = await wait(attempt.connection!.updateContext!(next), attempt.controller.signal);
+          if (generation !== contextGeneration || active !== attempt) return false;
+          if (!applied) return failed();
+          contextDelivery = { revisionId: next.revisionId, status: "applied" };
+          publish(snapshot);
+          return true;
+        } catch { return failed(); }
+        finally { if (generation === contextGeneration) contextTask = undefined; }
+      })();
+      return contextTask;
     },
     getState: () => snapshot.state,
     getSnapshot: () => snapshot,

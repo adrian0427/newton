@@ -24,6 +24,25 @@ const credential = (): VoiceCredential => ({ clientSecret: "ek_test_only", expir
 afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe("voice lifecycle", () => {
+  it("submits bounded work context only on the active ready connection, without creating another session", async () => {
+    const sdk = { ...connection(), sendText: vi.fn(() => true) };
+    const factory = vi.fn(() => sdk);
+    const voice = createVoiceSession({ credentialProvider: async () => credential(), createConnection: factory });
+    expect(voice.sendText("work")).toBe(false);
+    await voice.start({ sessionId: "session" });
+    expect(voice.sendText("work")).toBe(true);
+    expect(voice.sendText(" ")).toBe(false);
+    expect(voice.sendText("x".repeat(2001))).toBe(false);
+    sdk.emit({ type: "speaking" });
+    expect(voice.sendText("work")).toBe(false);
+    sdk.emit({ type: "listening" });
+    sdk.sendText.mockImplementationOnce(() => { throw new Error("PRIVATE"); });
+    expect(voice.sendText("work")).toBe(false);
+    expect(voice.getState()).toBe("error");
+    expect(voice.getSnapshot().error).not.toContain("PRIVATE");
+    expect(sdk.close).toHaveBeenCalledOnce();
+    expect(factory).toHaveBeenCalledOnce();
+  });
   it("starts idle, publishes SDK activity, interrupts, stops, and unsubscribes", async () => {
     const sdk = connection();
     const voice = createVoiceSession({ credentialProvider: async () => credential(), createConnection: () => sdk });
@@ -160,4 +179,71 @@ describe("voice lifecycle", () => {
     expect(factory).not.toHaveBeenCalled();
     expect(voice.getSnapshot().error).not.toContain("secret details");
   });
+});
+
+it("stores initial work, acknowledges changes once, and restores only the latest context after restart", async () => {
+  const pending = deferred<boolean>();
+  const sdk = { ...connection(), updateContext: vi.fn(() => pending.promise) };
+  const voice = createVoiceSession({ credentialProvider: async () => credential(), createConnection: () => sdk });
+  const initial = { revisionId: "revision-1", problem: "7(6k+2)", submission: null };
+  expect(await voice.updateContext(initial)).toBe(true);
+  expect(voice.getSnapshot().context?.status).toBe("stored");
+  await voice.start({ sessionId: "study" });
+  expect(sdk.connect).toHaveBeenCalledWith(expect.any(String), initial);
+  expect(voice.getSnapshot().context?.status).toBe("applied");
+  const changed = { ...initial, revisionId: "revision-2" };
+  const update = voice.updateContext(changed);
+  expect(voice.updateContext(changed)).toBe(update);
+  expect(voice.getSnapshot().context?.status).toBe("pending");
+  pending.resolve(true);
+  expect(await update).toBe(true);
+  expect(sdk.updateContext).toHaveBeenCalledOnce();
+  await voice.stop();
+  await voice.start({ sessionId: "study" });
+  expect(sdk.connect).toHaveBeenLastCalledWith(expect.any(String), changed);
+  expect(voice.getSnapshot().context).toEqual({ revisionId: "revision-2", status: "applied" });
+  await voice.stop();
+});
+
+it("closes on failed context delivery, keeps the new revision for retry, and sanitizes diagnostics", async () => {
+  const sdk = { ...connection(), updateContext: vi.fn().mockRejectedValue(new Error("PRIVATE WORK / TOKEN")) };
+  const voice = createVoiceSession({ credentialProvider: async () => credential(), createConnection: () => sdk });
+  await voice.start({ sessionId: "study" });
+  const context = { revisionId: "revision-2", problem: "private work", submission: null };
+  expect(await voice.updateContext(context)).toBe(false);
+  expect(sdk.close).toHaveBeenCalledOnce();
+  expect(voice.getState()).toBe("error");
+  expect(voice.getSnapshot().context).toEqual({ revisionId: "revision-2", status: "failed", code: "CONTEXT_DELIVERY_FAILED" });
+  expect(JSON.stringify(voice.getSnapshot())).not.toMatch(/private work|PRIVATE WORK|TOKEN/);
+  await voice.start({ sessionId: "study" });
+  expect(sdk.connect).toHaveBeenLastCalledWith(expect.any(String), context);
+  expect(voice.getSnapshot().context?.status).toBe("applied");
+  await voice.stop();
+});
+
+it("coalesces pending revisions and cannot apply an obsolete acknowledgement after restart", async () => {
+  const pending = deferred<boolean>();
+  const sdk = { ...connection(), updateContext: vi.fn().mockReturnValueOnce(pending.promise).mockResolvedValue(true) };
+  const voice = createVoiceSession({ credentialProvider: async () => credential(), createConnection: () => sdk });
+  await voice.start({ sessionId: "study" });
+  const old = voice.updateContext({ revisionId: "old", problem: "7(6k+2)", submission: null });
+  const middle = voice.updateContext({ revisionId: "middle", problem: "7(6k+2)", submission: null });
+  const latest = { revisionId: "new", problem: "3(2x+5)", submission: null };
+  const updating = voice.updateContext(latest);
+  expect(sdk.updateContext).toHaveBeenCalledOnce();
+  pending.resolve(true);
+  expect(await old).toBe(false);
+  expect(await middle).toBe(false);
+  expect(await updating).toBe(true);
+  expect(sdk.updateContext).toHaveBeenCalledTimes(2);
+  expect(sdk.updateContext).toHaveBeenLastCalledWith(latest);
+  const late = deferred<boolean>();
+  sdk.updateContext.mockReturnValueOnce(late.promise);
+  const cancelled = voice.updateContext({ ...latest, revisionId: "last" });
+  await voice.stop();
+  await voice.start({ sessionId: "study" });
+  late.resolve(true);
+  expect(await cancelled).toBe(false);
+  expect(voice.getSnapshot().context).toEqual({ revisionId: "last", status: "applied" });
+  await voice.stop();
 });

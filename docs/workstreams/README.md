@@ -1,6 +1,6 @@
 # Newton implementation workstreams
 
-Start here, then read your assigned specification. This guide formalizes the existing architecture; every module and endpoint below is **planned**, unless already present in the repository. These documents do not implement features. This branch already contains A1's Deepgram adapter and local harness; [the voice handoff](../ai-voice.md) documents setup and pending live acceptance. Deployed authentication, analysis, and memory integrations remain planned.
+Start here, then read your assigned specification. This guide formalizes the existing architecture; every module and endpoint below is **planned**, unless already present in the repository. These documents do not implement features. This branch contains A1's Deepgram adapter, the B1 workspace, and the [bounded structured-work slice](../study-tutoring.md) with a guarded development workspace voice path; [the voice handoff](../ai-voice.md) documents setup and pending live acceptance. Deployed authentication, analysis, and memory integrations remain planned.
 
 ## Assignments and ownership
 
@@ -57,7 +57,7 @@ The voice interface below is a proposal, not a declaration that all methods alre
 | Name/interface | Shape and semantics | Author |
 | --- | --- | --- |
 | `VoiceState` | `unavailable`, `idle`, `connecting`, `listening`, `speaking`, `interrupted`, `stopping`, `error` | A |
-| `VoiceSession` | Existing A1: `start({ sessionId }): Promise<void>`, idempotent `stop(): Promise<void>`, `interrupt(): void`, `getState(): VoiceState`, `getSnapshot(): VoiceSnapshot`, `subscribe(listener: () => void): () => void`; listener is notified to read state/optional sanitized error from the snapshot. Shared publication and `deliver(decision): Promise<void>` remain proposals for integration/A2 | A |
+| `VoiceSession` | Existing A1: `start({ sessionId }): Promise<void>`, idempotent `stop(): Promise<void>`, `interrupt(): void`, bounded explicit `sendText(message: string): boolean`, silent `updateContext(context: TutoringContext): Promise<boolean>`, `getState(): VoiceState`, `getSnapshot(): VoiceSnapshot`, `subscribe(listener: () => void): () => void`; listener reads state, sanitized error and optional context delivery status/revision from the snapshot. Shared publication and `deliver(decision): Promise<void>` remain proposals for integration/A2 | A |
 | `InterventionDecision` | Union: `{ kind: "wait", reason }` or `{ kind: "speak", sessionId, sourceRevisionId, action: Exclude<WorkAnalysis["suggestedAction"], "wait">, prompt, hintId }`; hints remain untrusted context, never privileged instructions | A |
 | `TutorController` | Construct with B's `capture(): Promise<WorkSnapshot>`, an analysis client, the voice adapter, and `getCurrentWork(): { sessionId, revisionId }`. Expose `updateContext({ sessionId, currentRevisionId, mode, isEditing, voiceState })`, `requestHelp(): Promise<void>`, and `dispose(): void`; A owns timers/cancellation, B calls these on state changes/unmount | A |
 | `StudySession` | `{ id, startedAt, endedAt: string \| null }`; times are ISO UTC, no browser-controlled owner | C |

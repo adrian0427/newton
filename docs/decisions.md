@@ -84,7 +84,7 @@ Using a managed OpenAI model through Deepgram does **not** establish OpenAI Chal
 
 A's initial implementation `1f7b031`, preserved and extended through `4513f07`, uses `@deepgram/agents`, managed `gpt-4o-mini`, and `/v1/auth/grant`. The developer subsequently confirmed browser recognition and audible playback; the latest lifecycle/stability changes require fresh manual acoustic checks. See [the A01 handoff](ai-voice.md). `npm run voice:dev` uses loopback-only, capability-protected, same-origin temporary-token issuance with a process-local limit. It replaces the old Node-only/pasted-credential procedure without enabling production/preview issuance. These local controls are not a substitute for C's authenticated deployment controls.
 
-B's workspace and A's voice implementation coexist after this merge, but `/study` has not been wired to the adapter. B2 will consume A's provider-independent lifecycle and C's owned sessions; analysis, whiteboard/worksheet context, intervention delivery, and memory remain separate future integrations. No developer ownership or shared tutoring contract changes are made by combining the workstreams.
+The merge initially placed B's workspace and A's voice implementation side by side; decision 021 records the first bounded structured-work integration. Public voice still awaits C's owned sessions. Server analysis, whiteboard/worksheet context, proactive intervention, and memory remain separate future integrations. No developer ownership or shared tutoring contract changes are made by combining the workstreams.
 
 ## 2026-11-13 - Local student workspace (B1)
 
@@ -116,3 +116,20 @@ B's workspace and A's voice implementation coexist after this merge, but `/study
 ## 2026-11-14 — Google-only user-facing authentication
 
 The user selected Supabase Google OAuth for public sign-in instead of password registration. Keep existing SSR cookies, verified Auth IDs and user-scoped RLS. Replace the password form/POST handler with Google start and a PKCE callback, using a configured application origin and fixed redirects. Google secrets stay in Supabase provider settings. No A/B consumer or database schema changes are required. The developer has configured the hosted Google provider and reported successful manual Google sign-in, logout/relogin and reload. Automated live fixture-session and database isolation checks passed; a second actual Google-account and deployed HTTPS acceptance remain pending. Password fixtures are retained only in the explicit disposable-project database acceptance harness.
+
+## 2026-11-14 — First structured-work tutoring slice
+
+**021 — Exact local linear-expansion checking and guarded workspace voice.** Use a bounded exact-rational coefficient verifier for structured distributive expressions, without adding a general math dependency or labeling images as understood. Checks and hints use the current expression/revision and stay transient; a future server must revalidate before C can persist evidence. This is a deliberately narrower implementation than the planned CortexJS/server analysis path.
+
+C01's auth/session implementation is absent, so public voice issuance stays closed. The existing loopback harness adds a generated `/dev/study` entry point for the real workspace, preserving `/study` without a development capability. Existing A01 `start`/`stop`/`interrupt`/subscriptions own one connection; additive `sendText` uses the SDK's actual `injectUserMessage` method for explicit, bounded quoted check context. No proposed `deliver` method is assumed.
+
+Edits invalidate visible feedback. Editing while a work hint is pending/playing ends its voice session conservatively because binary audio has no server response ID; explicit restart is required. No proactive speech, handwriting recognition, auth bypass, memory write, or duplicated voice lifecycle is added. See [scope and manual acceptance](study-tutoring.md).
+
+
+## 2026-11-14 — ADR 022: Current submitted work in voice context
+
+**Decision:** Supply current explicitly checked structured work in initial voice settings and replace it silently on an idle active connection using SDK `updateThink()` with the unchanged managed provider/model. Await `ThinkUpdated` before forwarding more microphone audio or sending an explicit hint request. Deepgram documents `UpdatePrompt` as additive; it would accumulate obsolete instructions. `InjectUserMessage` remains reserved for an explicit response request, and history is not fabricated as a context workaround.
+
+**Reason:** Check work previously updated only React feedback; spoken hint requests had no problem or submitted step. The button already sent those fields, but general voice questions did not. One current context block carries the revision, explicit problem, structured source and deterministic result without claiming handwriting recognition or persistent memory.
+
+**Lifecycle:** Edits remove stale evidence. Busy, racing or failed updates close voice rather than playing unlabelled audio for an obsolete revision; explicit restart restores only the latest context. Successful idle updates keep the connection. Local diagnostics expose status/revision/fixed error codes only. C's production authentication dependency, local credential restrictions and developer ownership remain unchanged.

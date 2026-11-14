@@ -6,13 +6,20 @@ Newton is an AI study companion for students in grades 9–12, built by **Twofol
 
 ## Current status
 
-This checkout combines A01's Deepgram voice foundation, B01's local student workspace, and C01's Supabase authentication and learning-memory backend, alongside the responsive homepage, shared TypeScript contracts, tests, and CI. `/study` provides worksheet viewing, Excalidraw drawing, MathLive input, revision-safe snapshots, appearance preferences, and an on-demand Newton panel. Google sign-in and sign-out are available at `/auth/sign-in`; see [Google setup](docs/google-auth.md). The developer manually verified Google login/logout and reload; live fixture session and two-account isolation tests passed. C1's authenticated backend persistence is implemented and passed real two-account HTTP/helper and direct-client checks against hosted `newton-dev` on November 14, 2026: separate account access, append-only history, retry deduplication, and retrieval after sign-out/sign-in in a later session. Both migrations are applied.
+This checkout combines A01's Deepgram voice foundation, B01's local student workspace, C01's Supabase authentication and learning-memory backend, and the first structured-work tutoring slice, alongside the responsive homepage, shared TypeScript contracts, tests, and CI. `/study` provides worksheet viewing, Excalidraw drawing, MathLive input, revision-safe snapshots, appearance preferences, and an on-demand Newton panel. Its Check work and Ask for a hint controls run a bounded, deterministic exact-arithmetic check of structured distributive-property expansions in the browser. Handwriting and worksheet images are not recognized or analyzed. See [the integration demo](docs/study-tutoring.md). Google sign-in and sign-out are available at `/auth/sign-in`; see [Google setup](docs/google-auth.md). The developer manually verified Google login/logout and reload; live fixture session and two-account isolation tests passed. C1's authenticated backend persistence is implemented and passed real two-account HTTP/helper and direct-client checks against hosted `newton-dev` on November 14, 2026: separate account access, append-only history, retry deduplication, and retrieval after sign-out/sign-in in a later session. Both migrations are applied.
 
-These workstreams are present side by side but are not yet connected. The workspace's voice/help controls remain unavailable because `/study` does not consume A's voice adapter or C's authenticated study sessions. A's token handler does not yet call C's identity or session-ownership checks, and voice tutoring neither writes nor reads C's learning history.
+A01 and B01 are connected: the workspace uses A01's single `VoiceSession`, and submitted structured work reaches voice as revision-scoped context. Voice on that workspace is enabled only on the guarded, generated `/dev/study` entry point. C01 is not yet connected to tutoring. Public `/study` receives no voice capability and keeps voice disabled. The token handler does not yet call C's identity or session-ownership checks, `/dev/study` uses a fixed local test session ID rather than a C-owned study session, and tutoring neither writes nor reads learning history. Checks and hints are transient and are never saved.
 
-A01 provides browser conversations, microphone capture, audible playback, natural/manual interruption, broad mathematical tutoring, and development lifecycle diagnostics. The developer confirmed live browser recognition and playback before this merge; the latest stability changes still require manual acoustic acceptance. Voice runs separately in the guarded local `/dev/voice` harness. Authenticated deployed voice, mathematical work analysis/verification, proactive intervention, and connecting tutoring to persistent learning history remain planned.
+A01 provides browser conversations, microphone capture, audible playback, natural/manual interruption, broad mathematical tutoring, and development lifecycle diagnostics. The developer confirmed live browser recognition and playback before this merge; the latest stability changes still require manual acoustic acceptance. Voice diagnostics remain available at `/dev/voice`; `/dev/study` adds the combined workspace demonstration through the same local guards. Authenticated deployed voice, server work analysis, handwriting recognition, proactive intervention, and connecting tutoring to persistent learning history remain planned.
 
-For voice setup, adapter handoff, and manual acceptance, see [A01 voice development](docs/ai-voice.md). Set server-only `DEEPGRAM_API_KEY` in `.env.local` and run `npm run voice:dev`; open the printed loopback address at `/dev/voice`. The harness obtains temporary tokens on Start. Ordinary dev, production, and preview issuance remain closed until the appropriate authentication and abuse controls are integrated.
+| Route | Availability |
+| --- | --- |
+| `/`, `/study`, `/auth/sign-in` | Normal pages in development and production builds |
+| `/auth/session`, `POST /api/study-sessions`, `GET /api/learning-context` | C01 handlers; require Supabase configuration, and the latter two require a verified signed-in user |
+| `POST /api/realtime/token` | A01 handler; fails closed without provider calls except for the `npm run voice:dev` loopback harness |
+| `/dev/voice`, `/dev/study` | Generated, Git-ignored pages created only by `npm run voice:dev`; absent from normal dev and production builds and guarded against production, preview, CI, and non-loopback hosts |
+
+For voice setup, adapter handoff, and manual acceptance, see [A01 voice development](docs/ai-voice.md). Set server-only `DEEPGRAM_API_KEY` in `.env.local` and run `npm run voice:dev`; open the printed loopback address at `/dev/study` for the workspace or `/dev/voice` for diagnostics. The harness obtains temporary tokens on Start. Ordinary dev, production, and preview issuance remain closed until the appropriate authentication and abuse controls are integrated.
 
 The planned MVP combines natural voice conversation, a whiteboard with structured math fallback, controlled Socratic hints, and evidence-backed memory across sessions. Automated work analysis and proactive intervention initially target **Algebra I: the distributive property**; this does not restrict general mathematical voice conversation.
 
@@ -49,9 +56,9 @@ Open [localhost:3000](http://localhost:3000). Open `/study` for the full-page wo
 | `npm run typecheck` | Generate Next.js route types, then check strict TypeScript |
 | `npm test` | Run Vitest once |
 | `npm run test:watch` | Watch focused tests while developing |
-| `npm run voice:dev` | Guarded loopback voice diagnostic harness; requires server-only Deepgram credentials |
+| `npm run voice:dev` | Guarded loopback harness that generates `/dev/voice` diagnostics and the `/dev/study` voice workspace; requires server-only Deepgram credentials |
 | `npm run test:hosted` | Opt-in real two-account Supabase acceptance against a locally running build; requires ignored local credential files ([backend verification](docs/backend-testing.md#real-two-account-acceptance--2026-11-14)) |
-| `npm run test:e2e` | Real drawing/input/download checks at desktop and 360px widths (first run `npx playwright install chromium`) |
+| `npm run test:e2e` | Real drawing/input/download, structured check/hint, and sign-in screen checks at desktop and 360px widths (first run `npx playwright install chromium`). Mocked `/dev/study` voice cases run only with `NEWTON_TEST_DEV_STUDY=1` against a `voice:dev` server ([details](docs/study-tutoring.md#automated-validation-boundaries)) |
 
 The homepage and `/study` need no service credentials. For local voice testing or later integrations, copy `.env.example` to `.env.local` and configure only the services being used:
 
@@ -72,12 +79,12 @@ The hackathon voice selection is Deepgram Voice Agent using intended trial credi
 
 ```text
 src/app/                 Homepage, /study, layout, auth/session and learning routes, guarded voice-token handler
-src/components/          Worksheet reference, whiteboard/input, sign-in form, and on-demand tutor UI
-src/lib/ai/              Provider-independent voice lifecycle, Deepgram adapter, local diagnostics
+src/components/          Study shell, worksheet reference, whiteboard/input, sign-in screen, and tutor UI with workspace voice wiring
+src/lib/ai/              Provider-independent voice lifecycle, Deepgram adapter, tutoring context, local diagnostics
 src/lib/supabase/        Supabase clients, configuration, and verified-identity helpers
 src/lib/learning/        Owned study sessions, learning-event writer, bounded context retrieval
 src/lib/http/            Bounded request-body reading
-src/lib/math/            Reserved for future math verification
+src/lib/math/            Bounded exact-rational distributive-expansion checker
 src/types/tutoring.ts    Shared integration contracts
 supabase/migrations/     Versioned schema, constraints, grants, and RLS
 supabase/tests/          Portable SQL role and policy smoke script
@@ -125,7 +132,7 @@ does not use authenticated Server Component rendering.
 
 ## Local workspace (B1)
 
-At `/study`, upload or drop a local PDF/image worksheet, or paste a screenshot. Resize the desktop divider or switch panes on mobile. Draw, erase, undo/redo, or enter structured algebra alongside the reference. Choose a source and capture a step to preview it, then explicitly download JSON or PNG. Work is transient and is lost on reload; no server upload, autosave, microphone, authentication, or saved history is connected to the workspace. The separate auth screen is available at `/auth/sign-in`. Newton stays hidden behind its side icon until clicked. New edits and clear invalidate captures and revoke download URLs.
+At `/study`, upload or drop a local PDF/image worksheet, or paste a screenshot. Resize the desktop divider or switch panes on mobile. Draw, erase, undo/redo, or enter structured algebra alongside the reference. Choose a source and capture a step to preview it, then explicitly download JSON or PNG. In the Newton panel, choose Structured input and use Check work or Ask for a hint for a local exact check of a distributive expansion; freehand and worksheet work is reported as not checked. Work is transient and is lost on reload; no server upload, autosave, authentication, or saved history is connected to the workspace, and public `/study` never opens the microphone. The separate auth screen is available at `/auth/sign-in`. Newton stays hidden behind its side icon until clicked. New edits and clear invalidate captures and revoke download URLs.
 
 The predev/prebuild script copies drawing/math fonts and PDF.js worker/rendering assets into ignored `public/vendor/` so the app serves them locally. The initial structured transport fixture is `2(x+3)=14` normalized to `2*(x+3)=14`; unsupported notation blocks capture. Review parser compatibility with Developer A before B2 integration.
 
@@ -135,4 +142,4 @@ Scoped npm overrides update Excalidraw's pinned nanoid dependencies and its depe
 
 Developer A owns `src/lib/ai/`, microphone/playback lifecycle, the existing `/api/realtime/token` handler, and future work analysis/intervention. Developer B owns `/study`, worksheet/drawing/input UI, snapshots, and presentation of voice state. Developer C owns authentication, owned study sessions, learning persistence, and deployment controls.
 
-A's current `VoiceSession` exposes `start({ sessionId })`, `stop()`, `interrupt()`, `getState()`, `getSnapshot()`, and notification-only `subscribe(listener)`. B has not wired those methods into `TutorControls`; it must not import Deepgram networking or create a second microphone lifecycle. B's `WorkSnapshot` exports preserve revisions and remain local. Analysis, worksheet sharing, verified work delivery, and memory context are future integrations, not capabilities supplied by the voice model.
+A's current `VoiceSession` exposes `start({ sessionId })`, `stop()`, `interrupt()`, `getState()`, `getSnapshot()`, and notification-only `subscribe(listener)`. `WorkspaceTutor` now wires those methods into `TutorControls` on the guarded development path; the additive `updateContext(context)` silently supplies the submitted structured work (Deepgram `UpdateThink`, awaiting acknowledgement), and `sendText(message)` sends an explicitly requested structured-work hint on that connection. UI components do not own another microphone lifecycle. B's `WorkSnapshot` exports preserve revisions and remain local. Bounded structured checks are local exact arithmetic; server analysis, worksheet sharing, general verified intervention delivery, and memory context remain future integrations. None is inferred from the voice model.
