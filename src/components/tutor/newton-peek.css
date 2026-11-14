@@ -1,0 +1,12 @@
+.newton-peek { display: block; position: relative; width: 56px; height: 88px; pointer-events: none; }
+.newton-peek .newton-frame { position: absolute; inset: 0; width: 56px; height: 88px; max-width: none; }
+.newton-frame-open { opacity: 1; }
+.newton-frame-half, .newton-frame-closed { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .newton-frame-open { animation: newton-eyes-open 4.02s steps(1, end) infinite; }
+  .newton-frame-half { animation: newton-eyes-half 4.02s steps(1, end) infinite; }
+  .newton-frame-closed { animation: newton-eyes-closed 4.02s steps(1, end) infinite; }
+}
+@keyframes newton-eyes-open { 0% { opacity: 1; } 94.527% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes newton-eyes-half { 0% { opacity: 0; } 94.527% { opacity: 1; } 96.02% { opacity: 0; } 98.507% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes newton-eyes-closed { 0% { opacity: 0; } 96.02% { opacity: 1; } 98.507% { opacity: 0; } }

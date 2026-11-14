@@ -114,14 +114,11 @@ export default function StudentWorkspace() {
           <label><input type="radio" name="source" value="whiteboard" checked={source === "whiteboard"} onChange={() => { revisions.invalidate(); downloads.clear(); setDownload(null); setMessage(""); setSource("whiteboard"); }} />Whiteboard</label>
           <label><input type="radio" name="source" value="expression" checked={source === "expression"} onChange={() => { revisions.invalidate(); downloads.clear(); setDownload(null); setMessage(""); setSource("expression"); }} />Structured input</label>
         </fieldset><button type="button" className="text-button" onClick={clear}>Clear local work</button></div>
-        <div className="whiteboard-frame" hidden={source !== "whiteboard"}><WorkspaceBoundary><Whiteboard ref={board} revisions={revisions} onContentChange={changed} onActivityChange={setEditing} /></WorkspaceBoundary></div>
+        <div className="whiteboard-frame" hidden={source !== "whiteboard"}><WorkspaceBoundary><Whiteboard ref={board} revisions={revisions} onContentChange={changed} onActivityChange={setEditing} onCapture={capture} capturing={capturing} captureDisabled={capturing || editing} /></WorkspaceBoundary></div>
         <div className="expression-area" hidden={source !== "expression"}>
+          <div className="expression-actions"><button className="small-button capture-button" type="button" disabled={capturing} onClick={capture}>{capturing ? "Capturing..." : "Capture snapshot"}</button></div>
           <h3>Your next step</h3><MathInput key={inputKey} value={expression} onChange={(value, error) => { changed(); setExpression(value); setInputError(error ?? ""); }} onActivityChange={setEditing} />
           {inputError ? <p role="alert" className="input-error">{inputError}</p> : <p className="expression-preview">Plain expression: <code>{expression || "Your expression will appear here"}</code></p>}
-        </div>
-        <div className="capture-area">
-          <p className="helper">Local work · Export a copy to keep it.</p>
-          <button className="small-button capture-button" type="button" disabled={capturing || (source === "whiteboard" && editing)} onClick={capture}>{capturing ? "Capturing..." : "Capture snapshot"}</button>
         </div>
         {message && <section className="capture-popover" aria-label="Snapshot export">
           <button type="button" className="icon-button dismiss-capture" aria-label="Dismiss snapshot" onClick={() => { downloads.clear(); setDownload(null); setMessage(""); }}>×</button>
