@@ -9,6 +9,7 @@ import MathInput from "./MathInput";
 import WorkspaceBoundary from "./WorkspaceBoundary";
 import WorkspaceTutor from "../tutor/WorkspaceTutor";
 import WorksheetPane from "../worksheet/WorksheetPane";
+import { loadPart, savePart } from "./persistence";
 
 const Whiteboard = dynamic(() => import("./Whiteboard"), { ssr: false, loading: () => <div className="board-loading" role="status">Opening your whiteboard...</div> });
 
@@ -36,6 +37,23 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
     alive.current = true;
     return () => { alive.current = false; revisions.invalidate(); downloads.clear(); };
   }, [revisions, downloads]);
+
+  // Restore device-local work once, then save it whenever it changes.
+  const [restored, setRestored] = useState(false);
+  useEffect(() => {
+    let active = true;
+    void loadPart("work").then((saved) => {
+      if (!active) return;
+      if (saved) { setExpression(saved.expression); setSource(saved.source); setSplitWidth(saved.splitWidth); }
+      setRestored(true);
+    });
+    return () => { active = false; };
+  }, []);
+  useEffect(() => {
+    if (!restored) return;
+    const timer = setTimeout(() => void savePart("work", { expression, source, splitWidth }), 300);
+    return () => clearTimeout(timer);
+  }, [restored, expression, source, splitWidth]);
 
   const changed = useCallback(() => {
     revisions.edit();
