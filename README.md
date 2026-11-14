@@ -68,6 +68,7 @@ After the foundation is reviewed and merged, branch from `main`: A uses `feat/ai
 - [Product and MVP](docs/product.md)
 - [Architecture and data boundaries](docs/architecture.md)
 - [Ownership, milestones, and contribution workflow](docs/contributing.md)
+- [Three-developer workstream guide and implementation specifications](docs/workstreams/README.md)
 - [Initial decisions](docs/decisions.md)
 - [Agent instructions](AGENTS.md)
 

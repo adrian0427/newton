@@ -6,6 +6,8 @@ Newton is the student-facing product; Twofold is the three-developer team. This 
 
 Read `docs/product.md`, `docs/architecture.md`, and `docs/decisions.md`; inspect relevant types in `src/types/tutoring.ts`. Identify affected modules and owners in `docs/contributing.md`. Respect the requested scope and coordinate shared contracts, dependencies, layouts, and configuration.
 
+Before implementing a workstream, read its assigned specification in `docs/workstreams/` alongside the architecture and shared contracts.
+
 ## Engineering
 
 - Prefer simple, modular implementations and established libraries over custom infrastructure.

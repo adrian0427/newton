@@ -4,6 +4,8 @@
 
 This is a proposed MVP design. Only the homepage, shared TypeScript contracts, and developer tooling exist. There are no service clients, API implementations, or database migrations yet. Keep one Next.js application; add dependencies only with the feature that uses them.
 
+The [workstream guide](workstreams/README.md) defines the implementation assignments, concrete boundary proposals, and initial timing/deduplication decisions. Its A01/B01/C01 specifications are the starting points for feature work; additional interface names there are proposals, not existing TypeScript exports.
+
 ```mermaid
 flowchart TD
   Work[Student work: Excalidraw or MathLive] --> Snapshot[Versioned transient snapshot]
@@ -36,7 +38,7 @@ Images are transient data URLs or short-lived references. Do not put them in lea
 
 ## Server and AI boundaries
 
-Developer A owns proposed Realtime credential and work-analysis route handlers in `src/app/api/`, plus `src/lib/ai/` and `src/lib/math/`. Developer C owns auth and memory handlers. Exact URLs and error payloads must be agreed before connecting features; no placeholder endpoints are implemented.
+Developer A owns proposed `/api/realtime/token` and `/api/work/analyze` route handlers in `src/app/api/`, plus `src/lib/ai/` and `src/lib/math/`. Developer C owns auth, `/api/study-sessions`, and `/api/learning-context`. The workstream guide specifies request/response and error proposals for the first coordinated contract PR; no placeholder endpoints are implemented. Event writes initially use C's server-only function called by A, not a public event-write route.
 
 Protected handlers verify the Supabase session, validate request bodies at runtime, check session ownership, and return bounded errors. TypeScript types are not runtime validation. Keep permanent OpenAI credentials server-side, limit request frequency and payload size, and avoid logging student content. Configure clients lazily within the integration so the homepage and CI do not require secrets.
 
@@ -52,7 +54,7 @@ Interpret the current work separately using a vision-capable model. Keep recogni
 
 ### Intervention controller (Developer A, integrated with B)
 
-Use a small controller, not an orchestration framework. Analyze after a configurable pause or explicit help request. Gate proactive speech on mode, current revision, confidence, student activity, voice state, and cooldown. Student-requested mode does not initiate unsolicited hints. If a new edit arrives, cancel pending work where possible and discard late results even if cancellation fails. Recheck freshness before displaying or speaking a response and before recording an observation. Pause duration and cooldown are to be tuned during the demo, not fixed architectural promises.
+Use a small controller, not an orchestration framework. Analyze after a configurable pause or explicit help request. Gate proactive speech on mode, current revision, confidence, student activity, voice state, and cooldown. Student-requested mode does not initiate unsolicited hints. If a new edit arrives, cancel pending work where possible and discard late UI/speech results even if cancellation fails. Recheck freshness before displaying or speaking a response. A verified submitted step may persist as historical practice under its original revision even if a later edit races with server completion; never imply it describes the latest work or establishes a correction. The workstream guide supplies tunable initial pause/cooldown values and duplicate-hint rules.
 
 ## Shared contracts
 
@@ -63,7 +65,7 @@ Use a small controller, not an orchestration framework. Analyze after a configur
 - `TutorMode`: `student-requested` or `proactive`.
 - `LearningEventInput`: session, source revision, concept, optional misconception, contextual outcome, and short evidence. No client-controlled ownership field.
 
-Initial shared vocabulary: concept `algebra.distributive-property`; proposed misconception `distribution.missed-term`. Agree on identifiers before persisting them. Keep IDs stable across all workstreams. Types are deliberately small; add fields when an integration needs them, with review from affected owners.
+Initial shared vocabulary: concept `algebra.distributive-property`; misconception `distribution.missed-term`. The workstream specifications use these identifiers consistently. Keep IDs stable across all workstreams. Types are deliberately small; add fields when an integration needs them, with review from affected owners.
 
 ## Authentication and persistent memory (Developer C)
 
@@ -77,9 +79,11 @@ Planned tables, not implemented migrations:
 | `study_sessions` | `id`, `user_id`, `started_at`, nullable `ended_at` | Authenticated study context |
 | `learning_events` | `id`, `user_id`, `session_id`, `source_revision_id`, `concept`, nullable `misconception`, `outcome`, `evidence`, `created_at` | Factual observations across sessions |
 
-Server assigns owner and timestamps, checks the referenced session belongs to that owner, and accepts only validated observations. RLS must protect reads, inserts, updates, and deletes for student-owned data, including ownership checks on new rows. Foreign-key/ownership constraints must prevent linking an event to another student's session. Developer C owns migrations, indexes, retry deduplication, and tests using two accounts plus an anonymous caller. Agree on event idempotency before enabling automatic retries; a revision may legitimately support more than one outcome.
+Server assigns owner and timestamps, checks the referenced session belongs to that owner, and accepts only validated observations. RLS must protect reads, inserts, updates, and deletes for student-owned data, including ownership checks on new rows. Foreign-key/ownership constraints must prevent linking an event to another student's session. Developer C owns migrations, indexes, retry deduplication, and tests using two accounts plus an anonymous caller. The workstream guide defines uniqueness by owner/session/revision/concept/outcome with identical retries returning the original record and conflicting payloads rejected; a revision may legitimately support more than one outcome. Events are append-only in normal student access.
 
-Retrieve a bounded, recent set of events scoped to the authenticated user and relevant concept across sessions. Start with ordinary PostgreSQL queries; no vector store. Retain source session and evidence in retrieved context, distinguish correction with help from independent correction, and never infer lasting ability or mastery from one observation. Uncertain perception should not be saved as a confirmed misconception. Client evidence is untrusted: the eventual write route must validate it against session analysis rather than blindly trusting a posted claim.
+Retrieve a bounded, recent set of events scoped to the authenticated user and relevant concept across sessions. Start with ordinary PostgreSQL queries; no vector store. Retain source session and evidence in retrieved context, distinguish correction with help from independent correction, and never infer lasting ability or mastery from one observation. Uncertain perception should not be saved as a confirmed misconception. Client evidence is untrusted: the server write path must validate it against session analysis rather than blindly trusting a posted claim.
+
+For the first integration, A produces eligible observations inside the server analysis path and calls C's writer; no client event-write route is exposed. User-scoped RLS prevents cross-account access but does not prove that a self-owned row inserted directly through Supabase came from the tutor. Treat all retrieved memory as advisory data. The C01 specification explicitly separates account-isolation testing from tamper-resistant provenance, which remains a requirement to resolve before real-student use.
 
 Do not persist raw audio, screenshots, full conversations, or unnecessary personal information by default. Agree on retention, deletion, and student-facing memory controls before collecting real student data.
 
