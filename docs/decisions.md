@@ -15,6 +15,20 @@ Accepted for the foundation on **2026-11-13**. Integration decisions describe pl
 
 Add a short dated entry when a meaningful decision changes. Keep rationale and implementation consequences explicit; avoid speculative infrastructure.
 
+## 2026-11-14 — Local database foundation
+
+Two migrations create C01's tables, then constraints and owner-scoped access.
+The schema enables RLS and revokes legacy grants before any access is added.
+Column privileges prevent choosing owners/creation times; learning events have
+no normal update/delete grants. A composite session/owner FK and unique event
+identity enforce boundaries even under concurrent writers. Defaults derive
+ownership from `auth.uid()` and time from PostgreSQL.
+
+Development-only PGlite executes the migrations and SQL policy tests without
+hosted secrets or Docker. Its Auth boundary is simulated; hosted two-account
+HTTP/direct-client acceptance remains separate and incomplete. These migrations
+have not been applied to the team's hosted project.
+
 ## 2026-11-13 — Workstream implementation baseline
 
 | ID | Decision | Rationale and consequence |

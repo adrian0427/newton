@@ -53,7 +53,7 @@ src/app/                 Pages, layout, and future route handlers
 src/components/          Future whiteboard, tutor, and learning UI
 src/lib/                 Future AI, math, learning, and Supabase modules
 src/types/tutoring.ts    Shared integration contracts
-supabase/migrations/     Reserved for Developer C; no schema yet
+supabase/migrations/     Unapplied schema, constraints, grants, and RLS
 tests/                   Service-free smoke and contract checks
 docs/                    Product, architecture, workflow, decisions
 .agents/skills/          validate-change and integration-review
@@ -70,6 +70,7 @@ After the foundation is reviewed and merged, branch from `main`: A uses `feat/ai
 - [Ownership, milestones, and contribution workflow](docs/contributing.md)
 - [Three-developer workstream guide and implementation specifications](docs/workstreams/README.md)
 - [Initial decisions](docs/decisions.md)
+- [Backend database tests and remaining hosted verification](docs/backend-testing.md)
 - [Agent instructions](AGENTS.md)
 
 Configuration follows the official [Next.js installation](https://nextjs.org/docs/app/getting-started/installation), [Tailwind setup](https://tailwindcss.com/docs/installation/framework-guides/nextjs), and [Next.js testing guidance](https://nextjs.org/docs/app/guides/testing/vitest). Integration references are maintained in the architecture document.

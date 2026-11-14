@@ -2,7 +2,7 @@
 
 ## Status and boundaries
 
-This is a proposed MVP design. The homepage, shared TypeScript contracts, developer tooling, Supabase client helpers, and email/password authentication are implemented. `/auth/sign-in` calls `/auth/session` for sign-in, verified current identity, and local sign-out. Auth checks and cookie refresh occur in writable Route Handlers; authenticated Server Component rendering and its refresh proxy are not implemented. Database persistence and migrations remain planned. Keep one Next.js application; add dependencies only with the feature that uses them.
+This is a proposed MVP design. The homepage, shared TypeScript contracts, developer tooling, Supabase client helpers, and email/password authentication are implemented. `/auth/sign-in` calls `/auth/session` for sign-in, verified current identity, and local sign-out. Auth checks and cookie refresh occur in writable Route Handlers; authenticated Server Component rendering and its refresh proxy are not implemented. The database migrations and local PostgreSQL policy tests are implemented; migrations remain unapplied to hosted Supabase and persistent history is not connected. Keep one Next.js application; add dependencies only with the feature that uses them.
 
 The [workstream guide](workstreams/README.md) defines the implementation assignments, concrete boundary proposals, and initial timing/deduplication decisions. Its A01/B01/C01 specifications are the starting points for feature work; additional interface names there are proposals, not existing TypeScript exports.
 
@@ -71,7 +71,7 @@ Initial shared vocabulary: concept `algebra.distributive-property`; misconceptio
 
 Supabase Auth owns identity. Use cookie-aware server clients for Next.js, verify identity server-side, and execute student queries under the user's authenticated context so RLS applies. A publishable key is public project configuration, not authorization. Do not use privileged credentials to bypass student policies.
 
-Planned tables, not implemented migrations:
+Tables defined by unapplied migrations in `supabase/migrations/`:
 
 | Table | Proposed fields | Responsibility |
 | --- | --- | --- |
