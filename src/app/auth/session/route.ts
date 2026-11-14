@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { SupabaseConfigurationError } from "@/lib/supabase/config";
 import { isSameOrigin } from "@/lib/supabase/origin";
 import { isUnauthenticatedError } from "@/lib/supabase/auth-errors";
+import { readBoundedText, RequestBodyTooLargeError } from "@/lib/http/body";
 
 function failure(code: string, message: string, status: number, headers?: Headers) {
   return Response.json({ error: { code, message, retryable: status >= 500 || status === 429 } }, {
@@ -37,10 +38,10 @@ export async function POST(request: Request) {
   }
   let input: unknown;
   try {
-    const body = await request.text();
-    if (body.length > 8192) return failure("invalid-input", "Sign-in details are too long.", 413);
+    const body = await readBoundedText(request, 8192);
     input = JSON.parse(body);
-  } catch {
+  } catch (error) {
+    if (error instanceof RequestBodyTooLargeError) return failure("invalid-input", "Sign-in details are too long.", 413);
     return failure("invalid-input", "Send an email address and password.", 400);
   }
   if (!input || typeof input !== "object" || !("email" in input) || !("password" in input)

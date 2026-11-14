@@ -1,4 +1,5 @@
 import { beforeEach, expect, it, vi } from "vitest";
+import { bytes, streamedRequest } from "./helpers/requests";
 
 const mocks = vi.hoisted(() => ({ requireUser: vi.fn(), createSession: vi.fn() }));
 vi.mock("server-only", () => ({}));
@@ -76,4 +77,24 @@ it("retains refresh headers on auth and database failures without leaking raw de
   expect(response.status).toBe(502);
   expect(response.headers.get("Pragma")).toBe("no-cache");
   expect(await response.text()).not.toContain("private upstream details");
+});
+
+it("stops a streamed session body early and preserves refresh headers on 413", async () => {
+  const stream = streamedRequest("/api/study-sessions", [bytes(" ".repeat(1024)), bytes(" "), bytes("unread")]);
+  const response = await POST(stream.request);
+  expect(response.status).toBe(413);
+  expect(response.headers.get("Pragma")).toBe("no-cache");
+  expect(stream.delivered()).toBe(2);
+  expect(stream.cancel).toHaveBeenCalledOnce();
+  expect(mocks.createSession).not.toHaveBeenCalled();
+});
+
+it("does not read bodies on cross-origin or unauthenticated session requests", async () => {
+  const cross = streamedRequest("/api/study-sessions", [bytes("unread")], { origin: "https://other.example" });
+  expect((await POST(cross.request)).status).toBe(403);
+  expect(cross.delivered()).toBe(0);
+  mocks.requireUser.mockRejectedValueOnce(new BackendError(401, "unauthenticated", "Please sign in."));
+  const anonymous = streamedRequest("/api/study-sessions", [bytes("unread")]);
+  expect((await POST(anonymous.request)).status).toBe(401);
+  expect(anonymous.delivered()).toBe(0);
 });

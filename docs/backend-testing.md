@@ -95,9 +95,9 @@ checking that genuine unexpected responses remain distinguishable.
   advisory data. Strong provenance is required before real-student use.
 - Authenticated Server Components and their refresh proxy remain unsupported;
   use the writable Route Handler boundary to avoid unsaved refresh cookies.
-- Request lengths are checked after buffering and after authentication. This
-  local test-account slice does not establish protection from large-body memory
-  pressure; enforce deployment/stream limits before public use.
+- At the foundation checkpoint, request lengths were checked after buffering.
+  The subsequent bounded-input fix below supersedes that limitation. Deployment
+  request-rate/time limits still need separate verification before public use.
 - Owners may change or clear their session end time; C01 allows ending a session
   and does not use it as an immutable audit or billing boundary.
 - The migration gap was reviewed directly in the transactional SQL. There is
@@ -158,3 +158,24 @@ Application was manual through SQL Editor. The Supabase CLI migration-history
 schema was absent; the SQL files were not registered as CLI-applied migrations.
 Reconcile migration history before a future CLI db push; do not blindly rerun
 these CREATE TABLE migrations against the existing tables.
+
+## Bounded request input fix — 2026-11-14
+
+Both body-reading routes now use an incremental UTF-8 reader. The existing
+8192/1024 UTF-16 limits remain compatible with valid passwords and session input.
+An independent byte ceiling is `3 * character limit + 3` for optional UTF-8 BOM
+bytes. Overflow is rejected before retaining additional text; unread input is
+cancelled without waiting for cancellation, and the reader lock is released.
+Content-Length can reject early but cannot bypass actual streaming enforcement.
+
+The former trigger no longer consumes the unread remainder: route tests show
+413 immediately after the first excessive chunk, no provider/database writes,
+and preserved no-store/refresh headers. Missing/false lengths, split Unicode,
+BOM, pending/rejecting cancellation and legitimate passwords/empty sessions are
+covered. Twelve assertions failed before the fix; all 197 tests, lint,
+TypeScript and the normal production build passed afterward. One independent
+pre-patch investigation and fresh candidate review found no surviving bypass
+or compatibility issue; the reviewer also checked 4,000 split-byte decoding
+cases against Request.text(). The original sealed audit describes the earlier
+source revision; this verification records its remediation rather than changing
+that historical report.

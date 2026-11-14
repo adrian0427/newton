@@ -1,6 +1,7 @@
 import { createStudySession } from "@/lib/learning/sessions";
 import { BackendError, requireUser } from "@/lib/supabase/auth";
 import { isSameOrigin } from "@/lib/supabase/origin";
+import { readBoundedText, RequestBodyTooLargeError } from "@/lib/http/body";
 
 function failure(error: BackendError, headers = error.headers) {
   const responseHeaders = new Headers(headers);
@@ -19,8 +20,7 @@ export async function POST(request: Request) {
     headers = auth.headers;
     let input: unknown = {};
     try {
-      const body = await request.text();
-      if (body.length > 1024) throw new BackendError(413, "invalid-input", "Session details are too long.");
+      const body = await readBoundedText(request, 1024);
       if (body.length) {
         if (request.headers.get("content-type")?.split(";", 1)[0].trim().toLowerCase() !== "application/json") {
           throw new BackendError(400, "invalid-input", "Send an empty JSON object to start a session.");
@@ -28,6 +28,7 @@ export async function POST(request: Request) {
         input = JSON.parse(body);
       }
     } catch (error) {
+      if (error instanceof RequestBodyTooLargeError) throw new BackendError(413, "invalid-input", "Session details are too long.");
       if (error instanceof BackendError) throw error;
       throw new BackendError(400, "invalid-input", "Send an empty JSON object to start a session.");
     }

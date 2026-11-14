@@ -1,5 +1,6 @@
 import { beforeEach, expect, it, vi } from "vitest";
 import { SupabaseConfigurationError } from "@/lib/supabase/config";
+import { bytes, streamedRequest } from "./helpers/requests";
 
 const mocks = vi.hoisted(() => ({ create: vi.fn(), getUser: vi.fn(), signIn: vi.fn(), signOut: vi.fn() }));
 vi.mock("@/lib/supabase/server", () => ({ createClient: mocks.create }));
@@ -115,4 +116,21 @@ it("handles missing configuration and network failure", async () => {
   const result = await GET();
   expect(result.status).toBe(502);
   expect(await result.text()).not.toContain("private network details");
+});
+
+it("rejects streamed sign-in overflow early without reaching Auth", async () => {
+  const stream = streamedRequest("/auth/session", [bytes(" ".repeat(8192)), bytes(" "), bytes("unread")]);
+  const result = await POST(stream.request);
+  expect(result.status).toBe(413);
+  expect(stream.delivered()).toBe(2);
+  expect(stream.cancel).toHaveBeenCalledOnce();
+  expect(mocks.create).not.toHaveBeenCalled();
+  expect(result.headers.get("Cache-Control")).toContain("no-store");
+});
+
+it("preserves previously valid multibyte passwords without normalization", async () => {
+  const password = "é".repeat(4096);
+  mocks.signIn.mockResolvedValue({ data: { user: { email: "test@example.com" } }, error: null });
+  expect((await POST(request("POST", { email: "test@example.com", password }))).status).toBe(200);
+  expect(mocks.signIn).toHaveBeenCalledWith({ email: "test@example.com", password });
 });
