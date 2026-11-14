@@ -1,6 +1,6 @@
 # Structured-work tutoring slice
 
-A01 and B01 are connected through the real workspace, `VoiceSession`, and MathLive expression/revision contracts. C01 is specifications only in this checkout: no Supabase clients, authentication helpers, study-session routes, learning writers or migrations exist. Public `/study` therefore supports local checking/hints but keeps voice disabled. A guarded generated `/dev/study` page provides the combined voice demonstration without supplying a local capability to the public study route.
+A01 and B01 are connected through the real workspace, `VoiceSession`, and MathLive expression/revision contracts. C01 authentication, study-session and learning-memory modules are implemented and merged. Workspace session creation and memory consumption are not yet wired. Public `/study` therefore supports local checking/hints but keeps voice disabled. A guarded generated `/dev/study` page provides the combined voice demonstration without supplying a local capability to the public study route.
 
 `npm run voice:dev` now prepares workspace assets and generates both `/dev/voice` and `/dev/study`. The same development/loopback/preview/CI checks, per-run capability, same-origin POST validation and issuance limit protect them. Production issuance stays closed. No fake authenticated session or duplicate token endpoint was introduced. Do not expose this server through a public tunnel. Ctrl+C or `npm run voice:dev -- --clean` removes both generated pages and their stale route types.
 

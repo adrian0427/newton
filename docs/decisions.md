@@ -133,3 +133,7 @@ Edits invalidate visible feedback. Editing while a work hint is pending/playing 
 **Reason:** Check work previously updated only React feedback; spoken hint requests had no problem or submitted step. The button already sent those fields, but general voice questions did not. One current context block carries the revision, explicit problem, structured source and deterministic result without claiming handwriting recognition or persistent memory.
 
 **Lifecycle:** Edits remove stale evidence. Busy, racing or failed updates close voice rather than playing unlabelled audio for an obsolete revision; explicit restart restores only the latest context. Successful idle updates keep the connection. Local diagnostics expose status/revision/fixed error codes only. C's production authentication dependency, local credential restrictions and developer ownership remain unchanged.
+
+## 2026-11-14 — Local authenticated voice authorization
+
+Connect C's verified-user/session-ownership helpers to A's existing token route for local requests without a harness capability. Keep the explicitly guarded capability harness as an independent development path and retain all production/preview/CI/non-loopback restrictions. Do not introduce a new endpoint or change the rate-limit policy: the existing local process-wide limit remains pending team agreement on deployed controls. Workspace session-ID wiring remains Matthew's integration step.
