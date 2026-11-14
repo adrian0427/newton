@@ -2,6 +2,14 @@
 
 Twofold has three workstreams. Start feature development after the foundation is reviewed and merged into `main`. Read the product, architecture, decisions, and relevant shared contracts first.
 
+Use the [central workstream guide](workstreams/README.md) for concrete interfaces, file ownership, integration order, and branch setup. Each developer starts with one implementation specification:
+
+- [A01 — AI, voice, and tutoring](workstreams/A01-ai-tutoring.md)
+- [B01 — Student workspace](workstreams/B01-student-workspace.md)
+- [C01 — Backend, authentication, and memory](workstreams/C01-backend-memory.md)
+
+The specifications define tasks, dependencies, acceptance criteria, and tests. Planned files and additive interface proposals are labeled; existing shared TypeScript contracts remain unchanged.
+
 ## Ownership and first milestones
 
 | Developer | Branch | Owns | First milestone |
@@ -12,7 +20,7 @@ Twofold has three workstreams. Start feature development after the foundation is
 
 A also owns Agents SDK, vision interpretation, CortexJS checks, Socratic prompts, intervention timing, and use of retrieved memory. B owns Excalidraw state/export, MathLive fallback, voice controls/status, history presentation, and responsive UX. C owns profiles, study sessions, RLS, cross-session queries, and deployment configuration.
 
-`src/lib/learning/` is a boundary, not permission for duplicate implementations: A owns learning interpretation/tutoring decisions; C owns persistence and retrieval. Agree filenames and exported interfaces before adding modules. A owns voice lifecycle logic, while B owns the controls that call it. Agree route names before adding files under `src/app/api/`.
+`src/lib/learning/` is a boundary, not permission for duplicate implementations: A owns `observations.ts` for evidence eligibility; C owns `sessions.ts`, `events.ts`, and `context.ts` for persistence/retrieval. A owns voice lifecycle logic, while B owns the controls that call it. A owns `/api/realtime/token` and `/api/work/analyze`; C owns `/api/study-sessions`, `/api/learning-context`, and auth routes. Follow the workstream guide's interface proposals and coordinate their additive types before connecting consumers.
 
 Shared ownership: `src/types/tutoring.ts`, `package.json` and lockfile, application configuration, shared layouts, architecture documentation, and integration interfaces. Notify affected owners and agree contract changes before coding consumers. Do not implement another owner's feature in parallel.
 

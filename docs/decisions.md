@@ -14,3 +14,12 @@ Accepted for the foundation on **2026-11-13**. Integration decisions describe pl
 | 008 | Three-developer ownership | A owns AI/voice/tutoring, B owns student UI, C owns auth/memory/backend. Coordinate shared contracts and configuration to reduce merge conflicts. |
 
 Add a short dated entry when a meaningful decision changes. Keep rationale and implementation consequences explicit; avoid speculative infrastructure.
+
+## 2026-11-13 — Workstream implementation baseline
+
+| ID | Decision | Rationale and consequence |
+| --- | --- | --- |
+| 009 | Concrete A/B/C modules and additive interface proposals in the [workstream guide](workstreams/README.md) | Each developer can start independently; route ownership and shared type authorship are explicit. Existing tutoring contracts are unchanged. |
+| 010 | Fail-closed deployed Realtime credential issuance | Until C's auth/session checks and abuse controls are connected, no provider credential is issued by deployed routes. A can test real voice locally using a Node-only issuer. |
+| 011 | Database event deduplication and historical revision evidence | Unique owner/session/revision/concept/outcome prevents duplicate retries. A verified old step can remain historical evidence without triggering current UI/speech or implying correction. |
+| 012 | Test-data-only memory baseline with user-context RLS | A verifies observations in the application path, C enforces ownership, and B displays factual context. RLS does not establish AI provenance of self-owned records; stronger provenance and real-student retention remain explicit pre-release questions. |
