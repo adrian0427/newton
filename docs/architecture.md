@@ -2,9 +2,9 @@
 
 ## Status and boundaries
 
-The tutoring and backend integrations below remain a proposed MVP design. The homepage, local `/study` workspace (B1), shared TypeScript contracts, and developer tooling are implemented. There are no connected tutoring services, API implementations, or database migrations yet. Keep one Next.js application; add dependencies only with the feature that uses them.
+This is a proposed MVP design. The homepage, local `/study` workspace (B1), shared TypeScript contracts, developer tooling, Supabase client helpers, and email/password authentication are implemented. `/auth/sign-in` calls `/auth/session` for sign-in, verified current identity, and local sign-out. Auth checks and cookie refresh occur in writable Route Handlers; authenticated Server Component rendering and its refresh proxy are not implemented. C1's server-only helpers, session/event persistence, bounded context retrieval, migrations, and local PostgreSQL policy tests are implemented. Both migrations are applied to hosted `newton-dev`; SQL-role, anonymous API, and real signed-in two-account HTTP/helper/direct-client acceptance passed on 2026-11-14. Tutoring/workspace integration remains incomplete. Keep one Next.js application; add dependencies only with the feature that uses them.
 
-The [workstream guide](workstreams/README.md) defines the implementation assignments, concrete boundary proposals, and initial timing/deduplication decisions. Its A01/B01/C01 specifications are the starting points for feature work; additional interface names there are proposals, not existing TypeScript exports.
+The [workstream guide](workstreams/README.md) defines the implementation assignments, concrete boundary proposals, and initial timing/deduplication decisions. Its A01/B01/C01 specifications are the starting points for feature work; additional interface names there are proposals unless explicitly implemented below. `AuthContext` and `StudySession` are local module exports pending the coordinated shared-contract PR.
 
 ```mermaid
 flowchart TD
@@ -62,7 +62,7 @@ Worksheet files are reference material, separate from `WorkSnapshot`, which cont
 
 ## Server and AI boundaries
 
-Developer A owns proposed `/api/realtime/token` and `/api/work/analyze` route handlers in `src/app/api/`, plus `src/lib/ai/` and `src/lib/math/`. Developer C owns auth, `/api/study-sessions`, and `/api/learning-context`. The workstream guide specifies request/response and error proposals for the first coordinated contract PR; no placeholder endpoints are implemented. Event writes initially use C's server-only function called by A, not a public event-write route.
+Developer A owns proposed `/api/realtime/token` and `/api/work/analyze` route handlers in `src/app/api/`, plus `src/lib/ai/` and `src/lib/math/`. Developer C owns auth, `/api/study-sessions`, and `/api/learning-context`. The workstream guide specifies request/response and error proposals for the first coordinated contract PR; `POST /api/study-sessions` is implemented on this branch; the remaining proposed endpoints are outside this local slice. Event writes initially use C's server-only function called by A, not a public event-write route.
 
 Protected handlers verify the Supabase session, validate request bodies at runtime, check session ownership, and return bounded errors. TypeScript types are not runtime validation. Keep permanent provider credentials server-side, limit request frequency and payload size, and avoid logging student content. Configure clients lazily within the integration so the homepage and CI do not require secrets.
 
@@ -97,11 +97,15 @@ Use a small controller, not an orchestration framework. Analyze after a configur
 
 Initial shared vocabulary: concept `algebra.distributive-property`; misconception `distribution.missed-term`. The workstream specifications use these identifiers consistently. Keep IDs stable across all workstreams. Types are deliberately small; add fields when an integration needs them, with review from affected owners.
 
+`LearningEventRecord` is currently a local export from `src/lib/learning/events.ts`
+matching `LearningEventInput & { id: string; createdAt: string }`, pending the
+coordinated shared contract PR.
+
 ## Authentication and persistent memory (Developer C)
 
-Supabase Auth owns identity. Use cookie-aware server clients for Next.js, verify identity server-side, and execute student queries under the user's authenticated context so RLS applies. A publishable key is public project configuration, not authorization. Do not use privileged credentials to bypass student policies.
+Supabase Auth owns identity. `requireUser()` creates a fresh cookie-aware client and verifies identity with `auth.getUser()` on each request. `requireOwnedSession(auth, sessionId)` queries under that client and filters by both ID and verified owner, returning the same 404 for missing and foreign sessions. `createStudySession(auth)` generates a server UUID and lets database defaults assign ownership/time. All three helpers are server-only; callers must carry `auth.headers` into success and error responses. There is no service-role bypass. A publishable key is public project configuration, not authorization. Do not use privileged credentials to bypass student policies.
 
-Planned tables, not implemented migrations:
+Tables defined by migrations in `supabase/migrations/` (applied to hosted `newton-dev` on 2026-11-14):
 
 | Table | Proposed fields | Responsibility |
 | --- | --- | --- |
@@ -114,6 +118,33 @@ Server assigns owner and timestamps, checks the referenced session belongs to th
 Retrieve a bounded, recent set of events scoped to the authenticated user and relevant concept across sessions. Start with ordinary PostgreSQL queries; no vector store. Retain source session and evidence in retrieved context, distinguish correction with help from independent correction, and never infer lasting ability or mastery from one observation. Uncertain perception should not be saved as a confirmed misconception. Client evidence is untrusted: the server write path must validate it against session analysis rather than blindly trusting a posted claim.
 
 For the first integration, A produces eligible observations inside the server analysis path and calls C's writer; no client event-write route is exposed. User-scoped RLS prevents cross-account access but does not prove that a self-owned row inserted directly through Supabase came from the tutor. Treat all retrieved memory as advisory data. The C01 specification explicitly separates account-isolation testing from tamper-resistant provenance, which remains a requirement to resolve before real-student use.
+
+C's `recordLearningEvent(auth, input)` is implemented and locally tested. It
+rejects unknown fields, invalid UUIDs/vocabulary, and empty or over-500-character
+trimmed evidence. UUIDs are canonicalized and evidence length counts Unicode
+characters consistently with PostgreSQL. Only `practiced` and
+`misconception-observed` are enabled; the latter requires the supported
+misconception. Correction outcomes wait for A's trustworthy prior/hint evidence.
+The writer checks ownership before inserting, relies on database defaults for
+owner/ID/time, and handles unique conflicts by reading the full owner-scoped
+identity and comparing immutable evidence/misconception. It never upserts or
+updates a saved event. Identical retries return the original record; changed
+payloads return 409. A must still establish observation eligibility before
+calling this helper. Real signed-in hosted C1 acceptance passed; see
+[the verification record](backend-testing.md#real-two-account-acceptance--2026-11-14).
+
+`getLearningContext(auth, conceptId)` and `GET /api/learning-context` are now
+implemented independently of A/B. The query explicitly filters by verified
+owner and supported concept across sessions, orders by `created_at DESC, id
+DESC`, and returns at most ten rows. The shared stored-record decoder reads all
+four database outcomes while correction creation stays disabled in the writer.
+No owner fields reach the response. Empty history returns `events: []` and
+`summary: ""`; service failures remain distinct. The summary includes UTC dates,
+outcomes and JSON-quoted evidence excerpts, capped at 2,000 UTF-16 units without
+splitting Unicode characters or modifying the full source records. It makes no
+mastery inference. Evidence remains advisory data; future consumers must escape
+it and delimit it separately from instructions. `LearningContext` stays a local
+export pending the coordinated shared contract.
 
 Do not persist raw audio, screenshots, full conversations, or unnecessary personal information by default. Agree on retention, deletion, and student-facing memory controls before collecting real student data.
 
