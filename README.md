@@ -6,7 +6,7 @@ Newton is an AI study companion for students in grades 9–12, built by **Twofol
 
 ## Current status
 
-This branch includes a responsive homepage, email/password authentication, strict TypeScript contracts, tests, and CI. Sign-in and sign-out are available at `/auth/sign-in`; both team test accounts were manually verified against hosted Supabase on November 13, 2026. C's database migrations, local PostgreSQL policy tests, verified-user/session helpers, and `POST /api/study-sessions` are implemented. The migrations remain unapplied to hosted Supabase, so session creation cannot succeed there yet. The local `/study` workspace is available; its tutoring, auth/session, and saved-history integration remains pending. Hosted database ownership isolation is still unverified.
+This branch includes a responsive homepage, email/password authentication, strict TypeScript contracts, tests, and CI. Sign-in and sign-out are available at `/auth/sign-in`; both team test accounts were manually verified against hosted Supabase on November 13, 2026. C's database migrations, local PostgreSQL policy tests, verified-user/session helpers, and `POST /api/study-sessions` are implemented. Both migrations were applied to hosted `newton-dev` on November 14, 2026; hosted SQL role tests and anonymous API-denial checks passed. The local `/study` workspace is available; its tutoring, auth/session, and saved-history integration remains pending. Real signed-in two-account HTTP isolation remains unverified.
 
 The planned MVP combines natural voice conversation, a whiteboard with structured math fallback, controlled Socratic hints, and evidence-backed memory across sessions. The first domain is **Algebra I: the distributive property**.
 
@@ -65,7 +65,7 @@ src/app/                 Pages, layout, authentication and session routes
 src/components/          Worksheet reference, whiteboard/input, and on-demand tutor UI
 src/lib/                 Supabase/auth and learning-session modules
 src/types/tutoring.ts    Shared integration contracts
-supabase/migrations/     Unapplied schema, constraints, grants, and RLS
+supabase/migrations/     Versioned schema, constraints, grants, and RLS
 tests/                   Service-free smoke and contract checks
 docs/                    Product, architecture, workflow, decisions
 .agents/skills/          validate-change and integration-review

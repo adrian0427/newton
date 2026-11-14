@@ -45,8 +45,8 @@ response omits ownership and auth tokens. A missing login returns 401, missing
 configuration 503, and unavailable database/schema 502. All responses are
 private/no-store. This endpoint is not yet connected to B's workspace.
 
-The two migrations in `supabase/migrations/` are unapplied to the team's hosted
-project. Review and apply them in filename order to a disposable project before
+The two migrations in `supabase/migrations/` were applied to the hosted
+`newton-dev` project on 2026-11-14; see the hosted verification record below. Review and apply them in filename order to a disposable project before
 using the session endpoint. The first migration enables RLS and revokes public,
 anonymous, and authenticated privileges; the second adds constraints, policies,
 and narrow column grants. Normal student access cannot choose owners/timestamps
@@ -132,3 +132,29 @@ One independent read-only review approved the step-4 checkpoint with no
 findings. It checked writer boundaries, retry semantics, merge preservation,
 manifest/lock consistency and diff hygiene. Hosted C1 acceptance and team
 review before merging to `main` remain outstanding.
+
+
+## Hosted verification — 2026-11-14
+
+Applied `20261114000000_learning_schema.sql`, then
+`20261114000100_learning_access.sql` through the authenticated SQL Editor in
+`newton-dev` (project reference `ltoyfshczgknmhwjtogh`). Initial readback showed
+all three target tables absent. Final catalog readback showed:
+
+- All three tables have RLS enabled; profiles/sessions/events have 3/3/2 policies.
+- Anonymous SELECT is denied on all three. Authenticated SELECT is granted,
+  while owner-column INSERT/UPDATE and table DELETE are denied.
+- The portable SQL role suite passed on hosted PostgreSQL. Synthetic Auth users
+  and rows were rolled back; session/event row counts afterward were zero.
+- Actual anonymous Supabase SDK requests denied SELECT on all three tables and
+  INSERT into study_sessions with HTTP 401 and SQLSTATE 42501.
+
+These are real hosted SQL/anonymous-HTTP results, not full real-user acceptance.
+The role suite uses SET ROLE and simulated identity claims, so signed-in
+HTTP/direct-client tests with both adult accounts remain required for C1.
+No A/B integration was made. No raw work, audio, or real-user history was saved.
+
+Application was manual through SQL Editor. The Supabase CLI migration-history
+schema was absent; the SQL files were not registered as CLI-applied migrations.
+Reconcile migration history before a future CLI db push; do not blindly rerun
+these CREATE TABLE migrations against the existing tables.
