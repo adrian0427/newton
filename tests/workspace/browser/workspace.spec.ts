@@ -43,6 +43,7 @@ test("local workspace, real MathLive input, snapshot download and clear", async 
   await page.getByRole("button", { name: "Clear local work" }).click();
   await expect(page.getByRole("link", { name: "Download snapshot (JSON)" })).toHaveCount(0);
   await expect(page.getByText("Plain expression:")).toContainText("Your expression will appear here");
+  await expect(page.getByRole("region", { name: "Snapshot export" })).toHaveCount(0);
   expect(errors).toEqual([]);
   await page.screenshot({ path: test.info().outputPath("workspace.png"), fullPage: true });
 });
