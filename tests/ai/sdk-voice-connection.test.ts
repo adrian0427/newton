@@ -10,7 +10,7 @@ const sdk = vi.hoisted(() => ({
   subscription: vi.fn(),
   micStart: vi.fn(), micStop: vi.fn(), sendAudio: vi.fn(),
   queue: vi.fn(), interrupt: vi.fn(), dispose: vi.fn(), remaining: vi.fn(),
-  inject: vi.fn(), inputVolume: vi.fn(), outputVolume: vi.fn(),
+  updateThink: vi.fn(), inject: vi.fn(), inputVolume: vi.fn(), outputVolume: vi.fn(),
   playerOptions: vi.fn(), playerMuted: false,
   frame: undefined as ((frame: ArrayBuffer) => void) | undefined,
 }));
@@ -25,6 +25,7 @@ vi.mock("@deepgram/agents", () => ({
     clearConversationHistory = sdk.clearHistory;
     sendAudio = sdk.sendAudio;
     injectUserMessage = sdk.inject;
+    updateThink = sdk.updateThink;
   },
   AgentMicrophone: class {
     constructor(frame: (frame: ArrayBuffer) => void) {
@@ -66,10 +67,40 @@ beforeEach(() => {
   sdk.inputVolume.mockReturnValue(0.4);
   sdk.outputVolume.mockReturnValue(0.2);
   sdk.playerMuted = false;
+  sdk.updateThink.mockReset();
 });
 afterEach(() => { vi.useRealTimers(); vi.unstubAllEnvs(); });
 
 const token = "header.payload.signature";
+
+it("sends submitted context through the documented SDK in production without exposing diagnostic capabilities", async () => {
+  vi.stubEnv("NODE_ENV", "production");
+  const onTextProbeReady = vi.fn();
+  const connection = await createSdkVoiceConnection({ onUpdate: vi.fn(), onTextProbeReady });
+  expect(connection.sendText?.("context")).toBe(false);
+  await connection.connect(token);
+  expect(connection.sendText?.("Submitted 7(6k+2)=42k+2; please guide me.")).toBe(true);
+  expect(connection.sendText?.("duplicate")).toBe(false);
+  expect(sdk.inject).toHaveBeenCalledExactlyOnceWith("Submitted 7(6k+2)=42k+2; please guide me.");
+  expect(onTextProbeReady).not.toHaveBeenCalled();
+  // Pending text is a response even before any assistant metadata/audio arrives.
+  connection.interrupt();
+  sdk.handlers.get("audio")?.(new ArrayBuffer(960));
+  expect(sdk.queue).not.toHaveBeenCalled();
+  connection.close();
+  expect(connection.sendText?.("late")).toBe(false);
+});
+
+it("allows immediate speech interruption of pending injected context before the first assistant event", async () => {
+  const connection = await createSdkVoiceConnection();
+  await connection.connect(token);
+  expect(connection.sendText?.("Please guide me on my submitted work.")).toBe(true);
+  sdk.handlers.get("user-started-speaking")?.();
+  expect(sdk.interrupt).toHaveBeenCalledOnce();
+  sdk.handlers.get("audio")?.(new ArrayBuffer(960));
+  expect(sdk.queue).not.toHaveBeenCalled();
+  connection.close();
+});
 
 it("uses a managed Standard LLM without a BYO endpoint or raw API key", async () => {
   const connection = await createSdkVoiceConnection();
@@ -713,5 +744,90 @@ it("distinguishes a captured frame from a failed forwarding attempt", async () =
   }));
   expect(listener).toHaveBeenLastCalledWith(expect.objectContaining({ type: "error" }));
   expect(JSON.stringify(onUpdate.mock.calls)).not.toContain("PRIVATE");
+  connection.close();
+});
+
+const workContext = {
+  revisionId: "revision-1", problem: "7(6k+2)",
+  submission: { source: "structured_input" as const, step: "42k+2", verification: "incorrect" as const, guidingHint: "What should 7 multiply besides 6k?" },
+};
+
+it("includes checked work in initial settings before microphone capture; spoken hints inject no duplicate user turn", async () => {
+  const connection = await createSdkVoiceConnection();
+  await connection.connect(token, workContext);
+  const prompt = sdk.options.mock.calls[0][0].agent.think.prompt;
+  expect(prompt).toContain(JSON.stringify(workContext));
+  expect(sdk.micStart).toHaveBeenCalledOnce();
+  sdk.handlers.get("user-started-speaking")?.();
+  sdk.handlers.get("conversation-text")?.({ role: "user", content: "Can you give me a hint?" });
+  sdk.handlers.get("agent-thinking")?.();
+  sdk.handlers.get("conversation-text")?.({ role: "assistant", content: "Consider the constant term." });
+  sdk.handlers.get("audio")?.(new ArrayBuffer(960));
+  sdk.handlers.get("agent-audio-done")?.();
+  expect(sdk.queue).toHaveBeenCalledOnce();
+  expect(sdk.inject).not.toHaveBeenCalled();
+  expect(sdk.updateThink).not.toHaveBeenCalled();
+  connection.close();
+});
+
+it("silently replaces context with acknowledgement, gates audio input, then accepts one button hint", async () => {
+  const connection = await createSdkVoiceConnection();
+  await connection.connect(token);
+  const updating = connection.updateContext!(workContext);
+  expect(connection.sendText!("hint")).toBe(false);
+  sdk.frame?.(new ArrayBuffer(2));
+  expect(sdk.sendAudio).not.toHaveBeenCalled();
+  expect(sdk.updateThink).toHaveBeenCalledWith({ ...sdk.options.mock.calls[0][0].agent.think, prompt: expect.stringContaining(JSON.stringify(workContext)) });
+  expect(sdk.inject).not.toHaveBeenCalled();
+  sdk.handlers.get("think-updated")?.();
+  expect(await updating).toBe(true);
+  sdk.frame?.(new ArrayBuffer(2));
+  expect(sdk.sendAudio).toHaveBeenCalledOnce();
+  expect(connection.sendText!("Give me one hint for my current step.")).toBe(true);
+  expect(connection.sendText!("duplicate")).toBe(false);
+  sdk.handlers.get("conversation-text")?.({ role: "user", content: "Give me one hint for my current step." });
+  sdk.handlers.get("conversation-text")?.({ role: "assistant", content: "Consider the constant." });
+  sdk.handlers.get("audio")?.(new ArrayBuffer(960));
+  sdk.handlers.get("agent-audio-done")?.();
+  expect(sdk.queue).toHaveBeenCalledOnce();
+  const next = { revisionId: "revision-2", problem: "3(2x+5)", submission: null };
+  const cleared = connection.updateContext!(next);
+  expect(sdk.updateThink.mock.lastCall?.[0].prompt).toContain(JSON.stringify(next));
+  expect(sdk.updateThink.mock.lastCall?.[0].prompt).not.toContain("42k+2");
+  sdk.handlers.get("think-updated")?.();
+  expect(await cleared).toBe(true);
+  connection.close();
+});
+
+it.each(["speech", "thinking", "injection", "playback", "interrupted-response"])("refuses a revision replacement during %s so the owner can close ambiguous audio", async (activity) => {
+  const connection = await createSdkVoiceConnection();
+  await connection.connect(token, workContext);
+  if (activity === "speech") sdk.handlers.get("user-started-speaking")?.();
+  if (activity === "thinking") sdk.handlers.get("agent-thinking")?.();
+  if (activity === "injection") connection.sendText!("hint");
+  if (activity === "playback") sdk.remaining.mockReturnValueOnce(1);
+  if (activity === "interrupted-response") { connection.sendText!("hint"); connection.interrupt(); }
+  expect(await connection.updateContext!({ ...workContext, revisionId: "revision-2", submission: null })).toBe(false);
+  expect(sdk.updateThink).not.toHaveBeenCalled();
+  connection.close();
+});
+
+it.each(["timeout", "throw", "warning", "speech-race", "close"])("fails context delivery safely on %s and never releases stale output", async (failure) => {
+  vi.useFakeTimers();
+  const connection = await createSdkVoiceConnection();
+  await connection.connect(token);
+  if (failure === "throw") sdk.updateThink.mockImplementationOnce(() => { throw new Error("PRIVATE"); });
+  const updating = connection.updateContext!(workContext);
+  if (failure === "timeout") await vi.advanceTimersByTimeAsync(5000);
+  if (failure === "warning") sdk.handlers.get("warning")?.({ code: "PROMPT_TOO_LONG", description: "PRIVATE" });
+  if (failure === "speech-race") sdk.handlers.get("user-started-speaking")?.();
+  if (failure === "close") connection.close();
+  expect(await updating).toBe(false);
+  sdk.handlers.get("think-updated")?.(); // late acknowledgement cannot restore readiness
+  sdk.handlers.get("audio")?.(new ArrayBuffer(960));
+  sdk.frame?.(new ArrayBuffer(2));
+  expect(sdk.queue).not.toHaveBeenCalled();
+  expect(sdk.sendAudio).not.toHaveBeenCalled();
+  expect(connection.sendText!("hint")).toBe(false);
   connection.close();
 });

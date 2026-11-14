@@ -1,5 +1,6 @@
 import { NEWTON_AGENT_SETTINGS } from "./realtime-config";
 import type { VoiceConnection, VoiceConnectionEvent } from "./voice-session";
+import { tutoringPrompt, validTutoringContext, type TutoringContext } from "./tutoring-context";
 
 type DiagnosticEvent = "connect" | "connected" | "settings-applied" | "user-speech" | "user-text" |
   "assistant-text" | "thinking" | "agent-started-speaking" | "response-audio-start" | "server-audio-done" | "repeated-audio-done" |
@@ -99,9 +100,10 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
   const diagnostics = process.env.NODE_ENV === "development" ? development : undefined;
   const { AgentSession, AgentMicrophone, AgentPlayer } = await import("@deepgram/agents");
   let bearer = "";
+  const agent = { ...NEWTON_AGENT_SETTINGS, think: { ...NEWTON_AGENT_SETTINGS.think } };
   const session = new AgentSession({
     auth: { tokenFactory: async () => bearer },
-    agent: NEWTON_AGENT_SETTINGS,
+    agent,
     audio: { input: { encoding: "linear16", sampleRate: 16_000 }, output: { encoding: "linear16", sampleRate: 24_000 } },
     reconnect: { enabled: false },
   });
@@ -122,6 +124,8 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
   let diagnosticTimer: ReturnType<typeof setInterval> | undefined;
   let captureStartedAt = 0;
   let lastFrameAt = 0;
+  let contextPending: { resolve: (applied: boolean) => void; timer: ReturnType<typeof setTimeout> } | undefined;
+  let contextFailed = false;
   const startedAt = Date.now();
   let traceSequence = 0;
   const stats: VoiceDiagnostics = { ...INITIAL_VOICE_DIAGNOSTICS, codes: [], trace: [] };
@@ -152,7 +156,7 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
       for (const sample of samples) sum += (sample / 32768) ** 2;
       stats.inputLevel = samples.length ? Math.sqrt(sum / samples.length) : 0;
     }
-    if (settingsApplied) {
+    if (settingsApplied && !contextPending && !contextFailed) {
       try {
         session.sendAudio(frame);
         if (diagnostics) { stats.framesForwarded++; stats.bytesForwarded += frame.byteLength; }
@@ -168,7 +172,7 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
     if (closed) return;
     trace(cause === "speech" ? "speech-interrupt" : "manual-interrupt");
     // An idle speech/noise detection must not blacklist the next response.
-    if (responseActive || tutorSpeaking || player.getRemainingPlaybackTime() > 0) {
+    if (responseActive || tutorSpeaking || stats.injectionPending || player.getRemainingPlaybackTime() > 0) {
       dropCurrentTurn = true;
       newUserTurnAfterInterrupt = false;
     }
@@ -188,6 +192,47 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
   }
 
   function reportError(error: unknown) { emit({ type: "error", error }); }
+  function finishContext(applied: boolean) {
+    const pending = contextPending;
+    if (!pending) return;
+    contextPending = undefined;
+    clearTimeout(pending.timer);
+    contextFailed = !applied;
+    pending.resolve(applied);
+  }
+  function updateContext(context: TutoringContext): Promise<boolean> {
+    if (closed || !settingsApplied || stats.connection !== "connected" || contextPending || contextFailed || !validTutoringContext(context)) return Promise.resolve(false);
+    // An unlabelled binary response cannot be reassigned to a newer work revision.
+    // The owner closes on false and keeps the new context for explicit restart.
+    if (speechAwaitingTranscript || responseActive || tutorSpeaking || stats.injectionPending ||
+        (dropCurrentTurn && stats.playback === "interrupted") || player.getRemainingPlaybackTime() > 0) return Promise.resolve(false);
+    dropCurrentTurn = true;
+    newUserTurnAfterInterrupt = false;
+    return new Promise((resolve) => {
+      contextPending = { resolve, timer: setTimeout(() => finishContext(false), 5000) };
+      try {
+        // UpdatePrompt appends. UpdateThink replaces the full configuration, so
+        // send the same managed provider and one fresh complete prompt each time.
+        session.updateThink({ ...NEWTON_AGENT_SETTINGS.think, prompt: tutoringPrompt(context) });
+      } catch { finishContext(false); }
+    });
+  }
+  function contextTrafficBlocked() {
+    // Speech/response racing an update makes its revision ambiguous. Fail closed.
+    if (contextPending) finishContext(false);
+    return contextFailed;
+  }
+  function sendText(message: string): boolean {
+    if (closed || contextPending || contextFailed || !settingsApplied || stats.connection !== "connected" || !message.trim() || message.length > 2000) return false;
+    if (stats.injectionPending || responseActive || tutorSpeaking || player.getRemainingPlaybackTime() > 0) {
+      stats.blockedInjections++; trace("injection-blocked"); publishDiagnostics(); return false;
+    }
+    stats.injectionPending = true;
+    try {
+      session.injectUserMessage(message);
+      stats.injections++; trace("inject"); publishDiagnostics(); return true;
+    } catch { stats.injectionPending = false; code("TEXT_INJECTION_FAILED"); return false; }
+  }
   function beginAssistantResponse() {
     // Binary chunks have no turn IDs. Keep rejecting an interrupted response
     // until the ordered stream acknowledges new user text, then new assistant
@@ -228,21 +273,7 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
     settingsApplied = true;
     stats.settingsApplied = true;
     trace("settings-applied");
-    diagnostics?.onTextProbeReady(() => {
-      if (closed || !settingsApplied || stats.connection !== "connected") return false;
-      if (stats.injectionPending || responseActive || tutorSpeaking || player.getRemainingPlaybackTime() > 0) {
-        stats.blockedInjections++; trace("injection-blocked"); publishDiagnostics(); return false;
-      }
-      // Synchronous guard: React may not disable the button before a second click.
-      stats.injectionPending = true;
-      try {
-        session.injectUserMessage("Can you explain the distributive property?");
-        stats.injections++;
-        trace("inject");
-        publishDiagnostics();
-        return true;
-      } catch { stats.injectionPending = false; code("TEXT_INJECTION_FAILED"); return false; }
-    });
+    diagnostics?.onTextProbeReady(() => sendText("Can you explain the distributive property?"));
     diagnostics?.onMicrophoneControlReady?.(() => {
       if (closed || stats.microphone !== "capturing") return;
       if (mic.muted) {
@@ -258,12 +289,14 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
     resolveReady();
   });
   session.on("connected", () => { if (closed) return; stats.connectionEvents++; stats.connection = "connected"; trace("connected"); publishDiagnostics(); });
+  session.on("think-updated", () => { if (!closed) finishContext(true); });
   session.on("welcome", () => { if (closed) return; stats.welcome = true; publishDiagnostics(); });
   session.on("conversation-text", (message) => {
-    if (closed) return;
+    if (closed || contextTrafficBlocked()) return;
     if (message.role === "user") {
       stats.userTranscripts++;
       speechAwaitingTranscript = false;
+      responseActive = true;
       trace("user-text");
       if (dropCurrentTurn) newUserTurnAfterInterrupt = true;
     } else if (message.role === "assistant") {
@@ -274,14 +307,14 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
     publishDiagnostics();
   });
   session.on("agent-thinking", () => {
-    if (closed) return;
+    if (closed || contextTrafficBlocked()) return;
     if (!dropCurrentTurn) responseActive = true;
     stats.thinking = true; stats.thinkingEvents++; trace("thinking"); publishDiagnostics();
   });
-  session.on("warning", (warning) => { if (closed) return; code(providerCode(warning, "PROVIDER_WARNING")); });
+  session.on("warning", (warning) => { if (closed) return; if (contextPending) finishContext(false); code(providerCode(warning, "PROVIDER_WARNING")); });
   session.on("injection-refused", () => { if (closed) return; stats.injectionPending = false; code("INJECTION_REFUSED"); });
   session.on("audio", (chunk) => {
-    if (closed) return;
+    if (closed || contextTrafficBlocked()) return;
     stats.agentAudioChunks++;
     if (dropCurrentTurn) { stats.droppedAudioChunks++; publishDiagnostics(); return; }
     try {
@@ -300,20 +333,20 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
     } catch (error) { stats.queueErrors++; code("PLAYBACK_FAILED"); reportError(error); }
   });
   session.on("agent-started-speaking", () => {
-    if (closed) return;
+    if (closed || contextTrafficBlocked()) return;
     stats.agentStartedEvents++;
     trace("agent-started-speaking");
     beginAssistantResponse();
     publishDiagnostics();
   });
   session.on("user-started-speaking", () => {
-    if (closed) return;
+    if (closed || contextTrafficBlocked()) return;
     stats.userSpeechEvents++; stats.thinking = false;
     if (speechAwaitingTranscript) stats.repeatedSpeechEvents++;
     speechAwaitingTranscript = true;
     if (player.getRemainingPlaybackTime() > 0) stats.speechDuringPlayback++;
     trace("user-speech"); publishDiagnostics();
-    if (responseActive || tutorSpeaking || player.getRemainingPlaybackTime() > 0) interrupt("speech");
+    if (responseActive || tutorSpeaking || stats.injectionPending || player.getRemainingPlaybackTime() > 0) interrupt("speech");
     else {
       emit({ type: "listening" });
     }
@@ -358,6 +391,7 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
     bearer = "";
     clearTimeout(playbackTimer);
     clearInterval(diagnosticTimer);
+    finishContext(false);
     diagnostics?.onTextProbeReady(null);
     diagnostics?.onMicrophoneControlReady?.(null);
     trace("cleanup");
@@ -384,10 +418,11 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
   }
 
   return {
-    async connect(clientSecret) {
+    async connect(clientSecret, context) {
       if (closed) return;
       if (!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(clientSecret)) throw new Error("Temporary bearer token required");
       bearer = clientSecret;
+      agent.think.prompt = tutoringPrompt(context);
       stats.connection = "connecting"; trace("connect"); publishDiagnostics();
       if (diagnostics) diagnosticTimer = setInterval(() => {
         if (closed) return;
@@ -419,6 +454,8 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
       }
     },
     interrupt,
+    sendText,
+    updateContext,
     close,
     subscribe(listener) { listeners.add(listener); return () => { listeners.delete(listener); }; },
   };

@@ -10,6 +10,10 @@ Owned modules (voice modules exist on this branch; analysis/math/observation mod
 
 The existing A-owned `VoiceSession` and `VoiceState` live in `voice-session.ts`; publishing shared integration exports and adding `InterventionDecision` remain proposals for the coordinated contract PR. B owns all student controls; do not create a competing study page. Import C's auth/context/writer helpers; do not implement Supabase clients, schemas, or memory retrieval. Shared types and dependency changes require affected owners' review.
 
+## First integration status
+
+The [structured-work slice](../study-tutoring.md) now connects normalized MathLive work/revisions to exact local linear-expansion checks and targeted guidance. The real workspace uses A01's single voice session on the guarded `/dev/study` entry point, with additive `updateContext` for silent acknowledged current-work synchronization and bounded `sendText` for explicitly requested hints through the actual SDK. Initial settings include the latest explicit submission, so microphone hint requests use it too. Public `/study` receives no development capability. C's auth/session APIs, server analysis, image recognition and learning memory remain absent; no local check authorizes persistence. Full milestone requirements below remain broader than this slice.
+
 ## Milestone A1: real voice lifecycle
 
 Implement in order:
@@ -44,7 +48,7 @@ Reconcile any workstream-document copies on the feature branch with these update
 ### Preserved A1 technical handoff
 
 - The core SDK connection uses Nova-3 input, managed `gpt-4o-mini`, and Aura-2 Thalia output; verify model availability/credits before live use.
-- The actual `VoiceSession` API is `start({ sessionId })`, `stop()`, `interrupt()`, `getState()`, `getSnapshot()`, and `subscribe(listener)`. Subscribers receive a change notification and read the stable state/error snapshot; `deliver` remains an A2 proposal. Shared tutoring types are unchanged.
+- The actual `VoiceSession` API is `start({ sessionId })`, `stop()`, `interrupt()`, bounded `sendText(message)`, `getState()`, `getSnapshot()`, and `subscribe(listener)`. Subscribers receive a change notification and read the stable state/error snapshot; `deliver` remains an A2 proposal. Shared tutoring types are unchanged.
 - `npm run voice:dev` creates an ignored `/dev/voice` route, binds loopback, and sets a random per-run server capability. The handler validates capability, exact same-origin POST, loopback Host, bounded JSON, and a five-attempt/ten-minute process limit. Ordinary dev, production, previews, and CI cannot issue tokens. Do not use public tunnels; use `npm run voice:dev -- --clean` to remove a leftover generated harness after a crash.
 - The wrapper waits for settings acknowledgement before microphone startup; handles natural user-speech interruption and playback-drain state; disables automatic reconnect; and releases late microphone permission results, timers, listeners, playback, and connection resources. Explicit interruption silences/drops current playback without claiming server-generation cancellation.
 - Preserve existing lifecycle, delayed-permission, playback-drain, SDK-event, credential, request-guard, and harness-script tests. Mocked results do not establish audible playback, natural acoustic interruption, or physical microphone cleanup. Setup and manual acceptance remain in [the voice handoff](../ai-voice.md).

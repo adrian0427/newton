@@ -136,10 +136,21 @@ The local panel adds speech-during-queued-playback and repeated-speech-before-us
 
 Mock regressions cover uninterrupted and subsequent responses, legitimate/manual interruption, repeated metadata/settings/done events, duplicate injection, delayed playback completion and suspended clocks, explicit microphone control, late events after close/restart, and unexpected disconnect followed by a single explicit retry. Browser audibility, actual AEC performance, natural acoustic stability, and physical microphone release still require the manual steps above.
 
+## Structured workspace integration
+
+The [first structured-work slice](study-tutoring.md) now provides exact local linear-expansion checks and hints in the real `/study` guidance panel. `npm run voice:dev` also generates a guarded `/dev/study` page using the same workspace and the same local issuance controls. Public `/study` receives no local capability; C's auth/owned-session APIs remain absent.
+
+The additive provider-independent `VoiceSession.sendText(message): boolean` submits explicit bounded work-hint context through the existing connection's SDK `injectUserMessage()`, using the diagnostic probe's pending/duplicate guards. It does not create another session or claim provider receipt, audible playback or persisted evidence. Unsupported work is not submitted as verified context. Changing work during a pending/playing hint ends voice conservatively; closing the guidance panel does not. See the integration guide for exact scope, demo and mocked-browser versus live-test boundaries.
+
 ## Dependency on Developer C and future context
 
 C provides verified identity and owned-study-session checks plus deployment-wide abuse controls. A will wire those into the existing handler before enabling production/preview issuance; remove the local capability requirement for authenticated student requests, not the security checks. Never accept a client user ID as ownership. The local process limit is not production protection.
 
 Future whiteboard work still flows through `WorkSnapshot` → separate vision/math validation → `WorkAnalysis` → intervention decision. The voice adapter will receive only approved current-revision context/delivery via a reviewed additive interface. C's bounded evidence-backed memory can be supplied with the base Socratic instructions through Deepgram prompt updates/context; it remains data, not privileged instructions. Neither flow is implemented here. Existing `src/types/tutoring.ts` remains unchanged.
 
-Next integrations: verify A1 live, connect C's auth/token guard to B's controls, then add current-revision work/context delivery and later memory retrieval. No Excalidraw, verification engine, proactive controller, Supabase auth, migrations, or learning persistence is implemented in this change.
+Next integrations: connect C's real auth/owned-session controls before public voice, select/fund handwriting recognition, and later implement the general server analysis/intervention and evidence-memory paths. B1 now supplies Excalidraw/MathLive and the first slice supplies a bounded local exact-rational checker and explicit voice context; neither is a server-authorized memory writer, general verification engine, or proactive controller.
+
+
+### Submitted work for spoken hints
+
+On `/dev/study`, Check work now sends the current explicit structured submission to voice silently. Wait for **Context: applied** before asking aloud for a hint. The local-only diagnostic shows status and revision ID, never work/transcripts/tokens. Initial settings include any checked submission from before Start. The hint button awaits the same context acknowledgement, then triggers one response. See [context synchronization, invalidation and manual checks](study-tutoring.md). Edits clear old verification; if an update races a turn or fails, voice closes with a sanitized error and explicit restart guidance. Images remain local and unrecognized.

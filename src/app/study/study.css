@@ -83,6 +83,7 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .tutor-launcher:focus-visible { outline-offset: -3px; border-radius: 8px 0 0 8px; }
 .tutor-popover { position: fixed; top: 50%; transform: translateY(-50%); right: 66px; width: min(330px, calc(100vw - 86px)); max-height: calc(100dvh - 100px); overflow: auto; z-index: 16; padding: 24px; border: 1px solid var(--paper-line); border-radius: 14px; background: var(--paper-shell); box-shadow: 0 12px 70px #00000026; }
 .tutor-popover > header { display: flex; justify-content: space-between; gap: 10px; }
+.tutor-feedback { overflow-wrap: anywhere; }
 .tutor-popover h2 { font: 22px Georgia, serif; margin: 8px 0 0; }
 .workspace-panel { margin-top: 22px; }
 .panel-heading { display: none; }

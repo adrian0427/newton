@@ -1,5 +1,5 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, copyFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, copyFileSync, writeFileSync, existsSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, expect, it } from "vitest";
@@ -21,7 +21,10 @@ it("generates and cleans its route plus stale route types without touching other
   const { root, script, env } = fixture();
   execFileSync(process.execPath, [script, "--prepare-only"], { env });
   const page = join(root, "src/app/dev/voice/page.tsx");
+  const study = join(root, "src/app/dev/study/page.tsx");
   expect(existsSync(page)).toBe(true);
+  expect(readFileSync(study, "utf8")).toContain("isLocalVoiceHarnessAllowed");
+  expect(readFileSync(study, "utf8")).toContain("StudyShell developmentVoiceCapability");
   for (const path of [".next/dev/types", ".next/types"]) {
     mkdirSync(join(root, path), { recursive: true });
     writeFileSync(join(root, path, "validator.ts"), 'import "../../../src/app/dev/voice/page.js";');
@@ -29,9 +32,21 @@ it("generates and cleans its route plus stale route types without touching other
   writeFileSync(join(root, "src/app/keep.tsx"), "Other developer's source");
   execFileSync(process.execPath, [script, "--clean"], { env });
   expect(existsSync(page)).toBe(false);
+  expect(existsSync(study)).toBe(false);
   expect(existsSync(join(root, ".next/dev/types"))).toBe(false);
   expect(existsSync(join(root, ".next/types"))).toBe(false);
   expect(existsSync(join(root, "src/app/keep.tsx"))).toBe(true);
+});
+
+it("does not partially generate routes or remove another developer's study page", () => {
+  const { root, script, env } = fixture();
+  const directory = join(root, "src/app/dev/study");
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(join(directory, "page.tsx"), "Other source");
+  expect(spawnSync(process.execPath, [script, "--prepare-only"], { env }).status).toBe(1);
+  expect(existsSync(join(root, "src/app/dev/voice/page.tsx"))).toBe(false);
+  execFileSync(process.execPath, [script, "--clean"], { env });
+  expect(readFileSync(join(directory, "page.tsx"), "utf8")).toBe("Other source");
 });
 
 it("refuses to replace another developer's page and cannot prepare in production", () => {
