@@ -154,3 +154,11 @@ Next integrations: connect C's real auth/owned-session controls before public vo
 ### Submitted work for spoken hints
 
 On `/dev/study`, Check work now sends the current explicit structured submission to voice silently. Wait for **Context: applied** before asking aloud for a hint. The local-only diagnostic shows status and revision ID, never work/transcripts/tokens. Initial settings include any checked submission from before Start. The hint button awaits the same context acknowledgement, then triggers one response. See [context synchronization, invalidation and manual checks](study-tutoring.md). Edits clear old verification; if an update races a turn or fails, voice closes with a sanitized error and explicit restart guidance. Images remain local and unrecognized.
+
+## C integration: authenticated local issuance
+
+`POST /api/realtime/token` still accepts only `{ sessionId }`. On a local development server, omit `X-Newton-Voice-Dev` to use authenticated access: sign in through Google, create a session via `POST /api/study-sessions`, then submit the returned UUID. The handler calls `requireUser()` and `requireOwnedSession()` before checking provider configuration, consuming the existing issuance allowance, or requesting a Deepgram token. Anonymous requests return 401; foreign/missing sessions return the same 404; invalid UUID/ownership fields return 400. Cookie refresh/private-no-store headers survive authorization, provider and quota outcomes.
+
+The existing generated capability remains a separate, isolated harness authorization path and accepts its demo IDs without login. Bad supplied capabilities are rejected, never silently retried as user authorization. Production, preview, CI and non-loopback issuance remain disabled even with valid login. The original process-wide five-attempts/ten-minute development limit is unchanged, not a production per-user policy.
+
+This PR does not wire Matthew's workspace session creation or enable public/deployed voice. Adrian's provider/voice code is retained. Automated tests use real auth/ownership helpers with mocked SDK/provider boundaries and prove rejected requests make no Deepgram call; no provider credits are needed.
