@@ -33,6 +33,11 @@ test("real structured work drives local checks and targeted hints without persis
   await enterStep(page, "3(2x+5)=6x+5");
   await page.getByRole("button", { name: "Open Newton" }).click();
   await page.getByRole("button", { name: "Ask for a hint", exact: true }).click();
+  // A different written problem is never trusted silently; the student must adopt it.
+  await expect(page.getByText("which is not the active problem 7(6k + 2)", { exact: false })).toBeVisible();
+  await expect(page.getByText("Recheck 3 × (5).", { exact: false })).toHaveCount(0);
+  await page.getByRole("button", { name: "Use 3*(2*x+5) as the active problem" }).click();
+  await page.getByRole("button", { name: "Ask for a hint", exact: true }).click();
   await expect(page.getByText("Recheck 3 × (5).", { exact: false })).toBeVisible();
   expect(serviceRequests).toEqual([]);
   await page.reload();
@@ -40,10 +45,10 @@ test("real structured work drives local checks and targeted hints without persis
   await expect(page.getByText("Submitted:", { exact: false })).toHaveCount(0);
 });
 
-test("whiteboard work is never reported as recognized or verified", async ({ page }) => {
+test("unread whiteboard work is never reported as recognized or verified", async ({ page }) => {
   await page.goto("/study");
   await page.getByRole("button", { name: "Open Newton" }).click();
   await page.getByRole("button", { name: "Check work", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Not checked", exact: true })).toBeVisible();
-  await expect(page.getByText("Handwriting and worksheet images are not analyzed.", { exact: false })).toBeVisible();
+  await expect(page.getByText("Your whiteboard hasn't been read yet.", { exact: false })).toBeVisible();
 });

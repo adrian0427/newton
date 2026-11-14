@@ -11,7 +11,7 @@ The [workstream guide](workstreams/README.md) defines the implementation assignm
 ```mermaid
 flowchart TD
   Work[Student work: Excalidraw or MathLive] --> Snapshot[Versioned transient snapshot]
-  Snapshot --> Interpret[Server: interpretation - vision provider undecided]
+  Snapshot --> Interpret[Server: handwriting transcription, student-confirmed]
   Interpret --> Verify[CortexJS: supported math verification]
   Verify --> Decide[Intervention decision + revision check]
   Decide --> Response[Socratic tutoring response]
@@ -106,7 +106,7 @@ Voice tutoring can discuss broad high-school and introductory college mathematic
 
 ### Interpretation and verification (Developer A)
 
-Interpret the current work separately using a vision-capable model. **The handwritten-work analysis provider remains undecided because we have no funded OpenAI vision API access.** Deepgram Voice Agent is the voice pipeline, not a whiteboard vision service. A must select and fund a separate analysis provider before handwriting integration; structured-input parsing and independent verification can proceed without one. Keep recognized expression, confidence, and source revision together. Structured input can remove handwriting ambiguity but does not prove correctness. CortexJS checks only supported transformations; an equivalent expression alone does not establish that a particular misconception occurred. Recognition ambiguity, parse failures, unsupported transformations, and conflicting evidence produce `correctness: "uncertain"`, not an incorrect label.
+Interpret the current work separately using a vision-capable model. Handwriting **transcription** now uses a free-tier Groq Qwen or Gemma 4 adapter whose output the student confirms (see [the implemented transcription](#implemented-handwriting-transcription-developer-a-integrated-with-b)); a provider for broader automated work analysis remains undecided because we have no funded OpenAI vision API access. Deepgram Voice Agent is the voice pipeline, not a whiteboard vision service; structured-input parsing and independent verification can proceed without one. Keep recognized expression, confidence, and source revision together. Structured input can remove handwriting ambiguity but does not prove correctness. CortexJS checks only supported transformations; an equivalent expression alone does not establish that a particular misconception occurred. Recognition ambiguity, parse failures, unsupported transformations, and conflicting evidence produce `correctness: "uncertain"`, not an incorrect label.
 
 ### Intervention controller (Developer A, integrated with B)
 
@@ -191,3 +191,19 @@ Official references checked during initialization (2026-11-13):
 Recheck current official SDK docs when implementing integrations; `gpt-4o-mini` is the initial candidate, not a permanent model or session-payload contract. Next.js/React, Excalidraw/MathLive, CortexJS, Supabase Auth/PostgreSQL, learning-event persistence, and developer ownership remain unchanged by this pivot.
 
 Current-work synchronization uses one bounded revision-scoped prompt block, preserving the same managed model. Edits clear submitted evidence; ambiguous in-flight replacements close voice and require explicit restart. Only explicit structured submissions are shared; uploaded worksheet text is not recognized. See [context delivery and validation](study-tutoring.md).
+
+### Implemented handwriting transcription (Developer A, integrated with B)
+
+Explicit handwriting reads: Read handwriting exports the current whiteboard PNG once, `POST /api/work/transcribe` (verified Supabase user, same origin, bounded PNG, per-user limit) asks a free-tier vision model to copy the work, the student reviews/edits and confirms the transcription, and only then the existing deterministic checker, hints and voice context use it.
+
+`src/lib/vision/providers.ts` is the replaceable server-only adapter boundary: `VisionAdapter.transcribe(image, signal)` returns raw model text. Groq-hosted Qwen vision (`qwen/qwen3.8-27b`, reasoning disabled) is preferred; Gemma 4 (`gemma-4-31b-it`) through the Gemini API is the fallback. Keys stay on the server and are sent in request headers. Requests use temperature 0, a 200-token output cap, a 20-second timeout, no redirects, and a 64 KiB response cap. Provider error bodies are never read or forwarded.
+
+`src/lib/vision/handwriting.ts` instructs the model to copy exactly what is written, including mistakes, without correcting, simplifying, solving, grading or explaining, and to mark unclear symbols with `?`. Output is untrusted: only `{status, text}` survives; prose, extra fields (for example a volunteered answer) and thought parts are discarded. Text must be at most 200 plain math characters without words. Results are `transcribed`, `ambiguous` (contains `?`) or `unreadable`; no confidence score is fabricated. Malformed output, timeouts, rate limits and missing credentials are service errors, never mathematical uncertainty.
+
+The route accepts only `{ revisionId, image }` with a PNG data URL of at most 2 MiB and 2048 pixels per side, checks the PNG header, and echoes the revision. It requires `requireUser()` and same-origin POST before any provider call, applies a process-local limit of 12 reads per user per 10 minutes (not deployment-wide abuse protection), and stores or logs nothing. It does not create study sessions or learning events.
+
+The workspace ties each read to the board revision. Any board, structured-input or worksheet change aborts the request and discards pending, reviewed or confirmed text; a late response for an older revision is ignored. The transcription is only a draft until the student confirms it, and `?` must be resolved first. Confirmed text passes through `normalizeExpression` and the same `checkDistribution`, hint and `VoiceSession.updateContext` paths as structured input, labelled `confirmed_handwriting`. Voice never receives the image.
+
+`checkDistribution(submission, activeProblem)` now verifies against the student's active problem (default `7(6k + 2)`, changeable in the Newton panel). An equation whose original side is a different distributive expression is unsupported and only proposed as a new active problem; the student must adopt it explicitly. Standalone expansions are compared with the active problem. MathLive structured input remains the fallback.
+
+Free-tier data terms differ: Groq does not retain inference data by default, while Gemini API unpaid-tier inputs may be used to improve Google products and reviewed by humans. Only the whiteboard drawing is sent; review provider terms before real-student use.

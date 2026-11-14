@@ -133,3 +133,11 @@ Edits invalidate visible feedback. Editing while a work hint is pending/playing 
 **Reason:** Check work previously updated only React feedback; spoken hint requests had no problem or submitted step. The button already sent those fields, but general voice questions did not. One current context block carries the revision, explicit problem, structured source and deterministic result without claiming handwriting recognition or persistent memory.
 
 **Lifecycle:** Edits remove stale evidence. Busy, racing or failed updates close voice rather than playing unlabelled audio for an obsolete revision; explicit restart restores only the latest context. Successful idle updates keep the connection. Local diagnostics expose status/revision/fixed error codes only. C's production authentication dependency, local credential restrictions and developer ownership remain unchanged.
+
+## 2026-11-14 — ADR 023: Student-confirmed handwriting transcription
+
+**Decision:** Add explicit, student-requested whiteboard transcription through a small server-only vision adapter. Use Groq-hosted Qwen vision on its free tier when `GROQ_API_KEY` is configured; otherwise Gemma 4 through the Gemini API free tier. No paid dependency or OpenAI credit is assumed. The model only transcribes; the student confirms or edits the text, and the existing deterministic checker grades it.
+
+**Reason:** In the team's proof of concept both models transcribed `4(x+3)=4x+12`, `-4(x+3)=-4x+-12` and the incorrect `4(x+3)=4x+3` faithfully, but Qwen also volunteered the correct answer. Discarding everything except a bounded transcription, plus student confirmation, prevents model grading or answers from reaching students. Submitted equations must now start from the active problem instead of trusting an arbitrary left-hand side.
+
+**Consequences:** Reads require a verified Supabase user and stay transient; nothing is persisted or logged. Board edits invalidate pending and confirmed transcriptions. Structured input remains the fallback. Public voice, authenticated voice issuance and learning-event writes are unchanged. This supersedes the "provider undecided" status for handwriting transcription only; general work analysis and proactive intervention remain planned.

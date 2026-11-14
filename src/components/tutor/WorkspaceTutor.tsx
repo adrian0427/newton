@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { createCredentialProvider, createVoiceSession } from "@/lib/ai/voice-session";
 import { createSdkVoiceConnection } from "@/lib/ai/sdk-voice-connection";
@@ -7,9 +6,8 @@ import { PRACTICE_EXPRESSION, checkDistribution, distributionVoiceMessage, unsup
 import { submittedContext, type TutoringContext } from "@/lib/ai/tutoring-context";
 import TutorControls from "./TutorControls";
 import TutorLauncher from "./TutorLauncher";
-
-export type TutorWork = { revisionId: string; source: "whiteboard" | "expression"; expression: string; inputError: string };
-
+/** `handwriting` is a transcription the student reviewed and confirmed for this exact board revision. */
+export type TutorWork = { revisionId: string; source: "whiteboard" | "expression" | "handwriting"; expression: string; inputError: string };
 /** Owns a single A01 session outside the open/closed guidance panel lifecycle. */
 export default function WorkspaceTutor({ work, developmentVoiceCapability }: { work: TutorWork; developmentVoiceCapability?: string }) {
   const voiceAvailable = process.env.NODE_ENV === "development" && !!developmentVoiceCapability;
@@ -18,21 +16,24 @@ export default function WorkspaceTutor({ work, developmentVoiceCapability }: { w
     credentialProvider: voiceAvailable ? createCredentialProvider({ "X-Newton-Voice-Dev": developmentVoiceCapability! }) : undefined,
   }));
   const voice = useSyncExternalStore(session.subscribe, session.getSnapshot, session.getSnapshot);
-  const workKey = JSON.stringify([work.revisionId, work.source, work.expression, work.inputError]);
+  // The student's chosen problem. Submitted equations must start from it; another written problem is never adopted silently.
+  const [problem, setProblem] = useState(PRACTICE_EXPRESSION);
+  const workKey = JSON.stringify([work.revisionId, work.source, work.expression, work.inputError, problem]);
   const [feedback, setFeedback] = useState<{ key: string; result: DistributionCheck; showHint: boolean; delivery: string } | null>(null);
   const spokenHint = useRef<string | null>(null);
   const current = feedback?.key === workKey ? feedback : null;
-  const context = useMemo<TutoringContext>(() => current && work.source === "expression" && !work.inputError
-    ? submittedContext(work.revisionId, current.result)
-    : { revisionId: work.revisionId, problem: PRACTICE_EXPRESSION, submission: null },
-  [current, work.revisionId, work.source, work.inputError]);
+  const checkable = work.source === "expression" || work.source === "handwriting";
+  const submissionSource = work.source === "handwriting" ? "confirmed_handwriting" : "structured_input";
+  const context = useMemo<TutoringContext>(() => current && checkable && !work.inputError
+    ? submittedContext(work.revisionId, current.result, submissionSource)
+    : { revisionId: work.revisionId, problem, submission: null },
+  [current, checkable, submissionSource, work.revisionId, work.inputError, problem]);
   const hintGeneration = useRef(0);
   useLayoutEffect(() => { hintGeneration.current++; spokenHint.current = null; }, [workKey]);
   useLayoutEffect(() => {
     // Draft edits invalidate evidence; only Check work / Ask for a hint submit it.
     void session.updateContext(context);
   }, [session, context]);
-
   useEffect(() => {
     const stop = () => { void session.stop(); };
     window.addEventListener("pagehide", stop);
@@ -48,15 +49,14 @@ export default function WorkspaceTutor({ work, developmentVoiceCapability }: { w
       return unsubscribe;
     }
   }, [session, voice.state]);
-
   function check(showHint: boolean) {
-    const result = work.source !== "expression"
-      ? unsupportedWork("", "Handwriting and worksheet images are not analyzed. Choose Structured input to check your expansion.")
-      : work.inputError ? unsupportedWork("", work.inputError) : checkDistribution(work.expression);
+    const result = !checkable
+      ? unsupportedWork("", "Your whiteboard hasn't been read yet. Choose Read handwriting on the whiteboard and confirm the transcription, or use Structured input.", problem)
+      : work.inputError ? unsupportedWork("", work.inputError, problem) : checkDistribution(work.expression, problem);
     if (showHint && spokenHint.current === workKey) return;
-    const nextContext = work.source === "expression" && !work.inputError
-      ? submittedContext(work.revisionId, result)
-      : { revisionId: work.revisionId, problem: PRACTICE_EXPRESSION, submission: null };
+    const nextContext = checkable && !work.inputError
+      ? submittedContext(work.revisionId, result, submissionSource)
+      : { revisionId: work.revisionId, problem, submission: null };
     // Install context silently even for Check work, so microphone requests know it.
     const delivery = session.updateContext(nextContext);
     const next = { key: workKey, result, showHint, delivery: "" };
@@ -78,9 +78,8 @@ export default function WorkspaceTutor({ work, developmentVoiceCapability }: { w
         : "Voice is busy or could not accept the hint. Read the hint below; wait or end/start voice to retry." } : previous);
     });
   }
-
   return <TutorLauncher indicator={voice.state === "error" ? "error" : current?.result.status === "incorrect" ? "question" : "idle"}
-    controls={<TutorControls voice={voice} voiceAvailable={voiceAvailable} feedback={current}
+    controls={<TutorControls voice={voice} voiceAvailable={voiceAvailable} feedback={current} problem={problem} onProblemChange={setProblem}
       onStart={() => { if (voiceAvailable) { void session.updateContext(context); void session.start({ sessionId: "local-study-test" }).catch(() => {}); } }}
       onStop={() => { spokenHint.current = null; void session.stop(); }} onInterrupt={() => session.interrupt()}
       onCheck={() => check(false)} onHint={() => check(true)} />} />;

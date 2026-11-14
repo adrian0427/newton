@@ -193,6 +193,18 @@ test("Check work silently updates active spoken context; edits clear evidence an
   await expect(page.getByTestId("voice-context-status")).toContainText("applied");
   await page.getByRole("button", { name: "Check work", exact: true }).click();
   await expect.poll(() => prompts.length).toBe(4);
+  // The written problem differs from the active one, so it is shared only as unverified work.
+  expect(prompts.at(-1)).toContain('"problem":"7(6k + 2)"');
+  expect(prompts.at(-1)).toContain('"verification":"unsupported"');
+  acknowledge();
+  await expect(page.getByTestId("voice-context-status")).toContainText("applied");
+  await page.getByRole("button", { name: "Use 3*(2*x+5) as the active problem" }).click();
+  await expect.poll(() => prompts.length).toBe(5);
+  expect(prompts.at(-1)).toContain('"submission":null');
+  acknowledge();
+  await expect(page.getByTestId("voice-context-status")).toContainText("applied");
+  await page.getByRole("button", { name: "Check work", exact: true }).click();
+  await expect.poll(() => prompts.length).toBe(6);
   expect(prompts.at(-1)).toContain('"problem":"3*(2*x+5)"');
   expect(prompts.at(-1)).toContain('"step":"3*(2*x+5)=6*x+5"');
   expect(prompts.at(-1)).not.toContain("42*k+2");

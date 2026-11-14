@@ -5,9 +5,11 @@ import { useEffect, useRef, useState, useCallback, type CSSProperties } from "re
 import type { WorkSnapshot } from "@/types/tutoring";
 import type { WhiteboardHandle } from "./Whiteboard";
 import { WorkRevision, SnapshotDownload, expressionContent } from "./snapshots";
+import { requestTranscription, reviewDraft } from "./handwriting";
+import HandwritingReview, { type HandwritingState } from "./HandwritingReview";
 import MathInput from "./MathInput";
 import WorkspaceBoundary from "./WorkspaceBoundary";
-import WorkspaceTutor from "../tutor/WorkspaceTutor";
+import WorkspaceTutor, { type TutorWork } from "../tutor/WorkspaceTutor";
 import WorksheetPane from "../worksheet/WorksheetPane";
 
 const Whiteboard = dynamic(() => import("./Whiteboard"), { ssr: false, loading: () => <div className="board-loading" role="status">Opening your whiteboard...</div> });
@@ -31,10 +33,14 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
   const [message, setMessage] = useState("");
   const [failed, setFailed] = useState(false);
   const [download, setDownload] = useState<{ url: string; snapshot: WorkSnapshot } | null>(null);
+  // One transcription per board revision; any content change discards it and its pending request.
+  const [handwriting, setHandwriting] = useState<HandwritingState | null>(null);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const reading = useRef<AbortController | null>(null);
 
   useEffect(() => {
     alive.current = true;
-    return () => { alive.current = false; revisions.invalidate(); downloads.clear(); };
+    return () => { alive.current = false; revisions.invalidate(); downloads.clear(); reading.current?.abort(); };
   }, [revisions, downloads]);
 
   const changed = useCallback(() => {
@@ -44,6 +50,9 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
     setDownload(null);
     setMessage("");
     setFailed(false);
+    reading.current?.abort();
+    reading.current = null;
+    setHandwriting(null);
   }, [revisions, downloads]);
 
   const worksheetChanged = changed;
@@ -67,9 +76,10 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
   }
 
   async function capture() {
-    if (capturing) return;
+    if (capturing || reading.current) return;
     setCapturing(true);
     setFailed(false);
+    setReviewOpen(false);
     setMessage("Capturing your selected work...");
     try {
       if (inputError && source === "expression") throw new Error(inputError);
@@ -87,6 +97,45 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
       setMessage(error instanceof Error ? error.message : "Capture failed. Please try again.");
     } finally { if (alive.current) setCapturing(false); }
   }
+
+  /** Explicit request only: export the current drawing once, then show the transcription for confirmation. */
+  async function readHandwriting() {
+    if (capturing || reading.current) return;
+    const controller = new AbortController();
+    reading.current = controller;
+    const requested = revisions.current;
+    downloads.clear();
+    setDownload(null);
+    setMessage("");
+    setReviewOpen(true);
+    setHandwriting({ revisionId: requested, phase: "reading" });
+    const current = () => alive.current && !controller.signal.aborted && revisions.current === requested;
+    try {
+      const snapshot = await (board.current?.capture() ?? Promise.reject(new Error("The whiteboard is still loading. Please try again.")));
+      if (!current() || snapshot.revisionId !== requested) return;
+      const result = await requestTranscription(snapshot, controller.signal);
+      // Late responses for an older drawing are discarded, even if cancellation did not reach the server.
+      if (!current() || result.revisionId !== revisions.current) return;
+      setHandwriting(result.status === "unreadable" ? { revisionId: requested, phase: "unreadable" }
+        : { revisionId: requested, phase: "review", ambiguous: result.status === "ambiguous", draft: result.text });
+    } catch (error) {
+      if (!current()) return;
+      setHandwriting({ revisionId: requested, phase: "error", message: error instanceof Error ? error.message : "Newton couldn't read your handwriting. Try again, or use Structured input." });
+    } finally { if (reading.current === controller) reading.current = null; }
+  }
+
+  function dismissReview() {
+    setReviewOpen(false);
+    if (handwriting?.phase === "confirmed") return;
+    reading.current?.abort();
+    reading.current = null;
+    setHandwriting(null);
+  }
+
+  const confirmed = handwriting?.phase === "confirmed" && handwriting.revisionId === revisionId ? handwriting : null;
+  const tutorWork: TutorWork = source === "expression" ? { revisionId, source, expression, inputError }
+    : confirmed ? { revisionId, source: "handwriting", expression: confirmed.expression, inputError: "" }
+      : { revisionId, source: "whiteboard", expression: "", inputError: "" };
 
   return <>
     <nav hidden={focusMode} className="mobile-workspace-tabs" aria-label="Workspace panels">
@@ -120,12 +169,22 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
             <path d="M19.3 12a7.5 7.5 0 1 0-1.8 5.3M20 12l-3-3" />
           </svg>
         </button></div>
-        <div className="whiteboard-frame" hidden={source !== "whiteboard"}><WorkspaceBoundary><Whiteboard ref={board} revisions={revisions} onContentChange={changed} onActivityChange={setEditing} onCapture={capture} capturing={capturing} captureDisabled={capturing || editing} /></WorkspaceBoundary></div>
+        <div className="whiteboard-frame" hidden={source !== "whiteboard"}><WorkspaceBoundary><Whiteboard ref={board} revisions={revisions} onContentChange={changed} onActivityChange={setEditing} onCapture={capture} capturing={capturing} captureDisabled={capturing || editing || handwriting?.phase === "reading"}
+          onRead={readHandwriting} reading={handwriting?.phase === "reading"} readDisabled={capturing || editing || handwriting?.phase === "reading"} /></WorkspaceBoundary></div>
         <div className="expression-area" hidden={source !== "expression"}>
           <div className="expression-actions"><button className="small-button capture-button" type="button" disabled={capturing} onClick={capture}>{capturing ? "Capturing..." : "Capture snapshot"}</button></div>
           <h3>Your next step</h3><MathInput key={inputKey} value={expression} onChange={(value, error) => { changed(); setExpression(value); setInputError(error ?? ""); }} onActivityChange={setEditing} />
           {inputError ? <p role="alert" className="input-error">{inputError}</p> : <p className="expression-preview">Plain expression: <code>{expression || "Your expression will appear here"}</code></p>}
         </div>
+        {source === "whiteboard" && reviewOpen && handwriting && <HandwritingReview state={handwriting}
+          onDraft={(draft) => setHandwriting((state) => state?.phase === "review" ? { ...state, draft } : state)}
+          onConfirm={() => setHandwriting((state) => {
+            if (state?.phase !== "review") return state;
+            const reviewed = reviewDraft(state.draft);
+            return reviewed.error ? state : { revisionId: state.revisionId, phase: "confirmed", draft: state.draft, expression: reviewed.expression };
+          })}
+          onEdit={() => setHandwriting((state) => state && { revisionId: state.revisionId, phase: "review", ambiguous: false, draft: state.phase === "confirmed" ? state.draft : "" })}
+          onReadAgain={() => { void readHandwriting(); }} onDismiss={dismissReview} />}
         {message && <section className="capture-popover" aria-label="Snapshot export">
           <button type="button" className="icon-button dismiss-capture" aria-label="Dismiss snapshot" onClick={() => { downloads.clear(); setDownload(null); setMessage(""); }}>×</button>
         <div className="capture-feedback" aria-live="polite" aria-atomic="true"><p className={failed ? "input-error" : ""}>{message}</p></div>
@@ -138,6 +197,6 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
         </section>}
       </section>
     </div>
-    <WorkspaceTutor work={{ revisionId, source, expression, inputError }} developmentVoiceCapability={developmentVoiceCapability} />
+    <WorkspaceTutor work={tutorWork} developmentVoiceCapability={developmentVoiceCapability} />
   </>;
 }

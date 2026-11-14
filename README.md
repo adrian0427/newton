@@ -6,7 +6,7 @@ Newton is an AI study companion for students in grades 9–12, built by **Twofol
 
 ## Current status
 
-This checkout combines A01's Deepgram voice foundation, B01's local student workspace, C01's Supabase authentication and learning-memory backend, and the first structured-work tutoring slice, alongside the responsive homepage, shared TypeScript contracts, tests, and CI. `/study` provides worksheet viewing, Excalidraw drawing, MathLive input, revision-safe snapshots, appearance preferences, and an on-demand Newton panel. Its Check work and Ask for a hint controls run a bounded, deterministic exact-arithmetic check of structured distributive-property expansions in the browser. Handwriting and worksheet images are not recognized or analyzed. See [the integration demo](docs/study-tutoring.md). Google sign-in and sign-out are available at `/auth/sign-in`; see [Google setup](docs/google-auth.md). The developer manually verified Google login/logout and reload; live fixture session and two-account isolation tests passed. C1's authenticated backend persistence is implemented and passed real two-account HTTP/helper and direct-client checks against hosted `newton-dev` on November 14, 2026: separate account access, append-only history, retry deduplication, and retrieval after sign-out/sign-in in a later session. Both migrations are applied.
+This checkout combines A01's Deepgram voice foundation, B01's local student workspace, C01's Supabase authentication and learning-memory backend, and the first structured-work tutoring slice, alongside the responsive homepage, shared TypeScript contracts, tests, and CI. `/study` provides worksheet viewing, Excalidraw drawing, MathLive input, revision-safe snapshots, appearance preferences, and an on-demand Newton panel. Its Check work and Ask for a hint controls run a bounded, deterministic exact-arithmetic check of structured distributive-property expansions in the browser. On the whiteboard, Read handwriting sends the current drawing for transcription when a signed-in student asks; the student confirms or edits the text before the same checker uses it. The vision model only copies the work and never grades it, and worksheet images are not analyzed. See [the integration demo](docs/study-tutoring.md). Google sign-in and sign-out are available at `/auth/sign-in`; see [Google setup](docs/google-auth.md). The developer manually verified Google login/logout and reload; live fixture session and two-account isolation tests passed. C1's authenticated backend persistence is implemented and passed real two-account HTTP/helper and direct-client checks against hosted `newton-dev` on November 14, 2026: separate account access, append-only history, retry deduplication, and retrieval after sign-out/sign-in in a later session. Both migrations are applied.
 
 A01 and B01 are connected: the workspace uses A01's single `VoiceSession`, and submitted structured work reaches voice as revision-scoped context. Voice on that workspace is enabled only on the guarded, generated `/dev/study` entry point. C01 is not yet connected to tutoring. Public `/study` receives no voice capability and keeps voice disabled. The token handler does not yet call C's identity or session-ownership checks, `/dev/study` uses a fixed local test session ID rather than a C-owned study session, and tutoring neither writes nor reads learning history. Checks and hints are transient and are never saved.
 
@@ -16,6 +16,7 @@ A01 provides browser conversations, microphone capture, audible playback, natura
 | --- | --- |
 | `/`, `/study`, `/auth/sign-in` | Normal pages in development and production builds |
 | `/auth/session`, `POST /api/study-sessions`, `GET /api/learning-context` | C01 handlers; require Supabase configuration, and the latter two require a verified signed-in user |
+| `POST /api/work/transcribe` | Explicit handwriting transcription; requires a verified signed-in user, a same-origin bounded PNG, and a server-side `GROQ_API_KEY` or `GEMINI_API_KEY` (503 when missing). Nothing is stored |
 | `POST /api/realtime/token` | A01 handler; fails closed without provider calls except for the `npm run voice:dev` loopback harness |
 | `/dev/voice`, `/dev/study` | Generated, Git-ignored pages created only by `npm run voice:dev`; absent from normal dev and production builds and guarded against production, preview, CI, and non-loopback hosts |
 
@@ -56,6 +57,7 @@ Open [localhost:3000](http://localhost:3000). Open `/study` for the full-page wo
 | `npm run typecheck` | Generate Next.js route types, then check strict TypeScript |
 | `npm test` | Run Vitest once |
 | `npm run test:watch` | Watch focused tests while developing |
+| `npm run test:vision` | Opt-in real-model transcription check using `GROQ_API_KEY` or `GEMINI_API_KEY` from `.env.local`; skipped when neither is set |
 | `npm run voice:dev` | Guarded loopback harness that generates `/dev/voice` diagnostics and the `/dev/study` voice workspace; requires server-only Deepgram credentials |
 | `npm run test:hosted` | Opt-in real two-account Supabase acceptance against a locally running build; requires ignored local credential files ([backend verification](docs/backend-testing.md#real-two-account-acceptance--2026-11-14)) |
 | `npm run test:e2e` | Real drawing/input/download, structured check/hint, and sign-in screen checks at desktop and 360px widths (first run `npx playwright install chromium`). Mocked `/dev/study` voice cases run only with `NEWTON_TEST_DEV_STUDY=1` against a `voice:dev` server ([details](docs/study-tutoring.md#automated-validation-boundaries)) |
@@ -68,6 +70,9 @@ The homepage and `/study` need no service credentials. For local voice testing o
 | `OPENAI_API_KEY` | Server only, optional | Not needed for managed voice; separately funded future vision only if OpenAI is selected |
 | `NEXT_PUBLIC_SUPABASE_URL` | Public | Supabase project endpoint |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public | Supabase client initialization; requires auth and RLS for student data |
+| `GROQ_API_KEY` | Server only, optional | Free-tier Groq key for Qwen vision handwriting transcription (preferred). Never `NEXT_PUBLIC_` |
+| `GEMINI_API_KEY` | Server only, optional | Free-tier Gemini API key for Gemma 4 transcription when Groq is not configured. Free-tier inputs may be reviewed by Google; prefer Groq for student work |
+| `NEWTON_VISION_PROVIDER`, `GROQ_VISION_MODEL`, `GEMINI_VISION_MODEL` | Server only, optional | Force `groq` or `gemini`, or override the default model IDs |
 
 Never expose permanent provider keys through `NEXT_PUBLIC_` variables or browser responses. Supabase privileged keys remain server-side too. Local environment files are ignored. The homepage, local workspace, and default unit tests require no service credentials. Only the explicitly enabled local voice flow contacts Deepgram. Supabase helpers read configuration lazily; auth routes require it and session creation also requires the migrations to be applied. The opt-in hosted backend suite reads disposable test-account credentials from the ignored `.env.hosted-test.local`; see [backend verification](docs/backend-testing.md#real-two-account-acceptance--2026-11-14). Deployed voice-token issuance stays disabled until authentication, session ownership, and abuse controls are integrated; preview deployments are included.
 
@@ -75,7 +80,7 @@ Never expose permanent provider keys through `NEXT_PUBLIC_` variables or browser
 
 Installed: Next.js App Router, React, TypeScript, Tailwind CSS, the official core Deepgram Browser Agent SDK (`@deepgram/agents`), Excalidraw, MathLive, PDF.js, the Supabase client/SSR libraries (`@supabase/supabase-js`, `@supabase/ssr`), ESLint, Vitest, and Playwright. Development-only PGlite runs the local PostgreSQL policy tests. `server-only` protects server modules. The lockfile records exact dependency versions. CortexJS Compute Engine remains a planned dependency to be added by its owner when needed. Vercel is the intended deployment target; no deployment is provisioned.
 
-The hackathon voice selection is Deepgram Voice Agent using intended trial credits and a managed OpenAI model, initially `gpt-4o-mini`, subject to availability and pricing. It needs no separate OpenAI API key. Whiteboard vision is a separate, undecided provider choice because funded OpenAI vision API access is unavailable. Using OpenAI through Deepgram does not establish OpenAI Challenge eligibility; ask the organizers. See [decision 013](docs/decisions.md#2026-11-13--deepgram-voice-pivot) and [A's existing implementation audit](docs/workstreams/A01-ai-tutoring.md#existing-implementation-and-migration-follow-up).
+The hackathon voice selection is Deepgram Voice Agent using intended trial credits and a managed OpenAI model, initially `gpt-4o-mini`, subject to availability and pricing. It needs no separate OpenAI API key. Whiteboard transcription uses a separate free-tier vision provider: Groq-hosted Qwen (`qwen/qwen3.8-27b`) when `GROQ_API_KEY` is set, otherwise Gemma 4 (`gemma-4-31b-it`) through the Gemini API (see [decision 023](docs/decisions.md#2026-11-14--adr-023-student-confirmed-handwriting-transcription)). Using OpenAI through Deepgram does not establish OpenAI Challenge eligibility; ask the organizers. See [decision 013](docs/decisions.md#2026-11-13--deepgram-voice-pivot) and [A's existing implementation audit](docs/workstreams/A01-ai-tutoring.md#existing-implementation-and-migration-follow-up).
 
 ```text
 src/app/                 Homepage, /study, layout, auth/session and learning routes, guarded voice-token handler
@@ -85,6 +90,7 @@ src/lib/supabase/        Supabase clients, configuration, and verified-identity 
 src/lib/learning/        Owned study sessions, learning-event writer, bounded context retrieval
 src/lib/http/            Bounded request-body reading
 src/lib/math/            Bounded exact-rational distributive-expansion checker
+src/lib/vision/          Server-only handwriting transcription adapters and output validation
 src/types/tutoring.ts    Shared integration contracts
 supabase/migrations/     Versioned schema, constraints, grants, and RLS
 supabase/tests/          Portable SQL role and policy smoke script
