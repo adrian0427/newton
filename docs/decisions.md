@@ -35,3 +35,30 @@ Mathematical work interpretation, CortexJS verification, intervention gating, an
 Using a managed OpenAI model through Deepgram does **not** establish OpenAI Challenge eligibility. Ask the organizers; no eligibility claim is made. Remaining implementation choices include confirming funded model/voice availability, a separate funded vision provider, and deployment-wide abuse controls.
 
 A already has implementation commit `1f7b031` on `feat/ai-tutoring`. Static inspection shows `@deepgram/agents`, managed `gpt-4o-mini`, and `/v1/auth/grant` already present; the commit message alone was not used as evidence. This does not establish live microphone, audio, or interruption success. The [A01 follow-up](workstreams/A01-ai-tutoring.md#existing-implementation-and-migration-follow-up) requires auditing existing provider-specific pieces and migrating only remaining mismatches while preserving useful tests, prompts, and state handling. This documentation change does not alter that implementation or its dependencies.
+
+## 2026-11-13 - Local student workspace (B1)
+
+| ID | Decision | Rationale and consequence |
+| --- | --- | --- |
+| 014 | One workspace revision clock guards transient captures | Content edits, undo/redo, and clear invalidate exports. Source changes and unmount also invalidate pending capture. Selection and viewport state do not identify new work. |
+| 015 | Restrict structured exports to explicit Algebra I notation | MathLive ASCIIMath is normalized to numbers, single-letter variables, parentheses, arithmetic operators, powers, and one equality. Unsupported or incomplete notation stays editable and blocks capture. This is notation validation, not mathematical verification. A must review the syntax fixture before integration. |
+| 016 | Serve drawing and math fonts from local package assets | Predev/prebuild copies installed fonts into ignored `public/vendor/`. Homepage and workspace need no service credentials or external font CDN. Explicit JSON/PNG downloads are the only persistence supplied by B1. |
+
+## 2026-11-13 - Workspace-first interaction
+
+| ID | Decision | Rationale and consequence |
+| --- | --- | --- |
+| 017 | Full-viewport worksheet/whiteboard split with on-demand Newton | Student work takes priority. The divider supports pointer and keyboard resizing; mobile switches panes while preserving local work. Permanent support/history panels are removed. Audio activation awaits real services and opt-in. |
+| 018 | Local worksheet reference with PDF.js page rendering | PDF/image upload, drag-and-drop, and screenshot paste stay in-browser. Signature/size checks, cancellable rendering, generation checks, and Blob URL cleanup bound the lifecycle. No worksheet context is sent to tutoring until an explicit-help integration contract is agreed with A. |
+
+## 2026-11-13 - Paper appearance
+
+| ID | Decision | Rationale and consequence |
+| --- | --- | --- |
+| 019 | Paper Light and revised graphite Paper Dark with Light/Dark/System preference | Applies the approved Figma palette to existing product components. Local preference storage contains no work or document content. Theme and optional worksheet comfort preview affect presentation only, preserving revision identity and canonical capture data. |
+
+## 2026-11-13 - Compact study controls
+
+| ID | Decision | Rationale and consequence |
+| --- | --- | --- |
+| 020 | Compact drawing controls and reversible focus mode | Collapse pen settings and advanced tools by default, retain accessible zoom and undo/redo, and let students expand the board without unmounting local work. Remove redundant pane title bars, sample equation, and local-workspace header label. |

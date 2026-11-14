@@ -20,3 +20,8 @@ tmp/
 temp/
 *.pem
 *.key
+
+# Generated browser assets and local browser-test output
+public/vendor/
+playwright-report/
+test-results/
