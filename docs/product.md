@@ -38,7 +38,7 @@ Prefer student-requested assistance by default until proactive timing has been e
 - A second test account cannot read or modify the first account's learning records.
 - Students can choose when assistance happens; the demo shows reasoning support without immediately giving the solution.
 
-These are feature acceptance goals. The present scaffold delivers only the homepage, contracts, development conventions, and validation infrastructure.
+These are feature acceptance goals. This branch implements the homepage, local worksheet/whiteboard workspace (B1), contracts, development conventions, and validation infrastructure. Live tutoring and persistent memory remain integration work.
 
 ## Non-goals
 

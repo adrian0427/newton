@@ -14,16 +14,23 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "predev": "node scripts/prepare-workspace-assets.mjs",
+    "prebuild": "node scripts/prepare-workspace-assets.mjs",
+    "test:e2e": "playwright test",
     "voice:dev": "node scripts/dev-voice.mjs"
   },
   "dependencies": {
     "@deepgram/agents": "^0.2.0",
+    "@excalidraw/excalidraw": "^0.18.1",
+    "mathlive": "^0.111.4",
     "next": "^16.4.6",
+    "pdfjs-dist": "^6.5.438",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@tailwindcss/postcss": "^4.3.5",
     "@types/node": "^22.20.5",
     "@types/react": "^19.3.0",
@@ -34,5 +41,14 @@
     "tailwindcss": "^4.3.5",
     "typescript": "~6.0.3",
     "vitest": "^5.1.0"
+  },
+  "overrides": {
+    "@excalidraw/excalidraw": {
+      "nanoid": "^3.3.20"
+    },
+    "@excalidraw/mermaid-to-excalidraw": {
+      "nanoid": "^5.1.16"
+    },
+    "lodash-es": "^4.18.1"
   }
 }

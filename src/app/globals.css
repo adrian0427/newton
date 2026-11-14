@@ -1,15 +1,30 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-paper: #f8f7f2;
-  --color-ink: #233d32;
-  --color-leaf: #43674a;
-  --color-muted: #586359;
-  --color-line: #d8ded3;
+  --color-paper: var(--paper-shell);
+  --color-ink: var(--paper-text);
+  --color-leaf: var(--paper-accent);
+  --color-muted: var(--paper-muted);
+  --color-line: var(--paper-line);
   --font-sans: Arial, Helvetica, sans-serif;
   --font-serif: Georgia, "Times New Roman", serif;
 }
 
+/* Paper theme, matched to the approved Figma light and graphite-dark palettes. */
+:root {
+  --paper-shell: #faf9f6; --paper-reference: #f1eee8; --paper-canvas: #ffffff;
+  --paper-text: #39352f; --paper-muted: #736b60; --paper-line: #e3ded5;
+  --paper-accent: #826443; --paper-selected: #f1e7d9; --paper-document: #fffefb;
+  --paper-on-accent: #faf9f6; --paper-error: #a13628; --paper-error-bg: #fff1eb;
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --paper-shell: #1c1d1e; --paper-reference: #202222; --paper-canvas: #252626;
+  --paper-text: #e6e3dd; --paper-muted: #aaa9a3; --paper-line: #3d3f3b;
+  --paper-accent: #c4bbaa; --paper-selected: #383833; --paper-document: #30312e;
+  --paper-on-accent: #1c1d1e; --paper-error: #f0aa96; --paper-error-bg: #392a26;
+  color-scheme: dark;
+}
 body {
   margin: 0;
   background: var(--color-paper);
@@ -17,13 +32,13 @@ body {
   font-family: var(--font-sans);
 }
 
-::selection { background: #d9e6ca; }
+::selection { background: var(--paper-selected); }
 
 :focus-visible { outline: 3px solid var(--color-leaf); outline-offset: 5px; }
 
 .notebook {
-  background-color: #eef1e8;
-  background-image: radial-gradient(#c5cebb 0.7px, transparent 0.7px);
+  background-color: var(--paper-reference);
+  background-image: radial-gradient(var(--paper-line) 0.7px, transparent 0.7px);
   background-size: 20px 20px;
 }
 
@@ -37,3 +52,11 @@ body {
   color: var(--color-paper);
 }
 .skip-link:focus { top: 16px; }
+
+/* MathLive's keyboard is mounted on body, outside the workspace component. */
+body {
+  --keyboard-background: var(--paper-reference); --keyboard-text: var(--paper-text);
+  --keycap-background: var(--paper-canvas); --keycap-background-hover: var(--paper-selected);
+  --keycap-text: var(--paper-text); --keycap-primary-background: var(--paper-selected);
+  --keycap-primary-text: var(--paper-accent); --keyboard-accent-color: var(--paper-accent);
+}
