@@ -1,0 +1,74 @@
+.sign-in-scene {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: 48px 24px;
+  overflow: hidden;
+  background: var(--paper-shell);
+}
+
+.sign-in-content { position: relative; width: min(100%, 300px); }
+.sign-in-logo { display: flex; width: fit-content; margin: 0 auto 14px; border-radius: 12px; }
+.sign-in-tagline { margin: 0 0 36px; text-align: center; font-family: Georgia, serif; font-size: 18px; color: var(--paper-muted); }
+.sign-in-workspace { display: block; margin-top: 22px; padding: 10px 0; text-align: center; font-size: 13px; color: var(--paper-muted); }
+.sign-in-workspace:hover { color: var(--paper-text); text-decoration: underline; text-underline-offset: 4px; }
+.sign-in-workspace:focus-visible { outline: 2px solid var(--paper-accent); outline-offset: 4px; border-radius: 4px; }
+.sign-in-form { display: flex; flex-direction: column; gap: 22px; }
+.sign-in-input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 9px;
+  padding: 10px 14px;
+  border: 1px solid var(--paper-line);
+  border-radius: 8px;
+  background: var(--paper-document);
+  color: var(--paper-text);
+  font: inherit;
+}
+.sign-in-input::placeholder { color: var(--paper-muted); font-size: 14px; }
+.sign-in-input:focus-visible, .sign-in-logo:focus-visible, .sign-in-submit:focus-visible {
+  outline: 2px solid var(--paper-accent);
+  outline-offset: 4px;
+}
+.sign-in-input:disabled { opacity: .65; }
+.sign-in-notice:empty { display: none; }
+.sign-in-submit {
+  min-height: 48px;
+  margin-top: 4px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: var(--paper-text);
+  color: var(--paper-shell);
+  font-weight: 500;
+  cursor: pointer;
+}
+.sign-in-submit:hover { opacity: .9; }
+.sign-in-submit:disabled { cursor: wait; opacity: .7; }
+.sign-in-comets {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 220px 260px at center, transparent 70%, black 130%);
+}
+.sign-in-comet {
+  position: absolute;
+  height: 1px;
+  border-radius: 100%;
+  background: linear-gradient(90deg, transparent, var(--paper-muted));
+  opacity: 0;
+  transform: rotate(var(--comet-angle));
+  animation: comet-drift 16s var(--comet-delay) ease-in-out infinite;
+}
+@keyframes comet-drift {
+  0%, 8%, 65%, 100% { opacity: 0; transform: translate(-28px, 12px) rotate(var(--comet-angle)); }
+  25% { opacity: .25; }
+  52% { opacity: .12; transform: translate(34px, -15px) rotate(var(--comet-angle)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sign-in-comet { animation: none; opacity: .12; }
+}
