@@ -2,9 +2,9 @@
 
 ## Status and boundaries
 
-This is a proposed MVP design. The homepage, shared TypeScript contracts, developer tooling, Supabase client helpers, and email/password authentication are implemented. `/auth/sign-in` calls `/auth/session` for sign-in, verified current identity, and local sign-out. Auth checks and cookie refresh occur in writable Route Handlers; authenticated Server Component rendering and its refresh proxy are not implemented. The database migrations and local PostgreSQL policy tests are implemented; migrations remain unapplied to hosted Supabase and persistent history is not connected. Keep one Next.js application; add dependencies only with the feature that uses them.
+This is a proposed MVP design. The homepage, shared TypeScript contracts, developer tooling, Supabase client helpers, and email/password authentication are implemented. `/auth/sign-in` calls `/auth/session` for sign-in, verified current identity, and local sign-out. Auth checks and cookie refresh occur in writable Route Handlers; authenticated Server Component rendering and its refresh proxy are not implemented. Server-only verified-user/owned-session helpers, `POST /api/study-sessions`, database migrations, and local PostgreSQL policy tests are implemented; migrations remain unapplied to hosted Supabase and persistent history is not connected. Keep one Next.js application; add dependencies only with the feature that uses them.
 
-The [workstream guide](workstreams/README.md) defines the implementation assignments, concrete boundary proposals, and initial timing/deduplication decisions. Its A01/B01/C01 specifications are the starting points for feature work; additional interface names there are proposals, not existing TypeScript exports.
+The [workstream guide](workstreams/README.md) defines the implementation assignments, concrete boundary proposals, and initial timing/deduplication decisions. Its A01/B01/C01 specifications are the starting points for feature work; additional interface names there are proposals unless explicitly implemented below. `AuthContext` and `StudySession` are local module exports pending the coordinated shared-contract PR.
 
 ```mermaid
 flowchart TD
@@ -38,7 +38,7 @@ Images are transient data URLs or short-lived references. Do not put them in lea
 
 ## Server and AI boundaries
 
-Developer A owns proposed `/api/realtime/token` and `/api/work/analyze` route handlers in `src/app/api/`, plus `src/lib/ai/` and `src/lib/math/`. Developer C owns auth, `/api/study-sessions`, and `/api/learning-context`. The workstream guide specifies request/response and error proposals for the first coordinated contract PR; no placeholder endpoints are implemented. Event writes initially use C's server-only function called by A, not a public event-write route.
+Developer A owns proposed `/api/realtime/token` and `/api/work/analyze` route handlers in `src/app/api/`, plus `src/lib/ai/` and `src/lib/math/`. Developer C owns auth, `/api/study-sessions`, and `/api/learning-context`. The workstream guide specifies request/response and error proposals for the first coordinated contract PR; `POST /api/study-sessions` is implemented on this branch; the remaining proposed endpoints are outside this local slice. Event writes initially use C's server-only function called by A, not a public event-write route.
 
 Protected handlers verify the Supabase session, validate request bodies at runtime, check session ownership, and return bounded errors. TypeScript types are not runtime validation. Keep permanent OpenAI credentials server-side, limit request frequency and payload size, and avoid logging student content. Configure clients lazily within the integration so the homepage and CI do not require secrets.
 
@@ -69,7 +69,7 @@ Initial shared vocabulary: concept `algebra.distributive-property`; misconceptio
 
 ## Authentication and persistent memory (Developer C)
 
-Supabase Auth owns identity. Use cookie-aware server clients for Next.js, verify identity server-side, and execute student queries under the user's authenticated context so RLS applies. A publishable key is public project configuration, not authorization. Do not use privileged credentials to bypass student policies.
+Supabase Auth owns identity. `requireUser()` creates a fresh cookie-aware client and verifies identity with `auth.getUser()` on each request. `requireOwnedSession(auth, sessionId)` queries under that client and filters by both ID and verified owner, returning the same 404 for missing and foreign sessions. `createStudySession(auth)` generates a server UUID and lets database defaults assign ownership/time. All three helpers are server-only; callers must carry `auth.headers` into success and error responses. There is no service-role bypass. A publishable key is public project configuration, not authorization. Do not use privileged credentials to bypass student policies.
 
 Tables defined by unapplied migrations in `supabase/migrations/`:
 

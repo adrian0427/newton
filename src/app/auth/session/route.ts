@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { SupabaseConfigurationError } from "@/lib/supabase/config";
+import { isSameOrigin } from "@/lib/supabase/origin";
 
 function failure(code: string, message: string, status: number, headers?: Headers) {
   return Response.json({ error: { code, message, retryable: status >= 500 || status === 429 } }, {
@@ -11,21 +12,6 @@ function unavailable(error: unknown) {
   return error instanceof SupabaseConfigurationError
     ? failure("not-configured", "Sign-in is not configured yet.", 503)
     : failure("auth-unavailable", "Unable to reach sign-in. Please try again.", 502);
-}
-
-function sameOrigin(request: Request) {
-  const origin = request.headers.get("origin");
-  if (!origin) return false;
-  try {
-    const parsed = new URL(origin);
-    // Next.js can normalize request.url to localhost. Host preserves the actual
-    // requested authority; do not substitute an untrusted forwarded-host value.
-    return parsed.origin === origin
-      && parsed.protocol === new URL(request.url).protocol
-      && parsed.host === request.headers.get("host");
-  } catch {
-    return false;
-  }
 }
 
 export async function GET() {
@@ -44,7 +30,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  if (!sameOrigin(request)) return failure("forbidden", "This request must come from Newton.", 403);
+  if (!isSameOrigin(request)) return failure("forbidden", "This request must come from Newton.", 403);
   if (!request.headers.get("content-type")?.startsWith("application/json")) {
     return failure("invalid-input", "Send an email address and password.", 400);
   }
@@ -78,7 +64,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (!sameOrigin(request)) return failure("forbidden", "This request must come from Newton.", 403);
+  if (!isSameOrigin(request)) return failure("forbidden", "This request must come from Newton.", 403);
   try {
     const { supabase, headers } = await createClient();
     const { error } = await supabase.auth.signOut({ scope: "local" });

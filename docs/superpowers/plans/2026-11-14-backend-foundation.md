@@ -40,8 +40,8 @@ Files: `src/lib/supabase/auth.ts`, `src/lib/learning/sessions.ts`, `src/app/api/
 
 Interfaces: `requireUser()` returns a server-only context with verified user ID, request Supabase client, and response headers. `requireOwnedSession(auth, sessionId)` returns `{ id, startedAt, endedAt }` or 404 for missing/foreign sessions. `createStudySession(auth)` generates a server UUID and returns the same shape. `POST /api/study-sessions` accepts an empty object/body only, rejects cross-origin requests and posted ownership, verifies identity, and returns a new session with status 201 and no-store headers.
 
-- [ ] Add failing tests for identity verification, anonymous/missing config/service failure, malformed and foreign sessions, and request/body checks.
-- [ ] Implement the minimum server-only helpers and endpoint, without connecting B's UI or enabling provider credentials.
+- [x] Add failing tests for identity verification, anonymous/missing config/service failure, malformed and foreign sessions, and request/body checks.
+- [x] Implement the minimum server-only helpers and endpoint, without connecting B's UI or enabling provider credentials.
 - [ ] Run affected/full checks, inspect final diff and secret/config exclusions, perform a final independent review, fix material findings, and commit locally.
 
 ## Deferred

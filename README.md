@@ -6,7 +6,7 @@ Newton is an AI study companion for students in grades 9–12, built by **Twofol
 
 ## Current status
 
-This repository includes a responsive homepage, email/password authentication, strict TypeScript contracts, agent guidance, tests, and CI. The student workspace button is intentionally disabled. Local email/password sign-in and sign-out are available at `/auth/sign-in`. There is no microphone access, AI connection, whiteboard, or saved learning history yet. Both team test accounts were manually verified signing in against the hosted Supabase project on November 13, 2026. Database ownership isolation remains unverified until persistence is implemented.
+This branch includes a responsive homepage, email/password authentication, strict TypeScript contracts, tests, and CI. Sign-in and sign-out are available at `/auth/sign-in`; both team test accounts were manually verified against hosted Supabase on November 13, 2026. C's database migrations, local PostgreSQL policy tests, verified-user/session helpers, and `POST /api/study-sessions` are implemented. The migrations remain unapplied to hosted Supabase, so session creation cannot succeed there yet. Saved history, AI, voice, and whiteboard integration are not connected on this branch; the workspace button remains disabled. Hosted database ownership isolation is still unverified.
 
 The planned MVP combines natural voice conversation, a whiteboard with structured math fallback, controlled Socratic hints, and evidence-backed memory across sessions. The first domain is **Algebra I: the distributive property**.
 
@@ -42,16 +42,16 @@ For later integrations, copy `.env.example` to `.env.local` and fill in:
 | `NEXT_PUBLIC_SUPABASE_URL` | Public | Supabase project endpoint |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public | Supabase client initialization; requires auth and RLS for student data |
 
-Never expose permanent OpenAI keys or Supabase privileged keys. Local environment files are ignored. The homepage does not read these values or contact external services. Supabase connection helpers read them lazily when called; the auth screen uses the session route; no database operation is connected yet.
+Never expose permanent OpenAI keys or Supabase privileged keys. Local environment files are ignored. The homepage does not read these values or contact external services. Supabase connection helpers read them lazily when called. Auth and study-session routes require configuration; study-session creation also requires the reviewed migrations to be applied.
 
 ## Stack and layout
 
 Installed: Next.js App Router, React, TypeScript, Tailwind CSS, ESLint, Vitest, and the Supabase client/SSR libraries. The lockfile records exact dependency versions. Planned dependencies are added by their owners when needed: OpenAI Agents SDK and Realtime, Excalidraw, MathLive, and CortexJS Compute Engine. Vercel is the intended deployment target; no deployment is provisioned.
 
 ```text
-src/app/                 Pages, layout, and future route handlers
+src/app/                 Pages, layout, authentication and session routes
 src/components/          Future whiteboard, tutor, and learning UI
-src/lib/                 Future AI, math, learning, and Supabase modules
+src/lib/                 Supabase/auth and learning-session modules
 src/types/tutoring.ts    Shared integration contracts
 supabase/migrations/     Unapplied schema, constraints, grants, and RLS
 tests/                   Service-free smoke and contract checks
@@ -85,6 +85,13 @@ This helper requires writable request cookies; do not call it during Server
 Component rendering. A refresh proxy is not wired; add it before using authenticated Server Components.
 
 Missing configuration throws `SupabaseConfigurationError` with status 503 when
-a helper is called, not at import time. Future routes must map this to a bounded
-error response. Creating a client does not verify identity; protected operations
-will need verified auth and ownership checks. The auth screen calls `/auth/session` for verified identity, password sign-in, and local sign-out. Mutating requests require a matching Origin header. Hosted persistence is not implemented. The current auth page checks sessions through a writable Route Handler; it does not use authenticated Server Component rendering.
+a helper is called, not at import time. Creating a client does not verify
+identity. Server-only `requireUser()` verifies with Auth on each protected
+request; `requireOwnedSession(auth, sessionId)` returns the same 404 for missing
+and foreign sessions. The session endpoint accepts an empty body or `{}` and
+returns `{ session: { id, startedAt, endedAt } }` with status 201. It uses the
+verified request client and database defaults for ownership/time. Mutating
+requests require a matching Origin header; responses are private/no-store.
+See [backend verification](docs/backend-testing.md) for setup, limitations, and
+remaining hosted acceptance. The auth page uses a writable Route Handler; it
+does not use authenticated Server Component rendering.

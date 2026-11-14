@@ -30,6 +30,21 @@ test; it does not sign real users in or test Supabase's HTTP API.
 
 ## Schema application and remaining acceptance
 
+Server helper and route tests run with `npm test -- tests/backend/learning.test.ts
+tests/backend/study-sessions-route.test.ts`. They mock the SDK boundary to check
+identity verification, request-scoped ownership, sanitized service failures,
+foreign/missing-session 404s, Origin checks, and body validation. SQL tests above
+separately exercise actual database access rules. Neither proves hosted HTTP
+integration.
+
+After schema review/application, a signed-in same-origin browser can call
+`fetch('/api/study-sessions', { method: 'POST' })`. Successful creation returns
+status 201 with `{ session: { id, startedAt, endedAt: null } }`; times are ISO
+UTC. An empty JSON object is also accepted; supplied fields are rejected. The
+response omits ownership and auth tokens. A missing login returns 401, missing
+configuration 503, and unavailable database/schema 502. All responses are
+private/no-store. This endpoint is not yet connected to B's workspace.
+
 The two migrations in `supabase/migrations/` are unapplied to the team's hosted
 project. Review and apply them in filename order to a disposable project before
 using the session endpoint. The first migration enables RLS and revokes public,
@@ -49,3 +64,14 @@ PostgREST, refresh cookies, or the team's project settings.
 
 Keep fixtures synthetic. RLS isolates accounts; it does not establish that
 self-owned evidence inserted directly through Supabase was produced by AI.
+
+## Local verification record — 2026-11-14
+
+The initial foundation passed 94 Vitest tests (including 31 PostgreSQL role and
+constraint cases plus the portable SQL script), ESLint, TypeScript, and
+`npm run build -- --webpack` on Node 22. The built app returned 200 for home and
+sign-in, 401 for anonymous identity/session creation, 403 for cross-origin
+creation, and 405 for unsupported session GET. No signed-in writes were made.
+The default Turbopack build previously hit a sandbox worker/port restriction on
+this Mac; webpack production compilation passed. Hosted schema/HTTP acceptance
+has not been run.

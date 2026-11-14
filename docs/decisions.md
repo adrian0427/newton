@@ -29,6 +29,12 @@ hosted secrets or Docker. Its Auth boundary is simulated; hosted two-account
 HTTP/direct-client acceptance remains separate and incomplete. These migrations
 have not been applied to the team's hosted project.
 
+Verified-user and owned-session helpers use a fresh cookie client per request.
+Session creation accepts no client ownership/time fields and relies on database
+defaults under that user's context. Auth and session POSTs share the existing
+Origin/Host check. `AuthContext` and `StudySession` stay local exports until A/B
+review the additive shared contract; existing tutoring types are unchanged.
+
 ## 2026-11-13 — Workstream implementation baseline
 
 | ID | Decision | Rationale and consequence |
