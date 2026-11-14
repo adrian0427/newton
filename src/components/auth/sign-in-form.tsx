@@ -51,25 +51,26 @@ export function SignInForm() {
   if (checking) return <p role="status" className="mt-8">Checking your sign-in…</p>;
 
   return (
-    <form onSubmit={submit} className="mt-8 space-y-5" aria-busy={busy}>
+    <form onSubmit={submit} className="sign-in-form" aria-busy={busy}>
       {user ? (
         <div><p className="text-sm text-muted">Signed in as</p><p className="mt-1 break-all font-medium">{user.email ?? "your test account"}</p>
           <p className="mt-4 text-sm leading-relaxed text-muted">Your login is working. Study sessions and learning history are still in development.</p></div>
       ) : (
         <>
-          <div><label htmlFor="email" className="block text-sm font-medium">Email</label>
+          <div><label htmlFor="email" className="block text-sm font-medium">Username</label>
             <input id="email" name="email" type="email" autoComplete="username" required maxLength={254}
               value={email} onChange={(event) => setEmail(event.target.value)} disabled={busy}
-              className="mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-3" /></div>
+              placeholder="Account email" aria-describedby="username-hint" className="sign-in-input" />
+            <span id="username-hint" className="sr-only">Use your account email to sign in.</span></div>
           <div><label htmlFor="password" className="block text-sm font-medium">Password</label>
             <input id="password" name="password" type="password" autoComplete="current-password" required maxLength={4096}
               value={password} onChange={(event) => setPassword(event.target.value)} disabled={busy}
-              className="mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-3" /></div>
+              className="sign-in-input" /></div>
         </>
       )}
       {error && <p role="alert" className="text-sm leading-relaxed">{error}</p>}
-      <p role="status" className="text-sm">{notice}</p>
-      <button disabled={busy} className="min-h-12 w-full rounded-lg bg-ink px-5 py-3 font-medium text-paper disabled:cursor-wait disabled:opacity-70">
+      <p role="status" className="sign-in-notice text-sm">{notice}</p>
+      <button disabled={busy} className="sign-in-submit">
         {busy ? (user ? "Signing out…" : "Signing in…") : (user ? "Sign out" : "Sign in")}
       </button>
     </form>
