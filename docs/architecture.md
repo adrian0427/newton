@@ -97,6 +97,10 @@ Use a small controller, not an orchestration framework. Analyze after a configur
 
 Initial shared vocabulary: concept `algebra.distributive-property`; misconception `distribution.missed-term`. The workstream specifications use these identifiers consistently. Keep IDs stable across all workstreams. Types are deliberately small; add fields when an integration needs them, with review from affected owners.
 
+`LearningEventRecord` is currently a local export from `src/lib/learning/events.ts`
+matching `LearningEventInput & { id: string; createdAt: string }`, pending the
+coordinated shared contract PR.
+
 ## Authentication and persistent memory (Developer C)
 
 Supabase Auth owns identity. `requireUser()` creates a fresh cookie-aware client and verifies identity with `auth.getUser()` on each request. `requireOwnedSession(auth, sessionId)` queries under that client and filters by both ID and verified owner, returning the same 404 for missing and foreign sessions. `createStudySession(auth)` generates a server UUID and lets database defaults assign ownership/time. All three helpers are server-only; callers must carry `auth.headers` into success and error responses. There is no service-role bypass. A publishable key is public project configuration, not authorization. Do not use privileged credentials to bypass student policies.
@@ -114,6 +118,19 @@ Server assigns owner and timestamps, checks the referenced session belongs to th
 Retrieve a bounded, recent set of events scoped to the authenticated user and relevant concept across sessions. Start with ordinary PostgreSQL queries; no vector store. Retain source session and evidence in retrieved context, distinguish correction with help from independent correction, and never infer lasting ability or mastery from one observation. Uncertain perception should not be saved as a confirmed misconception. Client evidence is untrusted: the server write path must validate it against session analysis rather than blindly trusting a posted claim.
 
 For the first integration, A produces eligible observations inside the server analysis path and calls C's writer; no client event-write route is exposed. User-scoped RLS prevents cross-account access but does not prove that a self-owned row inserted directly through Supabase came from the tutor. Treat all retrieved memory as advisory data. The C01 specification explicitly separates account-isolation testing from tamper-resistant provenance, which remains a requirement to resolve before real-student use.
+
+C's `recordLearningEvent(auth, input)` is implemented and locally tested. It
+rejects unknown fields, invalid UUIDs/vocabulary, and empty or over-500-character
+trimmed evidence. UUIDs are canonicalized and evidence length counts Unicode
+characters consistently with PostgreSQL. Only `practiced` and
+`misconception-observed` are enabled; the latter requires the supported
+misconception. Correction outcomes wait for A's trustworthy prior/hint evidence.
+The writer checks ownership before inserting, relies on database defaults for
+owner/ID/time, and handles unique conflicts by reading the full owner-scoped
+identity and comparing immutable evidence/misconception. It never upserts or
+updates a saved event. Identical retries return the original record; changed
+payloads return 409. A must still establish observation eligibility before
+calling this helper. Context retrieval and hosted acceptance remain incomplete.
 
 Do not persist raw audio, screenshots, full conversations, or unnecessary personal information by default. Agree on retention, deletion, and student-facing memory controls before collecting real student data.
 

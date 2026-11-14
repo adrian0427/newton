@@ -53,8 +53,8 @@ and narrow column grants. Normal student access cannot choose owners/timestamps
 or edit/delete events. Deleting a disposable Auth account administratively
 cascades its data.
 
-C1 remains incomplete. After the remaining event writer/context retrieval are
-implemented, verify using both pre-created adult test accounts and an anonymous
+C1 remains incomplete. After context retrieval is implemented, verify using
+both pre-created adult test accounts and an anonymous
 caller through **HTTP/helpers and the direct authenticated Supabase client**:
 create a session, save a synthetic observation, sign out/in, retrieve it in a
 later session, and reject cross-account reads/writes, owner reassignment,
@@ -85,9 +85,9 @@ checking that genuine unexpected responses remain distinguishable.
 
 ### Review scope decisions
 
-- Event writing, conflicting retry comparison, concurrent writer tests, and
-  context retrieval remain the next C01 slice. Database uniqueness is present;
-  a complete memory workflow is not yet available.
+- At this foundation checkpoint, event writing and context retrieval were
+  deferred. Writer progress is recorded below; retrieval remains unfinished,
+  so a complete memory workflow is not yet available.
 - Hosted Auth/PostgREST and signed-in API acceptance remain unverified because
   schema application was not authorized tonight. Local tests cannot establish
   hosted readiness.
@@ -103,3 +103,32 @@ checking that genuine unexpected responses remain distinguishable.
 - The migration gap was reviewed directly in the transactional SQL. There is
   no separate test paused between migrations; the schema immediately enables
   RLS and revokes student grants before committing.
+
+## Learning writer verification — 2026-11-14
+
+`npm test -- tests/backend/events.test.ts tests/backend/events-database.test.ts`
+checks the server-only writer. Its 39 focused cases initially failed against a
+stub, then passed. Ten integration cases use the installed Supabase query
+builder with a narrow test `fetch` adapter that translates its inserts/equality
+filters into parameterized PostgreSQL queries under the simulated authenticated
+role. The adapter exercises actual migration constraints, privileges, RLS,
+database defaults, and unique conflicts; it is not a PostgREST implementation or
+real Supabase authentication.
+
+Coverage includes normalized identical retries, changed evidence/misconceptions,
+overlapping identical/conflicting calls, account separation, foreign/missing
+sessions, independent outcomes on one revision, and the 500-character Unicode
+boundary. PGlite serializes transactions on one connection; independent hosted
+connection races still belong to real-service acceptance. No hosted writes or
+AI-provider calls occurred.
+
+After updating C's branch from `main` (`57b479f`), the full suite passed 181
+tests, lint and TypeScript. The webpack production build and the workspace's
+real MathLive input/snapshot/download/clear workflow passed at desktop and
+360px mobile widths. The browser smoke required installing the version of
+headless Chromium matching the project's existing Playwright dependency.
+The normal `npm run build` using Turbopack also passed with current permissions.
+One independent read-only review approved the step-4 checkpoint with no
+findings. It checked writer boundaries, retry semantics, merge preservation,
+manifest/lock consistency and diff hygiene. Hosted C1 acceptance and team
+review before merging to `main` remain outstanding.

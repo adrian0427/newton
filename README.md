@@ -10,6 +10,14 @@ This branch includes a responsive homepage, email/password authentication, stric
 
 The planned MVP combines natural voice conversation, a whiteboard with structured math fallback, controlled Socratic hints, and evidence-backed memory across sessions. The first domain is **Algebra I: the distributive property**.
 
+C's server-only `recordLearningEvent()` validates supported observations, checks
+session ownership, and saves under the verified user's database context.
+Identical retries return the original ID/time; conflicting evidence returns
+409 and preserves existing history. It is tested locally and awaits A's
+eligible-observation integration. Correction outcomes remain disabled, and
+cross-session retrieval is the next backend slice. No public event-write route
+is exposed.
+
 ## Local setup
 
 Use Node.js 22 (22.14 or newer) and npm. `.nvmrc` and CI use the same major version.

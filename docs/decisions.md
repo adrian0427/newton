@@ -15,6 +15,19 @@ Accepted for the foundation on **2026-11-13**. Integration decisions describe pl
 
 Add a short dated entry when a meaningful decision changes. Keep rationale and implementation consequences explicit; avoid speculative infrastructure.
 
+## 2026-11-14 — Server-only learning event writer
+
+C01's writer validates a strict field allowlist, canonical UUIDs, supported
+vocabulary and trimmed evidence of 1–500 Unicode characters. It checks session
+ownership and inserts under the verified user's client with database defaults.
+Uniqueness arbitrates retries: read the full owner/session/revision/concept/
+outcome identity only after insert conflict, return the original record for an
+identical payload, and reject changed evidence/misconception with 409. Never
+upsert over history. Correction outcomes remain disabled until A supplies
+trustworthy earlier-step and delivered-hint evidence. No public write route or
+provenance claim is added; `LearningEventRecord` stays a local export pending
+the team's shared contract review.
+
 ## 2026-11-14 — Local database foundation
 
 Two migrations create C01's tables, then constraints and owner-scoped access.

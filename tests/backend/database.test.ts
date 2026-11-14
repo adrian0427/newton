@@ -1,6 +1,7 @@
-import { readFile, readdir } from "node:fs/promises";
-import { PGlite } from "@electric-sql/pglite";
+import { readFile } from "node:fs/promises";
+import type { PGlite } from "@electric-sql/pglite";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { createTestDatabase } from "./helpers/database";
 
 const ownerA = "00000000-0000-4000-8000-000000000001";
 const ownerB = "00000000-0000-4000-8000-000000000002";
@@ -21,22 +22,7 @@ function event(session = sessionA, outcome = "practiced", evidence = "Expanded b
 }
 
 beforeAll(async () => {
-  db = await PGlite.create();
-  // Simulate only Supabase's identity boundary. SQL, constraints, privileges,
-  // and RLS execute in PostgreSQL, not mocks. This does not test hosted Auth.
-  await db.exec(`
-    create role anon; create role authenticated;
-    create schema auth;
-    create table auth.users(id uuid primary key);
-    create function auth.uid() returns uuid language sql stable as $$
-      select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
-    grant usage on schema auth, public to anon, authenticated;
-    alter default privileges in schema public grant all on tables to anon, authenticated;
-  `);
-  const root = new URL("../../supabase/migrations/", import.meta.url);
-  for (const file of (await readdir(root)).filter((name) => name.endsWith(".sql")).sort()) {
-    await db.exec(await readFile(new URL(file, root), "utf8"));
-  }
+  db = await createTestDatabase();
   // Execute the portable owner-invoked smoke script too. Its fixtures roll back.
   await db.exec(await readFile(new URL("../../supabase/tests/learning_foundation.sql", import.meta.url), "utf8"));
   await db.query("insert into auth.users(id) values ($1), ($2)", [ownerA, ownerB]);

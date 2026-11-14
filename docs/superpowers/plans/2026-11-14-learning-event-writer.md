@@ -36,10 +36,18 @@
 
 Files: `src/lib/learning/events.ts`, `tests/backend/events.test.ts`, `tests/backend/events-database.test.ts`, reusable SQL test setup under `tests/backend/helpers/`, relevant status/verification docs.
 
-- [ ] Add failing tests for supported observations, invalid/unknown fields, ownership, disabled outcomes, evidence boundaries, identical/conflicting sequential and overlapping retries, and bounded failures.
-- [ ] Implement the minimum server-only writer. Reuse existing auth/session boundaries and database defaults; never update existing events.
-- [ ] Exercise the writer with the actual Supabase query builder and PostgreSQL constraints via a narrowly scoped test transport. This is not hosted PostgREST or real Auth acceptance.
-- [ ] Run full checks, inspect the diff and secret exclusions, complete one independent review, fix material findings, and save a tested checkpoint on the Developer C branch. No merge to main.
+- [x] Add failing tests for supported observations, invalid/unknown fields, ownership, disabled outcomes, evidence boundaries, identical/conflicting sequential and overlapping retries, and bounded failures.
+- [x] Implement the minimum server-only writer. Reuse existing auth/session boundaries and database defaults; never update existing events.
+- [x] Exercise the writer with the actual Supabase query builder and PostgreSQL constraints via a narrowly scoped test transport. This is not hosted PostgREST or real Auth acceptance.
+- [x] Run full checks, inspect the diff and secret exclusions, complete one independent review, fix material findings, and save a tested checkpoint on the Developer C branch. No merge to main.
+
+Final verification: 181 unit/database tests, lint, typecheck, normal Turbopack
+and webpack production builds, and two desktop/mobile MathLive snapshot smoke
+tests passed. One independent read-only review found no issues. B's relevant
+runtime files match upstream `57b479f`; C's existing auth/session/schema files
+are preserved. Hosted schema and C1 acceptance remain unverified. The writer's
+local type publication, simulated test transport, and disabled correction
+outcomes follow the explicitly documented interim boundaries.
 
 ## Deferred
 
