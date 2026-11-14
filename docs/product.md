@@ -14,6 +14,8 @@ The differentiator is **work-aware tutoring plus persistent, evidence-backed mem
 
 ## Hackathon MVP
 
+This remains the target experience. The selected Deepgram-managed voice model does not establish eligibility for the OpenAI Challenge; confirmation from the organizers is pending. Whiteboard interpretation still needs a separately selected, funded provider; see the [voice pivot decision](decisions.md#2026-11-13--deepgram-voice-pivot).
+
 For the Cal Poly AI Hackathon, November 13–15, 2026, and its OpenAI Challenge, demonstrate one coherent Algebra I distributive-property journey:
 
 1. The student starts `2(x + 3) = 14` and writes `2x + 3 = 14`.
@@ -36,7 +38,7 @@ Prefer student-requested assistance by default until proactive timing has been e
 - A second test account cannot read or modify the first account's learning records.
 - Students can choose when assistance happens; the demo shows reasoning support without immediately giving the solution.
 
-These are feature acceptance goals. The present scaffold delivers only the homepage, contracts, development conventions, and validation infrastructure.
+These are feature acceptance goals. This branch implements the homepage, local worksheet/whiteboard workspace (B1), contracts, development conventions, and validation infrastructure. Live tutoring and persistent memory remain integration work.
 
 ## Non-goals
 

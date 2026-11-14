@@ -39,15 +39,18 @@ For later integrations, copy `.env.example` to `.env.local` and fill in:
 
 | Variable | Exposure | Purpose |
 | --- | --- | --- |
-| `OPENAI_API_KEY` | Server only | OpenAI requests and short-lived Realtime credentials |
+| `DEEPGRAM_API_KEY` | Server only | Deepgram managed voice; Member-level or higher key for temporary browser-token issuance |
+| `OPENAI_API_KEY` | Server only, optional | Not needed for managed voice; separately funded future vision only if OpenAI is selected |
 | `NEXT_PUBLIC_SUPABASE_URL` | Public | Supabase project endpoint |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public | Supabase client initialization; requires auth and RLS for student data |
 
-Never expose permanent OpenAI keys or Supabase privileged keys. Local environment files are ignored. The scaffold does not read these values or contact external services.
+Never expose permanent provider keys through `NEXT_PUBLIC_` variables or browser responses. Supabase privileged keys remain server-side too. Local environment files are ignored. The scaffold does not read these values or contact external services. Deployed voice-token issuance stays disabled until authentication, session ownership, and abuse controls are integrated; preview deployments are included.
 
 ## Stack and layout
 
-Installed: Next.js App Router, React, TypeScript, Tailwind CSS, Excalidraw, MathLive, PDF.js, ESLint, Vitest, and Playwright. The lockfile records exact dependency versions. Planned dependencies are added by their owners when needed: OpenAI Agents SDK and Realtime, CortexJS Compute Engine, and Supabase. Vercel is the intended deployment target; no deployment is provisioned.
+Installed: Next.js App Router, React, TypeScript, Tailwind CSS, Excalidraw, MathLive, PDF.js, ESLint, Vitest, and Playwright. The lockfile records exact dependency versions. Planned dependencies are added by their owners when needed: the official Deepgram Browser Agent SDK, CortexJS Compute Engine, and Supabase. Vercel is the intended deployment target; no deployment is provisioned.
+
+The hackathon voice selection is Deepgram Voice Agent using intended trial credits and a managed OpenAI model, initially `gpt-4o-mini`, subject to availability and pricing. It needs no separate OpenAI API key. Whiteboard vision is a separate, undecided provider choice because funded OpenAI vision API access is unavailable. Using OpenAI through Deepgram does not establish OpenAI Challenge eligibility; ask the organizers. See [decision 013](docs/decisions.md#2026-11-13--deepgram-voice-pivot) and [A's existing implementation audit](docs/workstreams/A01-ai-tutoring.md#existing-implementation-and-migration-follow-up).
 
 ```text
 src/app/                 Pages, layout, and future route handlers
