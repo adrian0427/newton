@@ -8,6 +8,7 @@ type ExcalidrawElements = NonNullable<ExcalidrawInitialDataState["elements"]>;
 import type { WorkSnapshot } from "@/types/tutoring";
 import { useAppearance } from "../appearance/Appearance";
 import { contentSignature, pngContent, type WorkRevision } from "./snapshots";
+import { handwritingExportDimensions } from "./handwriting";
 import { deletePart, loadPart, savePart } from "./persistence";
 import { createPortal } from "react-dom";
 import { TOOL_ICONS, type ToolIcon } from "./board-tool-icons";
@@ -42,7 +43,7 @@ function Icon({ icon }: { icon: ToolIcon }) {
 }
 import "@excalidraw/excalidraw/index.css";
 
-export type WhiteboardHandle = { capture(): Promise<WorkSnapshot>; clear(): void };
+export type WhiteboardHandle = { capture(options?: { forTranscription: boolean }): Promise<WorkSnapshot>; clear(): void };
 
 declare global { interface Window { EXCALIDRAW_ASSET_PATH: string } }
 if (typeof window !== "undefined") window.EXCALIDRAW_ASSET_PATH = "/vendor/excalidraw/";
@@ -55,7 +56,7 @@ function loadBoard(storageScope?: string) {
   }));
 }
 
-export default function Whiteboard({ storageScope, toolsSlot = null, ref, revisions, onContentChange, onActivityChange, onCapture, capturing, captureDisabled }: {
+export default function Whiteboard({ storageScope, toolsSlot = null, ref, revisions, onContentChange, onActivityChange, onCapture, capturing, captureDisabled, onRead, reading, readDisabled }: {
   storageScope?: string;
   /** Element in the work toolbar where the drawing tools render. */
   toolsSlot?: HTMLElement | null;
@@ -64,6 +65,9 @@ export default function Whiteboard({ storageScope, toolsSlot = null, ref, revisi
   onCapture(): void;
   capturing: boolean;
   captureDisabled: boolean;
+  onRead(): void;
+  reading: boolean;
+  readDisabled: boolean;
   onContentChange(): void;
   onActivityChange(active: boolean): void;
 }) {
@@ -110,7 +114,7 @@ export default function Whiteboard({ storageScope, toolsSlot = null, ref, revisi
       if (saveTimer.current) clearTimeout(saveTimer.current);
       void deletePart("board", storageScope);
     },
-    async capture() {
+    async capture(options) {
       const board = api.current;
       if (!board) throw new Error("The whiteboard is still loading.");
       const elements = structuredClone(board.getSceneElements());
@@ -122,7 +126,8 @@ export default function Whiteboard({ storageScope, toolsSlot = null, ref, revisi
         appState: { exportBackground: true, viewBackgroundColor: "#ffffff", exportEmbedScene: false },
         mimeType: "image/png",
         exportPadding: 24,
-        maxWidthOrHeight: 2048,
+        // maxWidthOrHeight overrides getDimensions in the installed SDK.
+        ...(options?.forTranscription ? { getDimensions: handwritingExportDimensions } : { maxWidthOrHeight: 2048 }),
       })));
     },
   }), [revisions, storageScope]);
@@ -144,6 +149,7 @@ export default function Whiteboard({ storageScope, toolsSlot = null, ref, revisi
         <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 16 16"><path d="M2.5 4h11M2.5 8h11M2.5 12h11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
       </button>
       <button className="small-button capture-button" type="button" disabled={captureDisabled} onClick={onCapture}>{capturing ? "Capturing..." : "Capture snapshot"}</button>
+      <button className="small-button read-button" type="button" disabled={readDisabled} onClick={onRead}>{reading ? "Reading..." : "Read handwriting"}</button>
       <button ref={settingsButton} className="small-button" type="button" aria-expanded={settings} aria-controls="pen-settings" onClick={() => setSettings(!settings)}>Pen settings</button>
       <button className="small-button" type="button" aria-pressed={stylesHidden} title="Show or hide the Stroke, Background, and other style options for the selected shape" onClick={toggleStyles}>{stylesHidden ? "Show styles" : "Hide styles"}</button>
       <button className="small-button library-toggle" type="button" onClick={() => api.current?.toggleSidebar({ name: "default", tab: "library" })}>Library</button>

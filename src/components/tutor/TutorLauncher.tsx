@@ -211,7 +211,7 @@ export default function TutorLauncher({ indicator = "idle", controls, celebratio
     {open && <section ref={panel} id="newton-panel" className="tutor-popover" role="dialog" aria-labelledby="newton-panel-title">
       <header><div><p className="eyebrow">Here when you need it</p><h2 id="newton-panel-title">A little guidance.</h2></div><button ref={close} type="button" className="icon-button" aria-label="Dismiss Newton" onClick={() => { setOpen(false); launcher.current?.focus(); }}>×</button></header>
       {controls ?? <TutorControls />}
-      <p className="tutor-privacy">Worksheet images stay local. With voice enabled, Check work or Ask for a hint shares the submitted structured step and its local check with the voice service.</p>
+      <p className="tutor-privacy">Worksheets and drawings are saved on this device. Read handwriting sends only the whiteboard drawing to the reading service when you ask; transcriptions are not saved. With voice enabled, Check work or Ask for a hint shares the submitted step and its local check with the voice service.</p>
     </section>}
   </>;
 }

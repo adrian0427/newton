@@ -134,9 +134,27 @@ Edits invalidate visible feedback. Editing while a work hint is pending/playing 
 
 **Lifecycle:** Edits remove stale evidence. Busy, racing or failed updates close voice rather than playing unlabelled audio for an obsolete revision; explicit restart restores only the latest context. Successful idle updates keep the connection. Local diagnostics expose status/revision/fixed error codes only. C's production authentication dependency, local credential restrictions and developer ownership remain unchanged.
 
+## 2026-11-14 — ADR 023: Student-confirmed handwriting transcription
+
+**Decision:** Add explicit, student-requested whiteboard transcription through a small server-only vision adapter. Use Groq-hosted Qwen vision on its free tier when `GROQ_API_KEY` is configured; otherwise Gemma 4 through the Gemini API free tier. No paid dependency or OpenAI credit is assumed. The model only transcribes; the student confirms or edits the text, and the existing deterministic checker grades it.
+
+**Reason:** In the team's proof of concept both models transcribed `4(x+3)=4x+12`, `-4(x+3)=-4x+-12` and the incorrect `4(x+3)=4x+3` faithfully, but Qwen also volunteered the correct answer. Discarding everything except a bounded transcription, plus student confirmation, prevents model grading or answers from reaching students. Submitted equations must now start from the active problem instead of trusting an arbitrary left-hand side.
+
+**Consequences:** Reads require a verified Supabase user and stay transient; nothing is persisted or logged. Board edits invalidate pending and confirmed transcriptions. Structured input remains the fallback. Public voice, authenticated voice issuance and learning-event writes are unchanged. This supersedes the "provider undecided" status for handwriting transcription only; general work analysis and proactive intervention remain planned.
+
+### ADR 023 follow-up — bounded multiline normalization and failure categories
+
+The 2026-11-14 original-image diagnostic reproduced a successful Groq HTTP response followed by a local math-format rejection. Strengthen the transcription-only prompt for line continuations and accept a small set of presentation-only wrappers within the existing bounded JSON text field. Never recover an equation by stripping explanatory prose, inserting symbols or grading/correcting work. Reject extra equations and ambiguous line joins. Retain only fixed development failure categories to distinguish provider envelope failures from model-text validation; no raw output/image logging. Authentication, confirmation, revision guards, provider selection and rate limits are unchanged. Subsequent developer-performed live handwriting acceptance succeeded; see [investigation record](study-tutoring.md#multiline-handwriting-format-investigation-2026-11-14).
+
+### ADR 023 follow-up — render handwriting from strokes at bounded higher resolution
+
+Use Excalidraw's `getDimensions` for transcription captures to render at up to 2×, capped proportionally at 2048 pixels per side; retain the 2 MiB payload limit and ordinary snapshot behavior. The installed SDK ignores `getDimensions` when `maxWidthOrHeight` is present, so use only the former for this path. Avoid raster filters or mathematical repairs that might alter symbol evidence. Prompt for visual digit/letter separation and uncertainty markers without providing the target answer. Confident misreads remain student-editable; a single successful developer-performed real-handwriting acceptance is recorded separately from string-policy and mocked tests and does not measure general accuracy. No additional provider requests or retry/failover paths are introduced.
+
+**Live acceptance (developer-reported, 2026-11-14):** genuine two-line Excalidraw work `7(6k+2)=42k+2` was faithfully transcribed by Groq, including the mathematical error, explicitly confirmed, and checked with the targeted `7 × 2` hint. Mocked tests establish contracts/lifecycle; this manual example establishes the real recognition journey only. The subsequent integration merge retains Matthew's owned-session voice and device-local persistence; this live handwriting example does not establish live voice acceptance.
+
 ## 2026-11-14 — Local authenticated voice authorization
 
-Connect C's verified-user/session-ownership helpers to A's existing token route for local requests without a harness capability. Keep the explicitly guarded capability harness as an independent development path and retain all production/preview/CI/non-loopback restrictions. Do not introduce a new endpoint or change the rate-limit policy: the existing local process-wide limit remains pending team agreement on deployed controls. Workspace session-ID wiring remains Matthew's integration step.
+Connect C's verified-user/session-ownership helpers to A's existing token route for local requests without a harness capability. Keep the explicitly guarded capability harness as an independent development path and retain all production/preview/CI/non-loopback restrictions. Do not introduce a new endpoint or change the rate-limit policy: the existing local process-wide limit remains pending team agreement on deployed controls. Workspace session-ID wiring was subsequently implemented below; deployed issuance remains disabled.
 
 ## 2026-11-14 — Owned workspace sessions and device-local account separation
 
@@ -154,3 +172,9 @@ posted owner. This separates application views on a shared browser; it is not
 local encryption, device-access protection, or cloud work synchronization. Auth,
 owned-session checks, and database RLS remain server-side boundaries. Existing
 work is preserved, and no service-role credentials or new schema are required.
+
+### Integration follow-up — preserve owned sessions, persistence and handwriting
+
+Merge main normally into the handwriting branch. Keep account-scoped IndexedDB restoration/autosave and Safari/iPad behavior alongside ordinary snapshots and bounded 2× transcription captures. Draft/confirmed transcription and checker feedback remain transient; edits, source/worksheet changes, account teardown and remount invalidate them. Signed-in local `/study` voice retains the real owned session UUID and ordinary credential provider; only the separate capability harness uses `local-study-test`. An initial browser sign-in failure now falls back to the guest board with error/retry and no voice, instead of leaving the board hidden indefinitely. Small-screen controls reserve space beside the fixed tutor launcher after combined-browser tests exposed occluded drawing/clear buttons. No provider transport, authorization policy, database schema or persistence of recognized text is added. Combined browser regressions exercise restored freehand work, unchanged stored scenes, confirmed-work context, logout and account isolation with mocked service boundaries.
+
+The subsequent normal merge of PR #17 preserves Newton dragging, gaze and correct-step decoration alongside the handwritten/typed work union and active-problem controls. Only the deterministic current Check work result authorizes a decoration; transcription output itself does not. No learning observation or extra voice response is created.

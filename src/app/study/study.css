@@ -210,6 +210,20 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .board-canvas .excalidraw .default-sidebar-trigger { display: none !important; }
 .board-options .library-toggle { min-width: 52px; }
 @media (max-width: 760px) { .board-options { gap: 4px; padding: 10px 10px 0; } .board-options .small-button { padding: 4px 6px; font-size: 10px; } }
+/* Handwriting transcription review and active problem (explicit, student-confirmed). */
+.transcription-review { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 4px; }
+.transcription-review label, .problem-form label { font-size: 11px; font-weight: 600; }
+.transcription-input, .problem-form input { width: 100%; min-height: 36px; padding: 6px 10px; border: 1px solid var(--paper-line); border-radius: 6px; background: var(--paper-canvas); color: var(--paper-text); font: 15px ui-monospace, SFMono-Regular, Menlo, monospace; }
+.transcription-input[aria-invalid="true"], .problem-form input[aria-invalid="true"] { border-color: var(--paper-error); }
+.transcription-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 6px; }
+.problem-form { margin: 0 0 14px; }
+.problem-row { display: flex; gap: 6px; margin-top: 4px; }
+.problem-row input { flex: 1; min-width: 0; }
+@media (max-width: 760px) { .board-options { flex-wrap: wrap; } .work-area[data-source="whiteboard"] .capture-popover { top: 150px; } }
+/* Account status and Read handwriting can move controls alongside the fixed launcher. */
+@media (max-width: 760px) { .work-toolbar, .board-options, .worksheet-file-toolbar { padding-right: 70px; } .pen-settings { right: 70px; } }
+@media (max-width: 760px) { .work-area[data-source="whiteboard"] .capture-popover:not(.handwriting-review) { bottom: 70px; max-height: none; } }
+
 
 /* One compact row above the workspace. flex-shrink: 0 so the shell's overflow never clips it. */
 .workspace-account { flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; min-height: 48px; padding: 8px 24px; border-bottom: 1px solid var(--paper-line); background: var(--paper-shell); overflow-wrap: anywhere; }
@@ -235,7 +249,7 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .board-canvas .excalidraw .App-menu_top__left { transform: translateY(calc(-1 * var(--board-options-height, 40px))); }
 
 /* Drawing tools live in the work toolbar, right of Focus mode and left of the source picker.
-   Excalidraw's own tool bar only appears with More tools. Tools stay visible in focus mode. */
+   Excalidraw's own shape tools stay hidden. Tools stay visible in focus mode. */
 .work-toolbar .focus-toggle { margin-right: 0; }
 .board-tools-slot { display: flex; align-items: center; margin-right: auto; }
 .board-tools-slot[hidden] { display: none; }
@@ -257,5 +271,11 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .board-canvas[data-styles="hidden"] .excalidraw .selected-shape-actions { display: none !important; }
 /* Hide Excalidraw's own shape tools (desktop section, mobile island); its undo/redo footer stays. */
 .board-canvas .excalidraw .shapes-section, .board-canvas .excalidraw .App-toolbar--mobile { display: none !important; }
+/* Whiteboard popovers (snapshot, handwriting) open just below the measured controls so they never cover
+   Capture snapshot or Read handwriting. --board-controls-bottom is set by StudentWorkspace. */
+.work-area[data-source="whiteboard"] .capture-popover { top: calc(var(--board-controls-bottom, 96px) + 10px); }
+/* Phones: the snapshot popover sits at the bottom (above the launcher) and sizes to its content,
+   so it doesn't stretch over the whole whiteboard. */
+@media (max-width: 760px) { .work-area[data-source="whiteboard"] .capture-popover:not(.handwriting-review) { top: auto; max-height: calc(100% - var(--board-controls-bottom, 96px) - 80px); overflow: auto; } }
 /* Phones: the tools get their own row and scroll sideways if wider than the screen. */
 @media (max-width: 760px) { .board-tools-slot { flex: 1 1 100%; order: 3; min-width: 0; overflow-x: auto; scrollbar-width: thin; } }
