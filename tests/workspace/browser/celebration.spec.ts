@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 async function enterStep(page: Page, value: string) {
+  await expect(page.locator(".workspace-split")).toBeAttached();
   const tab = page.getByRole("button", { name: "Whiteboard", exact: true });
   if (await tab.isVisible()) await tab.click();
   await page.getByRole("radio", { name: "Structured input" }).check();

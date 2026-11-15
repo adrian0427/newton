@@ -4,6 +4,7 @@ test("workspace expression, source and worksheet survive reload and clear remove
   await page.goto("/study");
   await page.getByLabel("Upload worksheet file").setInputFiles({ name: "sheet.png", mimeType: "image/png", buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==", "base64") });
   await expect(page.getByRole("img", { name: "Worksheet: sheet.png" })).toBeAttached();
+  await expect(page.locator(".workspace-split")).toBeAttached();
   const tab = page.getByRole("button", { name: "Whiteboard", exact: true });
   if (await tab.isVisible()) await tab.click();
   await page.getByRole("radio", { name: "Structured input" }).check();

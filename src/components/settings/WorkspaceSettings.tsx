@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AppearanceControls } from "@/components/appearance/Appearance";
+
+import { useWorkspaceAccount } from "../whiteboard/workspace-account-context";
+import type { WorkspaceAccount } from "@/lib/learning/workspace-account";
 
 type Account = { state: "loading" | "guest" | "unavailable" } | { state: "signed-in"; email: string };
 
@@ -77,7 +80,26 @@ function AccountControls() {
   </>;
 }
 
+function ConnectedAccountControls({ account }: { account: WorkspaceAccount }) {
+  const state = useSyncExternalStore(account.subscribe, account.getSnapshot, account.getSnapshot);
+  return <>
+    <div className="settings-account">
+      <p className="settings-caption">Account</p>
+      {state.status === "checking" ? <p role="status">Checking sign-in…</p> : state.status === "signed-in"
+        ? <p className="settings-email">{state.email}</p> : <p>Guest workspace</p>}
+    </div>
+    <AppearanceControls />
+    <div className="settings-account-action">
+      {state.status === "signed-in" ? <button className="settings-sign-out" type="button" disabled={state.busy === "logout"} onClick={() => { void account.logout(); }}>{state.busy === "logout" ? "Signing out…" : "Sign out"}</button>
+        : <Link href="/auth/sign-in">Sign in</Link>}
+      {state.error && <><p role="alert">{state.error}</p><button className="text-button" disabled={!!state.busy} onClick={() => { void account.check(); }}>Retry</button></>}
+      {state.status === "signed-out" && state.epoch > 0 && <p role="status">Signed out. Your account’s local work is hidden until you sign back in.</p>}
+    </div>
+  </>;
+}
+
 export function WorkspaceSettings() {
+  const account = useWorkspaceAccount();
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
@@ -103,7 +125,7 @@ export function WorkspaceSettings() {
     </button>
     {open && <section id="workspace-settings" className="appearance-panel settings-panel" role="dialog" aria-labelledby="settings-title">
       <header><h2 id="settings-title">Settings</h2><button ref={close} className="icon-button" type="button" aria-label="Close settings" onClick={() => { setOpen(false); button.current?.focus(); }}>×</button></header>
-      <AccountControls />
+      {account ? <ConnectedAccountControls account={account} /> : <AccountControls />}
     </section>}
   </div>;
 }

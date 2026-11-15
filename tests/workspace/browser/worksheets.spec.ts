@@ -43,9 +43,9 @@ test("PDF upload, local rendering, page navigation, zoom and removal", async ({ 
   await expect(page.getByRole("button", { name: "Reset worksheet zoom" })).toHaveText("125%");
   await expect(page.getByRole("img", { name: "Worksheet PDF page 2" })).toBeVisible();
   await page.screenshot({ path: test.info().outputPath("split-worksheet.png") });
-  await page.getByRole("button", { name: "Appearance", exact: true }).click();
+  await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page.getByRole("radio", { name: "Dark", exact: true }).check();
-  await page.getByRole("button", { name: "Close appearance" }).click();
+  await page.getByRole("button", { name: "Close settings" }).click();
   await expect(page.getByRole("img", { name: "Worksheet PDF page 2" })).toHaveCSS("filter", /invert/);
   await page.screenshot({ path: test.info().outputPath("paper-dark-worksheet.png") });
   await page.getByRole("button", { name: "Remove worksheet" }).click();

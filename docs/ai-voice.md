@@ -138,7 +138,7 @@ Mock regressions cover uninterrupted and subsequent responses, legitimate/manual
 
 ## Structured workspace integration
 
-The [first structured-work slice](study-tutoring.md) now provides exact local linear-expansion checks and hints in the real `/study` guidance panel. `npm run voice:dev` also generates a guarded `/dev/study` page using the same workspace and the same local issuance controls. Public `/study` receives no local capability; C's auth/owned-session APIs remain absent.
+The [first structured-work slice](study-tutoring.md) now provides exact local linear-expansion checks and hints in the real `/study` guidance panel. `npm run voice:dev` also generates a guarded `/dev/study` page using the same workspace and the same local issuance controls. Public `/study` receives no local capability. In local development, its signed-in workspace can now create a real study-session UUID and use the ordinary authenticated token path; the separate `/dev/study` harness retains its capability and demo ID. See [authenticated workspace sessions](study-tutoring.md#authenticated-workspace-sessions).
 
 The additive provider-independent `VoiceSession.sendText(message): boolean` submits explicit bounded work-hint context through the existing connection's SDK `injectUserMessage()`, using the diagnostic probe's pending/duplicate guards. It does not create another session or claim provider receipt, audible playback or persisted evidence. Unsupported work is not submitted as verified context. Changing work during a pending/playing hint ends voice conservatively; closing the guidance panel does not. See the integration guide for exact scope, demo and mocked-browser versus live-test boundaries.
 

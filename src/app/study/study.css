@@ -117,7 +117,7 @@ button:disabled { cursor: not-allowed; opacity: .5; }
   .toolbar-actions .small-button { border: 0; background: none; padding: 5px; font-size: 10px; }
   .work-toolbar { padding: 4px 12px; gap: 7px; }
   .source-picker { gap: 10px; }
-  .capture-popover { right: 16px; max-height: 60%; }
+  .capture-popover { right: 64px; max-height: 60%; }
   .tutor-popover { width: calc(100vw - 76px); padding: 20px; }
   .worksheet-empty h2 { font-size: 24px; }
   .practice-prompt { font-size: 13px; }
@@ -210,3 +210,12 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .board-canvas .excalidraw .default-sidebar-trigger { display: none !important; }
 .board-options .library-toggle { min-width: 52px; }
 @media (max-width: 760px) { .board-options { gap: 4px; padding: 10px 10px 0; } .board-options .small-button { padding: 4px 6px; font-size: 10px; } }
+
+.workspace-account { padding: 0.75rem 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border, #ccc); overflow-wrap: anywhere; }
+.workspace-account p { margin: 0.5rem 0; }
+.workspace-account .workspace-button { display: inline-block; margin: 0.25rem 0.5rem 0.25rem 0; }
+.settings-panel { max-height: calc(100dvh - 88px); overflow-y: auto; }
+.settings-email { overflow-wrap: anywhere; font-size: 14px; }
+.settings-account-action { border-top: 1px solid var(--paper-line); padding-top: 14px; }
+.settings-sign-out, .text-button { font: inherit; color: var(--paper-text); background: transparent; border: 1px solid var(--paper-line); border-radius: 6px; padding: 10px 14px; cursor: pointer; }
+.settings-sign-out:disabled, .text-button:disabled { opacity: 0.6; cursor: wait; }
