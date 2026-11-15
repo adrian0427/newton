@@ -164,3 +164,9 @@ Handwriting acceptance is now distinct from voice acceptance: on 2026-11-14 the 
 The existing generated capability remains a separate, isolated harness authorization path and accepts its demo IDs without login. Bad supplied capabilities are rejected, never silently retried as user authorization. Production, preview, CI and non-loopback issuance remain disabled even with valid login. The original process-wide five-attempts/ten-minute development limit is unchanged, not a production per-user policy.
 
 The workspace creates owned sessions explicitly and passes their UUIDs to ordinary local voice. Public/deployed issuance stays disabled. Adrian's provider/voice code is retained. Automated tests use real auth/ownership helpers with mocked SDK/provider boundaries and prove rejected requests make no Deepgram call; no provider credits are needed.
+
+## Speech output and artifact diagnostics — 2026-11-14
+
+Assistant replies are spoken verbatim by Aura-2, so the tutor instructions and work context now ask for plain spoken sentences with mathematics in words. In one later live authenticated session the earlier stray letters did not recur; the original cause is not established.
+
+For a recurrence, run `npm run voice:dev`, open `/dev/voice`, mute the microphone and use Speech artifact probes. The two TTS-only probes send fixed text as an agent message, bypassing the language model. Inject test question is a model turn without math context. Install sample checked step followed by Ask hint about sample step is a model turn with a fixed synthetic verified step. Each assistant-text trace row lists only fixed hazard categories; text, audio and transcripts are never shown, stored or logged. A sound on a TTS-only probe points to TTS or playback. A sound on a model turn whose row lists a hazard points to the model's text. A sound with no hazard listed leaves the source open.

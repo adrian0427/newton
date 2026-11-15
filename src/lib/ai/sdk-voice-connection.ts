@@ -1,13 +1,23 @@
 import { NEWTON_AGENT_SETTINGS } from "./realtime-config";
 import type { VoiceConnection, VoiceConnectionEvent } from "./voice-session";
 import { tutoringPrompt, validTutoringContext, type TutoringContext } from "./tutoring-context";
+import { emptySpeechHazardCounts, speechHazards, type SpeechHazard } from "./speech-text";
 
 type DiagnosticEvent = "connect" | "connected" | "settings-applied" | "user-speech" | "user-text" |
   "assistant-text" | "thinking" | "agent-started-speaking" | "response-audio-start" | "server-audio-done" | "repeated-audio-done" |
   "playback-complete" | "speech-interrupt" | "manual-interrupt" | "inject" | "injection-blocked" |
   "mic-muted" | "mic-unmuted" | "reconnecting" | "disconnected" | "cleanup";
 type DiagnosticTrace = { sequence: number; atMs: number; event: DiagnosticEvent; stream: number;
-  queuedSeconds: number; inputLevel: number; outputLevel: number };
+  queuedSeconds: number; inputLevel: number; outputLevel: number; hazards?: SpeechHazard[] };
+
+/** Fixed local probes. Text probes go through the language model; speak probes bypass it and test TTS/playback only. */
+export type VoiceProbe = "explain" | "hint" | "speak-plain" | "speak-symbols";
+export const VOICE_PROBE_TEXT: Record<VoiceProbe, string> = {
+  explain: "Can you explain the distributive property?",
+  hint: "Can you give me a hint about my submitted step?",
+  "speak-plain": "Let's look at the constant term. What is seven times two? Try it, and tell me what you get.",
+  "speak-symbols": "Recheck 7 × (2) in 7(6k + 2). What does 7*(6*k+2) give?",
+};
 
 /** Local diagnostics contain only counters, levels and fixed/allowlisted codes. */
 export type VoiceDiagnostics = {
@@ -53,6 +63,10 @@ export type VoiceDiagnostics = {
   injections: number;
   injectionPending: boolean;
   blockedInjections: number;
+  /** Category counts for assistant text segments; the text itself is never retained. */
+  assistantTextSegments: number;
+  speechHazardSegments: number;
+  speechHazards: Record<SpeechHazard, number>;
   trace: DiagnosticTrace[];
   codes: string[];
 };
@@ -69,11 +83,12 @@ export const INITIAL_VOICE_DIAGNOSTICS: VoiceDiagnostics = {
   responseStarts: 0, agentAudioDoneEvents: 0, repeatedAudioDoneEvents: 0, playbackCompletions: 0,
   connectionEvents: 0, reconnectAttempts: 0, unexpectedDisconnections: 0,
   injectionPending: false, blockedInjections: 0, trace: [],
+  assistantTextSegments: 0, speechHazardSegments: 0, speechHazards: emptySpeechHazardCounts(),
 };
 
 type DevelopmentDiagnostics = {
   onUpdate: (snapshot: VoiceDiagnostics) => void;
-  onTextProbeReady: (inject: (() => boolean) | null) => void;
+  onTextProbeReady: (inject: ((probe?: VoiceProbe) => boolean) | null) => void;
   onMicrophoneControlReady?: (toggle: (() => void) | null) => void;
 };
 
@@ -128,15 +143,15 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
   let contextFailed = false;
   const startedAt = Date.now();
   let traceSequence = 0;
-  const stats: VoiceDiagnostics = { ...INITIAL_VOICE_DIAGNOSTICS, codes: [], trace: [] };
+  const stats: VoiceDiagnostics = { ...INITIAL_VOICE_DIAGNOSTICS, codes: [], trace: [], speechHazards: emptySpeechHazardCounts() };
   function publishDiagnostics() {
-    diagnostics?.onUpdate({ ...stats, discardingInterruptedResponse: dropCurrentTurn, codes: [...stats.codes], trace: [...stats.trace] });
+    diagnostics?.onUpdate({ ...stats, discardingInterruptedResponse: dropCurrentTurn, codes: [...stats.codes], trace: [...stats.trace], speechHazards: { ...stats.speechHazards } });
   }
-  function trace(event: DiagnosticEvent) {
+  function trace(event: DiagnosticEvent, hazards?: SpeechHazard[]) {
     if (!diagnostics) return;
     stats.trace = [...stats.trace, { sequence: ++traceSequence, atMs: Math.max(0, Date.now() - startedAt),
       event, stream: stats.responseStarts, queuedSeconds: player.getRemainingPlaybackTime(),
-      inputLevel: stats.inputLevel, outputLevel: player.getOutputVolume() }].slice(-40);
+      inputLevel: stats.inputLevel, outputLevel: player.getOutputVolume(), ...(hazards?.length ? { hazards } : {}) }].slice(-40);
   }
   function code(value: string) {
     if (!diagnostics) return;
@@ -222,14 +237,16 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
     if (contextPending) finishContext(false);
     return contextFailed;
   }
-  function sendText(message: string): boolean {
+  function sendText(message: string, as: "user" | "agent" = "user"): boolean {
     if (closed || contextPending || contextFailed || !settingsApplied || stats.connection !== "connected" || !message.trim() || message.length > 2000) return false;
     if (stats.injectionPending || responseActive || tutorSpeaking || player.getRemainingPlaybackTime() > 0) {
       stats.blockedInjections++; trace("injection-blocked"); publishDiagnostics(); return false;
     }
     stats.injectionPending = true;
     try {
-      session.injectUserMessage(message);
+      // An injected agent message is spoken exactly as written, isolating TTS/playback from the model.
+      if (as === "agent") session.injectAgentMessage(message);
+      else session.injectUserMessage(message);
       stats.injections++; trace("inject"); publishDiagnostics(); return true;
     } catch { stats.injectionPending = false; code("TEXT_INJECTION_FAILED"); return false; }
   }
@@ -273,7 +290,8 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
     settingsApplied = true;
     stats.settingsApplied = true;
     trace("settings-applied");
-    diagnostics?.onTextProbeReady(() => sendText("Can you explain the distributive property?"));
+    diagnostics?.onTextProbeReady((probe: VoiceProbe = "explain") =>
+      sendText(VOICE_PROBE_TEXT[probe], probe.startsWith("speak-") ? "agent" : "user"));
     diagnostics?.onMicrophoneControlReady?.(() => {
       if (closed || stats.microphone !== "capturing") return;
       if (mic.muted) {
@@ -301,7 +319,14 @@ export async function createSdkVoiceConnection(development?: DevelopmentDiagnost
       if (dropCurrentTurn) newUserTurnAfterInterrupt = true;
     } else if (message.role === "assistant") {
       stats.agentTranscripts++;
-      trace("assistant-text");
+      // Development diagnostics classify the segment into fixed categories and discard the text.
+      const hazards = diagnostics && typeof message.content === "string" ? speechHazards(message.content) : [];
+      if (diagnostics) {
+        stats.assistantTextSegments++;
+        if (hazards.length) stats.speechHazardSegments++;
+        for (const hazard of hazards) stats.speechHazards[hazard]++;
+      }
+      trace("assistant-text", hazards);
       beginAssistantResponse();
     }
     publishDiagnostics();

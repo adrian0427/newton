@@ -32,7 +32,7 @@ Checks are transient client-side assistance, not persistence-authorizing learnin
 
 ## Automated validation boundaries
 
-Unit tests cover exact/unsupported mathematics, targeted hints, bounded context, SDK delivery, duplicate guards, errors and cleanup. Playwright uses the real workspace/MathLive at desktop and 360px widths. Its explicit `NEWTON_TEST_DEV_STUDY=1` cases run against `NEWTON_TEST_URL` with mocked credentials/Deepgram WebSocket and a synthetic microphone. These establish browser wiring, not live model behavior, audible human speech or acoustic stability; no billable service calls are required. To include both the isolated harness and ordinary owned-session voice cases, run a separate loopback `voice:dev` server and set `NEWTON_TEST_URL=http://127.0.0.1:3100 NEWTON_TEST_DEV_STUDY=1 NEWTON_TEST_LOCAL_VOICE=1` for `npm run test:e2e`. Tests intercept token, transcription, auth/session and Deepgram WebSocket boundaries; no provider key is needed for these mocked checks.
+Unit tests cover exact/unsupported mathematics, targeted hints, bounded context, SDK delivery, duplicate guards, errors and cleanup. Playwright uses the real workspace/MathLive at desktop and 360px widths. Its explicit `NEWTON_TEST_DEV_STUDY=1` cases run against `NEWTON_TEST_URL` with mocked credentials/Deepgram WebSocket and a synthetic microphone. These establish browser wiring, not live model behavior, audible human speech or acoustic stability; no billable service calls are required. Playwright's default server is `npm run dev`, so ordinary owned-session voice cases (mocked token and Deepgram socket) run by default. When `NEWTON_TEST_URL` points at an existing server, set `NEWTON_TEST_SERVER_MODE=development` or `production`; production mode asserts that Start voice stays disabled and skips only the development voice-connection cases. To also run the isolated harness cases, use a separate loopback `voice:dev` server with `NEWTON_TEST_DEV_STUDY=1`. Tests intercept token, transcription, auth/session and Deepgram WebSocket boundaries; no provider key is needed for these mocked checks.
 
 ## Context-delivery references and regression checks
 
@@ -181,3 +181,38 @@ the route does not attest that a camera/image/model actually produced it. Direct
 self-owned Supabase writes also remain possible under existing RLS. Memory is
 advisory, not tamper-proof learning evidence. No schema, service-role access,
 provider dependency or raw-work storage was added.
+
+## Live acceptance and reliability fixes — 2026-11-14 (fix/live-handwriting-voice)
+
+### Live manual observations
+
+Performed by the developer in the authenticated local `/study` workspace with real providers; reported, not automated.
+
+- Signed in with Google and started an owned study session.
+- Wrote `42k+2` with genuine Excalidraw freehand strokes and chose Read handwriting. Groq (`qwen/qwen3.8-27b`) returned `42k+2` exactly, with no `?` markers. The review showed the captured drawing beside the text.
+- After confirmation the expression normalized to `42*k+2`. With the active problem `7(6k + 2)`, Check work reported an incorrect expansion and Ask for a hint gave the targeted question about multiplying 7 by 2 without revealing the answer.
+- Authenticated Deepgram voice started with the owned session and answered questions about the submitted work, including several follow-ups with numbers and expressions. The earlier stray spoken letters (for example "v") did not recur in this session.
+
+This is one successful journey. It does not establish general handwriting accuracy, two-line equation reliability, deployed voice readiness or acoustic stability.
+
+### Voice: what changed and what is still unknown
+
+- **Confirmed gap, fixed:** the tutoring prompt had no rules for speech output, while Deepgram documents that its TTS reads characters literally. The tutor instructions now require plain spoken sentences with mathematics in words, and the current-work context and hint request say the same. The context still carries written notation such as `7*(6*k+2)` and `7 × (2)`.
+- **Not established:** the cause of the earlier stray letters. The prompt change, model variability or TTS behavior could each explain the earlier sound and its absence in one session. Treat a recurrence as an open defect.
+- **Development-only diagnostics** (`npm run voice:dev`, `/dev/voice`): fixed category counts of possible speech hazards in assistant text (markdown, latex, math or operator symbols, emoji, stray letter at a sentence end), with no text retained; two TTS-only probes that bypass the model; and a fixed synthetic checked step for comparing responses with and without math context. Ordinary `/study` and production builds do not classify text or expose probes.
+
+### Handwriting review layout
+
+The review places the exact image read beside the editable transcription, with Confirm transcription and Read again directly under the field, so all four are visible together at laptop, small-laptop, iPad-portrait and phone widths. Only very small screens (about 320×568) scroll, and then only inside the review, which brings Confirm into view automatically; the page and Newton panel are not moved or covered. Enter in the field still confirms. Automated layout checks use real Excalidraw strokes with a mocked transcription.
+
+### Recommended demonstration
+
+Leave the active problem as `7(6k + 2)`, write only `42k+2` on one line, read and confirm it, then Check work, Ask for a hint and ask the voice tutor a follow-up. This shorter expression avoids the parentheses, equals sign and line continuation that make longer handwriting harder to read. Keep Structured input as the fallback, and if a symbol is misread, correcting it in the review is part of the intended design.
+
+### Automated coverage versus remaining limits
+
+Automated tests (mocked providers): speech-hazard classification and prompt policy; development-only diagnostics and agent-message probes; the exact read image and its development-only download; correction of a misread without silent repair; the single-line demo verdict and hint; and the responsive review layout. No provider was called by automated tests.
+
+Remaining limits: VLMs can still misread symbols, so confirmation stays mandatory; only one live handwriting journey and one voice session are recorded; voice remains local-development only; the stray-letter cause is unconfirmed.
+
+The live session above ran before the C2 learning-memory merge. The combined branch, with saved observations and loaded history added to the voice context, is validated by mocked automated tests only; history summaries are quoted text and fall under the same spoken-wording instruction.

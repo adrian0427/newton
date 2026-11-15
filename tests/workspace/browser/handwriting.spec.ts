@@ -231,3 +231,32 @@ test("unreadable work, missing credentials, sign-in and rate limits stay recover
   await checkInPanel(page, "Check work");
   await expect(page.getByRole("heading", { name: "Correct step", exact: true })).toBeVisible();
 });
+
+test("review shows the exact image that was read so misreads can be compared and corrected", async ({ page }) => {
+  let sent = "";
+  await page.route("**/api/work/transcribe", async (route) => {
+    const body = route.request().postDataJSON() as { revisionId: string; image: string };
+    sent = body.image;
+    // A plausible model misread: the student wrote 42k+2, the reader returns 426+2.
+    await route.fulfill({ json: { transcription: { revisionId: body.revisionId, status: "transcribed", text: "426+2" } } });
+  });
+  await page.goto("/study");
+  await draw(page);
+  await page.getByRole("button", { name: "Read handwriting", exact: true }).click();
+  const image = page.getByRole("img", { name: "The drawing Newton read" });
+  await expect(image).toBeVisible();
+  expect(await image.getAttribute("src")).toBe(sent);
+  expect(sent).toMatch(/^data:image\/png;base64,/);
+  // Student correction is preserved; the checker never repairs the misread.
+  const field = page.getByRole("textbox", { name: "What you wrote" });
+  await expect(field).toHaveValue("426+2");
+  await field.fill("42k+2");
+  await page.getByRole("button", { name: "Confirm transcription", exact: true }).click();
+  await checkInPanel(page, "Ask for a hint");
+  await expect(page.getByRole("heading", { name: "Check your expansion", exact: true })).toBeVisible();
+  await expect(page.getByText("Recheck 7 × (2).", { exact: false })).toBeVisible();
+  await expect(page.locator(".tutor-feedback")).not.toContainText("14");
+  await page.keyboard.press("Escape");
+  await draw(page, 60);
+  await expect(page.getByRole("img", { name: "The drawing Newton read" })).toHaveCount(0);
+});

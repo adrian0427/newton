@@ -1,5 +1,6 @@
 import { expect,test,type Page } from "@playwright/test";
-test.use({ launchOptions: { args: process.env.NEWTON_TEST_LOCAL_VOICE ? ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] : [] } });
+import { fakeMediaArgs, serverMode } from "./server-mode";
+test.use({ launchOptions: { args: fakeMediaArgs() } });
 const sessions=["10000000-0000-4000-8000-000000000001","10000000-0000-4000-8000-000000000002"];
 async function enterStep(page:Page){
  await expect(page.locator(".workspace-split")).toBeAttached();
@@ -70,7 +71,7 @@ test("unread and unconfirmed handwriting never saves; explicit confirmation supp
  await expect(page.getByText("Learning observation saved for later sessions.")).toBeVisible();expect(saves).toBe(1);
 });
 test("the SDK receives prior observations as quoted advisory context without provider calls",async({browser})=>{
- test.skip(!process.env.NEWTON_TEST_LOCAL_VOICE,"Explicit mocked local voice test only");
+ test.skip(serverMode() !== "development","Authenticated voice exists only in local development; mocked, no paid calls");
  const context=await browser.newContext({permissions:["microphone"]});const page=await context.newPage();
  const summary="Synthetic prior observation: missed distribution to the constant term.";let prompt="";
  await page.route("**/auth/session",route=>route.fulfill({json:{user:{email:"prompt-memory@example.com"}}}));

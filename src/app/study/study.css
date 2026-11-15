@@ -279,3 +279,29 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 @media (max-width: 760px) { .work-area[data-source="whiteboard"] .capture-popover:not(.handwriting-review) { top: auto; max-height: calc(100% - var(--board-controls-bottom, 96px) - 80px); overflow: auto; } }
 /* Phones: the tools get their own row and scroll sideways if wider than the screen. */
 @media (max-width: 760px) { .board-tools-slot { flex: 1 1 100%; order: 3; min-width: 0; overflow-x: auto; scrollbar-width: thin; } }
+/* Handwriting review: the read image sits beside the editable text, so both stay visible next to
+   Confirm and Read again; very narrow panels stack them. Image boxes have fixed heights so loading never
+   moves the actions. The review may use the whiteboard height below the measured controls. */
+.capture-popover.handwriting-review { padding: 16px 18px; container-type: inline-size; }
+.work-area[data-source="whiteboard"] .capture-popover.handwriting-review { max-height: calc(100% - var(--board-controls-bottom, 96px) - 20px); }
+.handwriting-review .transcription-review { align-items: stretch; gap: 6px; margin-top: 0; }
+.handwriting-review .transcription-review > p { margin: 0; }
+.transcription-compare { display: flex; flex-direction: column; gap: 8px; }
+.transcription-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.handwriting-review .expression-preview { margin-top: 0; }
+.handwriting-review .transcription-actions { margin-top: 0; gap: 4px 12px; }
+.transcription-image { margin: 0; }
+/* The settings panel's bordered .text-button style is too large inside this compact review. */
+.handwriting-review .text-button { min-height: 30px; padding: 4px 2px; border: 0; font-size: 11px; }
+.transcription-image figcaption .text-button { min-height: 0; padding: 2px 0; font-size: 10px; line-height: 1.4; }
+.transcription-image img { display: block; width: 100%; height: 64px; object-fit: contain; object-position: left center; background: #fff; border: 1px solid var(--paper-line); border-radius: 6px; }
+@container (min-width: 240px) {
+  .transcription-compare { flex-direction: row; align-items: flex-start; gap: 10px; }
+  .transcription-compare > .transcription-image { flex: 0 0 38%; min-width: 0; }
+  .transcription-compare > .transcription-field { flex: 1 1 0; }
+}
+@container (min-width: 440px) {
+  .transcription-compare { gap: 14px; }
+  .transcription-compare > .transcription-image { flex-basis: 42%; }
+  .transcription-image img { height: 128px; object-position: center; }
+}

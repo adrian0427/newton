@@ -1,7 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 import { drawMultilineExample } from "./freehand-example";
 
-test.use({ launchOptions: { args: process.env.NEWTON_TEST_LOCAL_VOICE ? ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] : [] } });
+import { fakeMediaArgs, serverMode } from "./server-mode";
+test.use({ launchOptions: { args: fakeMediaArgs() } });
 const firstSession = "ccaf9362-14b1-4b89-8fb2-c911c9ff1d70";
 const secondSession = "ccaf9362-14b1-4b89-8fb2-c911c9ff1d71";
 const expression = "7(6k+2)=42k+2";
@@ -102,7 +103,7 @@ test("a correct confirmed handwriting check retains main's once-per-work celebra
 });
 
 test("owned voice receives confirmed handwriting and clears its context on logout and account switch", async ({ page }) => {
-  test.skip(!process.env.NEWTON_TEST_LOCAL_VOICE, "Local development voice only; no paid calls");
+  test.skip(serverMode() !== "development", "Authenticated voice exists only in local development; mocked, no paid calls");
   await page.context().grantPermissions(["microphone"]);
   let email: string | null = "first@example.com";
   let injections = 0, closed = 0;
