@@ -164,8 +164,9 @@ export default function StudentWorkspace({ developmentVoiceCapability, storageSc
       const result = await requestTranscription(snapshot, controller.signal);
       // Late responses for an older drawing are discarded, even if cancellation did not reach the server.
       if (!current() || result.revisionId !== revisions.current) return;
-      setHandwriting(result.status === "unreadable" ? { revisionId: requested, phase: "unreadable" }
-        : { revisionId: requested, phase: "review", ambiguous: result.status === "ambiguous", draft: result.text });
+      const image = snapshot.image?.value;
+      setHandwriting(result.status === "unreadable" ? { revisionId: requested, phase: "unreadable", image }
+        : { revisionId: requested, phase: "review", ambiguous: result.status === "ambiguous", draft: result.text, image });
     } catch (error) {
       if (!current()) return;
       setHandwriting({ revisionId: requested, phase: "error", message: error instanceof Error ? error.message : "Newton couldn't read your handwriting. Try again, or use Structured input." });
@@ -233,9 +234,10 @@ export default function StudentWorkspace({ developmentVoiceCapability, storageSc
           onConfirm={() => setHandwriting((state) => {
             if (state?.phase !== "review") return state;
             const reviewed = reviewDraft(state.draft);
-            return reviewed.error ? state : { revisionId: state.revisionId, phase: "confirmed", draft: state.draft, expression: reviewed.expression };
+            return reviewed.error ? state : { revisionId: state.revisionId, phase: "confirmed", draft: state.draft, expression: reviewed.expression, image: state.image };
           })}
-          onEdit={() => setHandwriting((state) => state && { revisionId: state.revisionId, phase: "review", ambiguous: false, draft: state.phase === "confirmed" ? state.draft : "" })}
+          onEdit={() => setHandwriting((state) => state && { revisionId: state.revisionId, phase: "review", ambiguous: false, draft: state.phase === "confirmed" ? state.draft : "",
+            image: state.phase === "confirmed" || state.phase === "unreadable" ? state.image : undefined })}
           onReadAgain={() => { void readHandwriting(); }} onDismiss={dismissReview} />}
         {message && <section className="capture-popover" aria-label="Snapshot export">
           <button type="button" className="icon-button dismiss-capture" aria-label="Dismiss snapshot" onClick={() => { downloads.clear(); setDownload(null); setMessage(""); }}>×</button>

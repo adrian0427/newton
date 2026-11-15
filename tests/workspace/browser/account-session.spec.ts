@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
-test.use({ launchOptions: { args: ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] } });
+import { fakeMediaArgs, serverMode } from "./server-mode";
+test.use({ launchOptions: { args: fakeMediaArgs() } });
 const sessionId = "ccaf9362-14b1-4b89-8fb2-c911c9ff1d70";
 test("signed-in workspace creates one owned session and clears work after successful logout", async ({ page }) => {
   let creations = 0, signOuts = 0, signedIn = true;
@@ -23,11 +24,12 @@ test("signed-in workspace creates one owned session and clears work after succes
   await account.getByRole("button",{name:"Start study session"}).click();
   await expect(account.getByText(/Study session ready/)).toBeVisible();
   expect(creations).toBe(1);
-  if (!process.env.NEWTON_TEST_LOCAL_VOICE) {
-    await page.getByRole("button",{name:"Open Newton"}).click();
-    await expect(page.getByRole("button",{name:"Start voice",exact:true})).toBeDisabled();
-    await page.getByRole("button",{name:"Dismiss Newton"}).click();
-  }
+  // An owned session enables local development voice; production and previews keep it disabled.
+  await page.getByRole("button",{name:"Open Newton"}).click();
+  const startVoice = page.getByRole("button",{name:"Start voice",exact:true});
+  if (serverMode() === "development") await expect(startVoice).toBeEnabled();
+  else await expect(startVoice).toBeDisabled();
+  await page.getByRole("button",{name:"Dismiss Newton"}).click();
   const whiteboard = page.getByRole("checkbox", {name:"Whiteboard",exact:true});
   const mobilePanels = await whiteboard.isVisible();
   if (mobilePanels) await whiteboard.check();
@@ -62,7 +64,7 @@ test("anonymous and failed session creation never issue voice credentials",async
 });
 
 test("authenticated local voice uses the real UUID without the harness header and reuses it", async ({page})=>{
-  test.skip(!process.env.NEWTON_TEST_LOCAL_VOICE,"Local dev voice connection only");
+  test.skip(serverMode() !== "development","Authenticated voice exists only in local development; the production case is asserted above");
   let tokens=0,creations=0;
   await page.route("**/auth/session",route=>route.fulfill({json:{user:{email:"synthetic@example.com"}}}));
   await page.route("**/api/study-sessions",route=>{creations++;return route.fulfill({status:201,json:{session:{id:sessionId}}});});
@@ -115,7 +117,7 @@ test("device-local work stays with its account across logout, account changes an
 });
 
 test("logout closes an active SDK voice connection and microphone before clearing the account", async ({browser}) => {
-  test.skip(!process.env.NEWTON_TEST_LOCAL_VOICE,"Local development voice only");
+  test.skip(serverMode() !== "development","Authenticated voice exists only in local development; production keeps it disabled");
   const context=await browser.newContext({permissions:["microphone"]});
   const page=await context.newPage(); let signedIn=true, closed=false;
   await page.addInitScript(()=>{

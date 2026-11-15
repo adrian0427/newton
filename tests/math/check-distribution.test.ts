@@ -157,3 +157,13 @@ it("accepts only a constant times a one-variable binomial as the active problem"
     problem: PRACTICE_EXPRESSION,
   });
 });
+
+it("supports the single-line demo: only the expanded step against the default active problem", () => {
+  const result = checkDistribution(normalizeExpression("42k+2"));
+  expect(result).toMatchObject({ status: "incorrect", problem: "7(6k + 2)", misconceptionId: "distribution.missed-term" });
+  expect(result.hint).toContain("7 × (2)");
+  expect(result.hint + result.feedback).not.toMatch(/14/);
+  expect(checkDistribution(normalizeExpression("42k+14")).status).toBe("correct");
+  // A misread such as 426+2 is never silently repaired into the intended step.
+  expect(checkDistribution(normalizeExpression("426+2")).status).toBe("unsupported");
+});

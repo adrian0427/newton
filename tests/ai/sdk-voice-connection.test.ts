@@ -10,7 +10,7 @@ const sdk = vi.hoisted(() => ({
   subscription: vi.fn(),
   micStart: vi.fn(), micStop: vi.fn(), sendAudio: vi.fn(),
   queue: vi.fn(), interrupt: vi.fn(), dispose: vi.fn(), remaining: vi.fn(),
-  updateThink: vi.fn(), inject: vi.fn(), inputVolume: vi.fn(), outputVolume: vi.fn(),
+  updateThink: vi.fn(), inject: vi.fn(), injectAgent: vi.fn(), inputVolume: vi.fn(), outputVolume: vi.fn(),
   playerOptions: vi.fn(), playerMuted: false,
   frame: undefined as ((frame: ArrayBuffer) => void) | undefined,
 }));
@@ -25,6 +25,7 @@ vi.mock("@deepgram/agents", () => ({
     clearConversationHistory = sdk.clearHistory;
     sendAudio = sdk.sendAudio;
     injectUserMessage = sdk.inject;
+    injectAgentMessage = sdk.injectAgent;
     updateThink = sdk.updateThink;
   },
   AgentMicrophone: class {
@@ -829,5 +830,43 @@ it.each(["timeout", "throw", "warning", "speech-race", "close"])("fails context 
   expect(sdk.queue).not.toHaveBeenCalled();
   expect(sdk.sendAudio).not.toHaveBeenCalled();
   expect(connection.sendText!("hint")).toBe(false);
+  connection.close();
+});
+
+it("classifies assistant text into fixed speech-hazard categories without retaining the text", async () => {
+  vi.stubEnv("NODE_ENV", "development");
+  const onUpdate = vi.fn();
+  const connection = await createSdkVoiceConnection({ onUpdate, onTextProbeReady: vi.fn() });
+  await connection.connect(token);
+  sdk.handlers.get("conversation-text")?.({ role: "assistant", content: "Let's look at the constant term." });
+  sdk.handlers.get("conversation-text")?.({ role: "assistant", content: "What is \\( 7 \\times 2 \\) for the constant term v." });
+  const latest = onUpdate.mock.lastCall![0] as VoiceDiagnostics;
+  expect(latest).toMatchObject({ assistantTextSegments: 2, speechHazardSegments: 1 });
+  expect(latest.speechHazards).toMatchObject({ latex: 1, "isolated-letter": 1, markdown: 0 });
+  const rows = latest.trace.filter((row) => row.event === "assistant-text");
+  expect(rows.at(-1)).toMatchObject({ hazards: ["latex", "isolated-letter"] });
+  expect(rows.at(-2)).not.toHaveProperty("hazards");
+  expect(JSON.stringify(onUpdate.mock.calls)).not.toContain("constant term");
+  connection.close();
+});
+
+it("does not classify assistant text outside development", async () => {
+  vi.stubEnv("NODE_ENV", "production");
+  const onUpdate = vi.fn();
+  const connection = await createSdkVoiceConnection({ onUpdate, onTextProbeReady: vi.fn() });
+  await connection.connect(token);
+  sdk.handlers.get("conversation-text")?.({ role: "assistant", content: "\\( x \\)" });
+  expect(onUpdate).not.toHaveBeenCalled();
+  connection.close();
+});
+
+it("speaks fixed TTS-only probes as agent messages, bypassing the language model", async () => {
+  vi.stubEnv("NODE_ENV", "development");
+  let probe: ((name?: "explain" | "hint" | "speak-plain" | "speak-symbols") => boolean) | null = null;
+  const connection = await createSdkVoiceConnection({ onUpdate: vi.fn(), onTextProbeReady: (inject) => { probe = inject; } });
+  await connection.connect(token);
+  expect(probe!("speak-symbols")).toBe(true);
+  expect(sdk.injectAgent).toHaveBeenCalledExactlyOnceWith(expect.stringContaining("7 × (2)"));
+  expect(sdk.inject).not.toHaveBeenCalled();
   connection.close();
 });
