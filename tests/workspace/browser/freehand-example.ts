@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 
 // Synthetic pointer paths, not font rendering or a private student's drawing.
 // Every segment is drawn with Excalidraw's real freedraw tool before export.
@@ -22,7 +22,9 @@ export async function drawMultilineExample(page: Page) {
   await canvas.waitFor({ state: "visible" });
   await canvas.scrollIntoViewIfNeeded();
   const box = (await canvas.boundingBox())!;
-  await page.getByRole("radio", { name: "Draw", exact: true }).check();
+  const draw = page.getByRole("toolbar", { name: "Drawing tools" }).getByRole("button", { name: "Draw", exact: true });
+  await draw.click();
+  await expect(draw).toHaveAttribute("aria-pressed", "true");
   // Account status and compact controls reduce the available canvas on mobile.
   // Keep both rows above the bottom drawing controls, rather than drawing off-canvas.
   const top = Math.min(140, box.height * 0.3);

@@ -25,6 +25,8 @@ export default function StudentWorkspace({ developmentVoiceCapability, storageSc
   const alive = useRef(true);
   const split = useRef<HTMLDivElement>(null);
   const [focusMode, setFocusMode] = useState(false);
+  const [toolsSlot, setToolsSlot] = useState<HTMLDivElement | null>(null);
+  const workArea = useRef<HTMLElement>(null);
   const [splitWidth, setSplitWidth] = useState(44);
   const [mobilePane, setMobilePane] = useState<"worksheet" | "work">("worksheet");
   const [source, setSource] = useState<"whiteboard" | "expression">("whiteboard");
@@ -39,6 +41,23 @@ export default function StudentWorkspace({ developmentVoiceCapability, storageSc
   // One transcription per board revision; any content change discards it and its pending request.
   const [handwriting, setHandwriting] = useState<HandwritingState | null>(null);
   const [reviewOpen, setReviewOpen] = useState(false);
+  const [restored, setRestored] = useState(false);
+  // Popovers open below the work toolbar and whiteboard options, which wrap to more rows on narrow panes.
+  useEffect(() => {
+    const area = workArea.current;
+    if (!area) return;
+    const measure = () => {
+      const top = area.getBoundingClientRect().top;
+      const controls = [area.querySelector(".work-toolbar"), area.querySelector(".board-options")].filter((el): el is Element => !!el && el.getBoundingClientRect().height > 0);
+      const bottom = Math.max(0, ...controls.map((el) => el.getBoundingClientRect().bottom - top));
+      area.style.setProperty("--board-controls-bottom", `${Math.round(bottom)}px`);
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(area);
+    area.querySelectorAll(".work-toolbar, .board-options").forEach((el) => observer.observe(el));
+    measure();
+    return () => observer.disconnect();
+  }, [restored, toolsSlot, source, message, reviewOpen]);
   const reading = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -46,8 +65,7 @@ export default function StudentWorkspace({ developmentVoiceCapability, storageSc
     return () => { alive.current = false; revisions.invalidate(); downloads.clear(); reading.current?.abort(); };
   }, [revisions, downloads]);
 
-  // Restore device-local work once, then save it whenever it changes.
-  const [restored, setRestored] = useState(false);
+  // Restore device-local work once (restored is declared above), then save it whenever it changes.
   useEffect(() => {
     let active = true;
     void loadPart("work", storageScope).then((saved) => {
@@ -190,9 +208,11 @@ export default function StudentWorkspace({ developmentVoiceCapability, storageSc
             setSplitWidth((width) => event.key === "Home" ? 30 : event.key === "End" ? 70 : Math.min(70, Math.max(30, width + (event.key === "ArrowLeft" ? -2 : 2))));
           }
         }}><span /></div>
-      <section className="work-area" data-source={source} aria-label="Your working space">
+      <section ref={workArea} className="work-area" data-source={source} aria-label="Your working space">
 
-        <div className="work-toolbar"><button className="small-button focus-toggle" type="button" aria-pressed={focusMode} onClick={() => { setFocusMode(!focusMode); setMobilePane("work"); }}>{focusMode ? "Exit focus" : "Focus mode"}</button><fieldset className="source-picker"><legend>Snapshot source</legend>
+        <div className="work-toolbar"><button className="small-button focus-toggle" type="button" aria-pressed={focusMode} onClick={() => { setFocusMode(!focusMode); setMobilePane("work"); }}>{focusMode ? "Exit focus" : "Focus mode"}</button>
+        {/* The whiteboard renders its drawing tools here, between Focus mode and the source picker. */}
+        <div ref={setToolsSlot} className="board-tools-slot" hidden={source !== "whiteboard"} /><fieldset className="source-picker"><legend>Snapshot source</legend>
           <label><input type="radio" name="source" value="whiteboard" checked={source === "whiteboard"} onChange={() => selectSource("whiteboard")} />Whiteboard</label>
           <label><input type="radio" name="source" value="expression" checked={source === "expression"} onChange={() => selectSource("expression")} />Structured input</label>
         </fieldset><button type="button" className="icon-button" aria-label="Clear local work" title="Clear local work" onClick={clear}>
@@ -201,7 +221,7 @@ export default function StudentWorkspace({ developmentVoiceCapability, storageSc
             <path d="M19.3 12a7.5 7.5 0 1 0-1.8 5.3M20 12l-3-3" />
           </svg>
         </button></div>
-        <div className="whiteboard-frame" hidden={source !== "whiteboard"}><WorkspaceBoundary><Whiteboard storageScope={storageScope} ref={board} revisions={revisions} onContentChange={changed} onActivityChange={setEditing} onCapture={capture} capturing={capturing} captureDisabled={capturing || editing || handwriting?.phase === "reading"}
+        <div className="whiteboard-frame" hidden={source !== "whiteboard"}><WorkspaceBoundary><Whiteboard storageScope={storageScope} toolsSlot={toolsSlot} ref={board} revisions={revisions} onContentChange={changed} onActivityChange={setEditing} onCapture={capture} capturing={capturing} captureDisabled={capturing || editing || handwriting?.phase === "reading"}
           onRead={readHandwriting} reading={handwriting?.phase === "reading"} readDisabled={capturing || editing || handwriting?.phase === "reading"} /></WorkspaceBoundary></div>
         <div className="expression-area" hidden={source !== "expression"}>
           <div className="expression-actions"><button className="small-button capture-button" type="button" disabled={capturing} onClick={capture}>{capturing ? "Capturing..." : "Capture snapshot"}</button></div>
