@@ -278,3 +278,40 @@ ignored with mode 0600.
 ## Google auth change
 
 The preceding C1 results are historical. The current hosted harness authenticates its disposable password fixtures via the Supabase SSR SDK and installs the resulting cookies into separate HTTP contexts; the app no longer accepts password POSTs. This preserves real Auth/database/route coverage without pretending to automate Google consent. Follow [Google setup and manual acceptance](google-auth.md) for the actual OAuth flow and test-project/provider settings.
+
+## C2 submitted-work memory verification
+
+`tests/backend/analyze-route.test.ts` exercises the real mathematical checker
+behind mocked Auth/ownership/writer boundaries: input allowlist and limits,
+Origin/JSON checks, auth and foreign-session denial, derived practice/missed-term
+outcomes, unsupported rejection, sanitized failures, and deterministic retries.
+The browser lifecycle suite checks scoped history, deduplicated submissions,
+failed-load/save recovery, cancellation, and cleanup/reopening.
+
+The hosted backend acceptance now also posts synthetic confirmed text to the
+actual `/api/work/analyze` route with the two existing fixture accounts. It
+verifies a saved server-derived observation, retry ID equality, rejection of
+foreign sessions and posted outcomes, unsupported-work non-persistence, and
+retrieval in a subsequent session without exposure to the second account.
+These calls reach Supabase; they never call vision or voice providers. As with
+existing acceptance fixtures, successful observations remain append-only for
+later administrative cleanup.
+
+The new learning-memory browser scenarios exercise typed and explicitly
+confirmed handwriting submissions, no saving before confirmation, exact
+revision/session handoff, later-session/account isolation, and honest failure
+recovery. The optional local voice scenario intercepts credentials and SDK
+WebSockets with fake media, inspecting the actual SDK settings prompt to verify
+bounded advisory history delivery. This verifies transport wiring, not a live
+model's use of memory or speech quality.
+
+C2 verification on 2026-11-14: 559 default tests, ESLint, TypeScript and the
+production build passed. The explicit hosted two-account backend scenario
+passed against `newton-dev`, including the new real analyze/save/retrieve path.
+All eight new desktop/mobile memory scenarios passed with mocked providers.
+The full browser run passed 88 scenarios, skipped five (four opt-in isolated
+harness cases and one desktop-only styles check on mobile), and hit five
+existing desktop loading/drawing timeouts. All five timed-out scenarios passed
+unchanged on a serial rerun, alongside the saved-observation UI check. Thus 93
+applicable browser scenarios were verified across those runs. No live vision,
+Deepgram speech, deployed HTTPS, or new Google-consent test was performed.

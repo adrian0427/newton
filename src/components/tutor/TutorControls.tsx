@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { VoiceSnapshot } from "@/lib/ai/voice-session";
 import { PRACTICE_EXPRESSION, isSupportedProblem, type DistributionCheck } from "@/lib/math/check-distribution";
 import { normalizeExpression } from "@/components/whiteboard/expressions";
@@ -11,8 +11,9 @@ function problemError(text: string): string {
   return isSupportedProblem(text) ? "" : "Use a number times a sum or difference with one variable, such as 4(x+3).";
 }
 
-export default function TutorControls({ voice = { state: "unavailable" }, voiceAvailable = false, feedback = null, problem = PRACTICE_EXPRESSION, onProblemChange, onStart, onStop, onInterrupt, onCheck, onHint }: {
+export default function TutorControls({ voice = { state: "unavailable" }, voiceAvailable = false, feedback = null, problem = PRACTICE_EXPRESSION, onProblemChange, memoryControls, onStart, onStop, onInterrupt, onCheck, onHint }: {
   voice?: VoiceSnapshot; voiceAvailable?: boolean;
+  memoryControls?: ReactNode;
   feedback?: { result: DistributionCheck; showHint: boolean; delivery: string } | null;
   problem?: string; onProblemChange?: (problem: string) => void;
   onStart?: () => void; onStop?: () => void; onInterrupt?: () => void; onCheck?: () => void; onHint?: () => void;
@@ -57,6 +58,7 @@ export default function TutorControls({ voice = { state: "unavailable" }, voiceA
       {proposed && onProblemChange && <button className="small-button" type="button" onClick={() => onProblemChange(proposed)}>Use {proposed} as the active problem</button>}
       {feedback.delivery && <p role="status">{feedback.delivery}</p>}
     </div>}
-    <p className="helper">Checks compare linear expressions for all variable values; they do not solve equations. Handwriting is only transcribed for you to confirm, never graded by the reading service. Work is saved on this device; transcriptions, checks, hints and learning history are not saved.</p>
+    {memoryControls}
+    <p className="helper">Checks compare linear expressions for all variable values; they do not solve equations. Handwriting is only transcribed for you to confirm, never graded by the reading service. Work is saved on this device. During a signed-in study session, supported checks save a short learning observation. Full transcriptions, hints, audio and conversations are not saved to learning history.</p>
   </section>;
 }
