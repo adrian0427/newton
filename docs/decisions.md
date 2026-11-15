@@ -175,9 +175,12 @@ work is preserved, and no service-role credentials or new schema are required.
 
 ### Integration follow-up — preserve owned sessions, persistence and handwriting
 
-Merge main normally into the handwriting branch. Keep account-scoped IndexedDB restoration/autosave and Safari/iPad behavior alongside ordinary snapshots and bounded 2× transcription captures. Draft/confirmed transcription and checker feedback remain transient; edits, source/worksheet changes, account teardown and remount invalidate them. Signed-in local `/study` voice retains the real owned session UUID and ordinary credential provider; only the separate capability harness uses `local-study-test`. An initial browser sign-in failure now falls back to the guest board with error/retry and no voice, instead of leaving the board hidden indefinitely. Small-screen controls reserve space beside the fixed tutor launcher after combined-browser tests exposed occluded drawing/clear buttons. No provider transport, authorization policy, database schema or persistence of recognized text is added. Combined browser regressions exercise restored freehand work, unchanged stored scenes, confirmed-work context, logout and account isolation with mocked service boundaries.
-
-The subsequent normal merge of PR #17 preserves Newton dragging, gaze and correct-step decoration alongside the handwritten/typed work union and active-problem controls. Only the deterministic current Check work result authorizes a decoration; transcription output itself does not. No learning observation or extra voice response is created.
+Preserve account-scoped local work, owned study sessions and the handwriting
+confirmation flow when updating the workspace. Changes to work or account state
+must invalidate stale transcriptions and feedback. An unavailable sign-in check
+should leave the local board usable while disabling account-dependent voice.
+Only a current deterministic work check may trigger a correct-step decoration;
+transcription alone does not verify correctness.
 
 ## 2026-11-14 — C2 server-checked submitted-work observations
 
