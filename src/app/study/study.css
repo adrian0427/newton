@@ -78,10 +78,16 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .local-file-note { font-size: 9px; color: var(--paper-muted); }
 .worksheet-error { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 16px; background: var(--paper-error-bg); color: var(--paper-error); font-size: 11px; line-height: 1.6; }
 .drop-overlay { position: absolute; inset: 7px; z-index: 9; display: grid; place-items: center; border: 2px dashed var(--paper-accent); border-radius: 10px; background: var(--paper-reference); pointer-events: none; font-size: 18px; color: var(--color-leaf); }
-.tutor-launcher { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 15; display: block; width: 56px; height: 88px; padding: 0; border: 0; border-radius: 0; background: transparent; cursor: pointer; overflow: hidden; }
+.tutor-launcher { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 15; display: block; width: 56px; height: 88px; padding: 0; border: 0; border-radius: 0; background: transparent; cursor: grab; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
 .tutor-launcher:hover { background: transparent; }
 .tutor-launcher:focus-visible { outline-offset: -3px; border-radius: 8px 0 0 8px; }
-.tutor-popover { position: fixed; top: 50%; transform: translateY(-50%); right: 66px; width: min(330px, calc(100vw - 86px)); max-height: calc(100dvh - 100px); overflow: auto; z-index: 16; padding: 24px; border: 1px solid var(--paper-line); border-radius: 14px; background: var(--paper-shell); box-shadow: 0 12px 70px #00000026; }
+.tutor-launcher[data-mode="free"], .tutor-launcher[data-mode="held"] { right: auto; transform: none; width: 64px; height: 64px; overflow: visible; }
+.tutor-launcher[data-mode="free"]:focus-visible { outline-offset: 2px; border-radius: 16px; }
+.tutor-launcher[data-mode="held"] { z-index: 20; cursor: grabbing; }
+.newton-dock-zone { position: fixed; top: 0; right: 0; bottom: 0; width: 48px; z-index: 14; pointer-events: none; border-left: 1px dashed transparent; }
+.newton-dock-zone[data-active="true"] { background: color-mix(in srgb, var(--color-leaf) 12%, transparent); border-left-color: color-mix(in srgb, var(--color-leaf) 60%, transparent); }
+.newton-dock-ghost { position: fixed; right: 0; width: 28px; height: 88px; transform: translateY(-50%); z-index: 14; pointer-events: none; border: 1.2px dashed color-mix(in srgb, var(--color-leaf) 55%, transparent); border-right: 0; border-radius: 10px 0 0 10px; background: color-mix(in srgb, var(--color-leaf) 6%, transparent); }
+.tutor-popover { position: fixed; top: 0; left: 0; width: min(330px, calc(100vw - 86px)); max-height: calc(100dvh - 100px); overflow: auto; z-index: 16; padding: 24px; border: 1px solid var(--paper-line); border-radius: 14px; background: var(--paper-shell); box-shadow: 0 12px 70px #00000026; }
 .tutor-popover > header { display: flex; justify-content: space-between; gap: 10px; }
 .tutor-feedback { overflow-wrap: anywhere; }
 .tutor-popover h2 { font: 22px Georgia, serif; margin: 8px 0 0; }
@@ -112,8 +118,7 @@ button:disabled { cursor: not-allowed; opacity: .5; }
   .work-toolbar { padding: 4px 12px; gap: 7px; }
   .source-picker { gap: 10px; }
   .capture-popover { right: 16px; max-height: 60%; }
-  .tutor-launcher { right: 0; top: 50%; bottom: auto; width: 56px; height: 88px; }
-  .tutor-popover { right: 62px; top: 50%; bottom: auto; transform: translateY(-50%); width: calc(100vw - 76px); padding: 20px; }
+  .tutor-popover { width: calc(100vw - 76px); padding: 20px; }
   .worksheet-empty h2 { font-size: 24px; }
   .practice-prompt { font-size: 13px; }
   .document-controls { padding: 5px 10px; }
