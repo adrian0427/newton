@@ -156,6 +156,31 @@ Use Excalidraw's `getDimensions` for transcription captures to render at up to 2
 
 Connect C's verified-user/session-ownership helpers to A's existing token route for local requests without a harness capability. Keep the explicitly guarded capability harness as an independent development path and retain all production/preview/CI/non-loopback restrictions. Do not introduce a new endpoint or change the rate-limit policy: the existing local process-wide limit remains pending team agreement on deployed controls. Workspace session-ID wiring was subsequently implemented below; deployed issuance remains disabled.
 
+## 2026-11-14 — Local encryption deferred for the hackathon
+
+Keep device-local IndexedDB saving so drawings, worksheets and typed work survive
+refresh. The project owner explicitly deferred local encryption and separate
+saved-workspace management until after the hackathon. Do not add a passphrase,
+silently delete existing work, or describe account-scoped storage as encrypted.
+
+Saved source work is plaintext to scripts with this site's origin authority and
+people with access to the browser profile. Google sign-in, storage-key scoping,
+and database RLS do not encrypt those local copies. Use synthetic/adult test
+content for the hackathon; avoid confidential material on shared browser
+profiles. Local work can be removed with the existing clear/remove controls.
+Future local encryption needs an explicit key-management and recovery design.
+
+The focused security check found no exact matches for the currently configured
+provider credential values or test passwords in 205 tracked files, 645 generated
+browser/public files, or 515 reachable Git blob objects. The project owner
+identified the earlier pasted provider values as fake; these checks do not
+establish live credential validity or detect every possible historical secret.
+All 56 focused credential/auth tests and 341 backend/vision tests passed without
+live provider calls. Permanent provider consumers remain server-only; browser
+voice uses a separately issued temporary grant. This was a focused review, not
+an exhaustive security certification. Hosted configuration, device encryption,
+provider retention and production deployment verification remain separate work.
+
 ## 2026-11-14 — Owned workspace sessions and device-local account separation
 
 The workspace reuses C's verified auth/session endpoints and A's ordinary

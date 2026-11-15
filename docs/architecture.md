@@ -176,6 +176,16 @@ export pending the coordinated shared contract.
 
 Do not persist raw audio, screenshots, full conversations, or unnecessary personal information by default. Agree on retention, deletion, and student-facing memory controls before collecting real student data.
 
+### Device-local confidentiality limit
+
+Workspace IndexedDB records are not application-encrypted. Account scoping
+separates normal application views; it does not protect saved work from scripts
+running with this site's origin authority or someone with browser-profile
+access. Local encryption is explicitly deferred for the hackathon to retain
+refresh persistence without a new passphrase flow. Existing saved work and
+clear/remove controls are preserved. Separate saved-workspace management is also
+deferred. See the [local-storage decision](decisions.md#2026-11-14--local-encryption-deferred-for-the-hackathon).
+
 ## Environment, deployment, and references
 
 `.env.example` names `DEEPGRAM_API_KEY` (server only, Member-level or higher for token grants), `GROQ_API_KEY` / `GEMINI_API_KEY` (server-only transcription), optional `NEWTON_VISION_PROVIDER`, optional `OPENAI_API_KEY` (separately funded future use), `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (public). OpenAI credentials are not required for managed voice. No privileged Supabase key is needed in this scaffold. Next.js bundles `NEXT_PUBLIC_` settings for the browser; never put permanent provider keys or other secrets there.
