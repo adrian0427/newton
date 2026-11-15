@@ -39,9 +39,9 @@ async function confirm(page: Page) {
 async function openTutor(page: Page) {
   await page.getByRole("button", { name: "Open Newton", exact: true }).click();
 }
-async function answerTranscription(page: Page) {
+async function answerTranscription(page: Page, text = expression) {
   await page.route("**/api/work/transcribe", route => route.fulfill({ json: {
-    transcription: { revisionId: route.request().postDataJSON().revisionId, status: "transcribed", text: expression },
+    transcription: { revisionId: route.request().postDataJSON().revisionId, status: "transcribed", text },
   } }));
 }
 
@@ -79,6 +79,26 @@ test("restored account drawings can be read without overwriting storage or resto
   await openBoard(page);
   await page.getByRole("button", { name: "Read handwriting", exact: true }).click();
   await expect(page.getByRole("alert").filter({ hasText: "Draw something" })).toBeVisible();
+});
+
+test("a correct confirmed handwriting check retains main's once-per-work celebration", async ({ page }) => {
+  // Provider output is mocked; this checks the confirmation/check/decoration seam, not recognition accuracy.
+  await page.route("**/auth/session", route => route.fulfill({ json: { user: { email: "celebration@example.com" } } }));
+  await answerTranscription(page, "42k+14");
+  await page.goto("/study"); await drawMultilineExample(page);
+  await page.getByRole("button", { name: "Read handwriting", exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "What you wrote" })).toHaveValue("42k+14");
+  expect(await page.locator(".newton-celebration").count()).toBe(0);
+  await page.getByRole("button", { name: "Confirm transcription", exact: true }).click();
+  await openTutor(page);
+  await page.getByRole("button", { name: "Ask for a hint", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Correct step", exact: true })).toBeVisible();
+  expect(await page.locator(".newton-celebration").count()).toBe(0);
+  await page.getByRole("button", { name: "Check work", exact: true }).click();
+  await expect(page.locator(".newton-celebration")).toHaveCount(1);
+  await expect(page.locator(".newton-celebration")).toHaveCount(0);
+  await page.getByRole("button", { name: "Check work", exact: true }).click();
+  expect(await page.locator(".newton-celebration").count()).toBe(0);
 });
 
 test("owned voice receives confirmed handwriting and clears its context on logout and account switch", async ({ page }) => {

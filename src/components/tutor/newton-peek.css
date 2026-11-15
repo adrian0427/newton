@@ -10,3 +10,75 @@
 @keyframes newton-eyes-open { 0% { opacity: 1; } 94.527% { opacity: 0; } 100% { opacity: 1; } }
 @keyframes newton-eyes-half { 0% { opacity: 0; } 94.527% { opacity: 1; } 96.02% { opacity: 0; } 98.507% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes newton-eyes-closed { 0% { opacity: 0; } 96.02% { opacity: 1; } 98.507% { opacity: 0; } }
+
+/* Placed and picked-up poses (unclipped apple). */
+.newton-apple { display: block; position: relative; width: 64px; height: 64px; pointer-events: none; }
+.newton-apple svg { position: relative; z-index: 1; display: block; width: 64px; height: 64px; overflow: visible; }
+.newton-apple::after { content: ""; position: absolute; left: 50%; bottom: 2px; width: 34px; height: 6px; transform: translateX(-50%); border-radius: 50%; background: #233d32; opacity: .18; filter: blur(2px); }
+.newton-apple[data-held="true"] svg { transform: scale(1.12); }
+.newton-apple[data-held="true"]::after { bottom: -14px; width: 46px; height: 11px; opacity: .12; filter: blur(6px); }
+@media (prefers-reduced-motion: no-preference) {
+  .newton-apple svg, .newton-apple::after { transition: transform .12s ease-out, bottom .12s ease-out, width .12s ease-out, opacity .12s ease-out; }
+  .newton-apple .newton-gaze { transition: transform .25s ease-out; }
+}
+/* Reduced motion keeps only the shadow change while held. */
+@media (prefers-reduced-motion: reduce) {
+  .newton-apple[data-held="true"] svg { transform: none; }
+  .newton-apple[data-held="true"] .newton-apple-body { transform: none; }
+}
+
+/* Correct-step celebration, 1.9 s (Figma "Newton / Correct-step celebration").
+   120 ms squash, 240 ms pop, burst to 600 ms, drift, reform at 1100 ms, settle by 1900 ms. */
+.newton-celebration { position: fixed; width: 0; height: 0; z-index: 14; pointer-events: none; }
+.newton-pop-ring, .newton-confetti, .newton-sparkle { position: absolute; left: 0; top: 0; }
+.newton-sparkle { display: none; width: 6px; height: 6px; border-radius: 1px; transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--rotate)); }
+.newton-face-squeeze, .newton-face-happy { opacity: 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .newton-apple[data-celebrating="true"] svg, .tutor-launcher[data-celebrating="true"] .newton-peek { transform-origin: 50% 85%; animation: newton-celebrate-apple 1.9s both; }
+  .tutor-launcher[data-celebrating="true"] .newton-peek { transform-origin: 100% 50%; }
+  .newton-apple[data-celebrating="true"]::after { animation: newton-celebrate-shadow 1.9s both; }
+  .newton-apple[data-celebrating="true"] .newton-face-gaze { animation: newton-celebrate-gaze 1.9s both; }
+  .newton-apple[data-celebrating="true"] .newton-face-squeeze { animation: newton-celebrate-squeeze 1.9s both; }
+  .newton-apple[data-celebrating="true"] .newton-face-happy { animation: newton-celebrate-happy 1.9s both; }
+  .newton-pop-ring { width: 92px; height: 92px; margin: -46px 0 0 -46px; border: 3px solid #D5A51C; border-radius: 50%; background: #D5A51C26; animation: newton-pop-ring 1.9s both; }
+  .newton-confetti { width: var(--size); height: calc(var(--size) * .7); border-radius: 1px; animation: newton-confetti 1.66s calc(240ms + var(--delay)) both; }
+  .newton-confetti-circle { height: var(--size); border-radius: 50%; }
+  .newton-confetti-strip { width: calc(var(--size) * .45); height: calc(var(--size) * 1.8); }
+  .newton-confetti-leaf { width: calc(var(--size) * .7); height: calc(var(--size) * 1.5); border-radius: 50%; }
+}
+@keyframes newton-celebrate-apple {
+  0% { transform: scale(1); opacity: 1; animation-timing-function: ease-out; }
+  6.32% { transform: scale(1.1, .9); animation-timing-function: ease-in-out; }
+  12.5% { transform: scale(1.04, 1.18); opacity: 1; }
+  12.63% { transform: scale(.2); opacity: 0; }
+  57.88% { transform: scale(.6); opacity: 0; animation-timing-function: cubic-bezier(.3, 1.6, .5, 1); }
+  57.89% { opacity: 1; }
+  68.42% { transform: scale(1.05); }
+  78.95% { transform: scale(1.05); animation-timing-function: ease-in-out; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes newton-celebrate-shadow { 0%, 12.5% { opacity: .18; } 12.63%, 57.88% { opacity: 0; } 68.42%, 100% { opacity: .18; } }
+@keyframes newton-celebrate-gaze { 0%, 78.94% { opacity: 0; } 78.95%, 100% { opacity: 1; } }
+@keyframes newton-celebrate-squeeze { 0%, 12.62% { opacity: 1; } 12.63%, 100% { opacity: 0; } }
+@keyframes newton-celebrate-happy { 0%, 57.88% { opacity: 0; } 57.89%, 78.94% { opacity: 1; } 78.95%, 100% { opacity: 0; } }
+@keyframes newton-pop-ring {
+  0%, 10.5% { transform: scale(.3); opacity: 0; }
+  12.63% { transform: scale(.6); opacity: 1; animation-timing-function: ease-out; }
+  22.1%, 100% { transform: scale(2.1); opacity: 0; }
+}
+@keyframes newton-confetti {
+  0% { transform: translate(-50%, -50%) scale(.3) rotate(0deg); opacity: 1; animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+  22% { transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1) rotate(calc(var(--rotate) * .4)); opacity: 1; animation-timing-function: cubic-bezier(.45, 0, .8, .7); }
+  100% { transform: translate(calc(-50% + var(--x) * 1.15), calc(-50% + var(--y) + var(--fall))) scale(1) rotate(var(--rotate)); opacity: 0; }
+}
+
+/* Reduced motion: no burst or movement. Happy face and still sparkles for 1.2 s, then a 200 ms fade. */
+@media (prefers-reduced-motion: reduce) {
+  .newton-pop-ring, .newton-confetti { display: none; }
+  .newton-sparkle { display: block; animation: newton-still-fade 1.9s both; }
+  .newton-apple[data-celebrating="true"] .newton-face-gaze { animation: newton-still-gaze 1.9s both; }
+  .newton-apple[data-celebrating="true"] .newton-face-happy { animation: newton-still-fade 1.9s both; }
+}
+@keyframes newton-still-fade { 0%, 63.16% { opacity: 1; } 73.68%, 100% { opacity: 0; } }
+@keyframes newton-still-gaze { 0%, 63.16% { opacity: 0; } 73.68%, 100% { opacity: 1; } }
