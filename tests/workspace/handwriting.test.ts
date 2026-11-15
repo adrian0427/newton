@@ -1,5 +1,5 @@
 import { expect, it, vi } from "vitest";
-import { requestTranscription, reviewDraft } from "@/components/whiteboard/handwriting";
+import { handwritingExportDimensions, requestTranscription, reviewDraft } from "@/components/whiteboard/handwriting";
 import type { WorkSnapshot } from "@/types/tutoring";
 
 // Client contract tests with a mocked server response.
@@ -29,4 +29,19 @@ it("requires the student to resolve unclear symbols before confirming", () => {
   expect(reviewDraft("").error).not.toBe("");
   expect(reviewDraft("4(x+3)=4x+3")).toEqual({ expression: "4*(x+3)=4*x+3", error: "" });
   expect(reviewDraft("4(x+3)=4x+3$").error).not.toBe("");
+});
+
+it.each([
+  [445, 334, 890, 668], [1024, 512, 2048, 1024], [1500, 750, 2048, 1024], [4096, 1024, 2048, 512],
+  [200, 1600, 256, 2048],
+])("renders %s × %s strokes at up to 2x while keeping both image dimensions bounded", (width, height, expectedWidth, expectedHeight) => {
+  const result = handwritingExportDimensions(width, height);
+  expect(result.width).toBe(expectedWidth);
+  expect(result.height).toBe(expectedHeight);
+  expect(result.scale).toBeLessThanOrEqual(2);
+  expect(Math.abs(result.width / result.height - width / height)).toBeLessThan(0.01);
+});
+
+it.each([[0, 100], [100, -1], [Infinity, 100], [100, NaN]])("rejects invalid drawing dimensions %s × %s", (width, height) => {
+  expect(() => handwritingExportDimensions(width, height)).toThrow("Invalid drawing dimensions");
 });

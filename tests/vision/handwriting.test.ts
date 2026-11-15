@@ -3,6 +3,7 @@ vi.mock("server-only", () => ({}));
 import { decodePngDataUrl, parseTranscription, transcribeHandwriting, TRANSCRIPTION_INSTRUCTIONS, VisionError } from "@/lib/vision/handwriting";
 import { DEFAULT_GEMINI_MODEL, DEFAULT_GROQ_MODEL, selectVisionAdapter } from "@/lib/vision/providers";
 import { geminiReply, groqReply, pngDataUrl } from "./helpers";
+import { checkDistribution } from "@/lib/math/check-distribution";
 
 // All tests in this file use mocked provider responses; none call a real model.
 const png = decodePngDataUrl(pngDataUrl())!;
@@ -11,6 +12,51 @@ const geminiEnv = { GEMINI_API_KEY: "test-gemini-key" };
 const visionCode = async (promise: Promise<unknown>) => { try { await promise; } catch (error) { return error instanceof VisionError ? error.code : "other"; } return "resolved"; };
 
 describe("transcription output validation", () => {
+  it.each(["7(?+2)=4?+2", "7(6k+2)=42k+2", "7(b+2)=4b+2"])("keeps visual readings unchanged rather than repairing them with algebra: %s", (text) => {
+    expect(parseTranscription(JSON.stringify({ status: "transcribed", text }))).toEqual({ status: text.includes("?") ? "ambiguous" : "transcribed", text });
+  });
+  it("requests visual symbol boundaries and uncertainty without supplying the expected equation", () => {
+    // Prompt policy only. Actual recognition quality needs a separate live evaluation.
+    expect(TRANSCRIPTION_INSTRUCTIONS).toContain("Do not merge adjacent symbols");
+    expect(TRANSCRIPTION_INSTRUCTIONS).toContain("no one reading is preferred");
+    expect(TRANSCRIPTION_INSTRUCTIONS).toContain("put ? for that uncertain span");
+    expect(TRANSCRIPTION_INSTRUCTIONS).toContain("never algebraic plausibility");
+    expect(TRANSCRIPTION_INSTRUCTIONS).not.toContain("7(6k+2)");
+    expect(TRANSCRIPTION_INSTRUCTIONS).not.toContain("42k+14");
+  });
+  it.each([
+    "7(6k+2)\n=42k+2",
+    "7(6k+2)\r\n\r\n =42k+2",
+    "```math\n7(6k+2)\n=42k+2\n```",
+    "$7(6k+2)\n=42k+2$",
+    String.raw`\[7\left(6k+2\right)\\=42k+2\]`,
+    String.raw`\begin{aligned}7(6k+2)\\&=42k+2\end{aligned}`,
+  ])("normalizes a presentation-only multiline equation without correcting any term: %s", (text) => {
+    const result = parseTranscription(JSON.stringify({ status: "transcribed", text }));
+    expect(result).toEqual({ status: "transcribed", text: "7(6k+2)=42k+2" });
+    if (result.status === "unreadable") return;
+    const checked = checkDistribution(result.text);
+    expect(checked).toMatchObject({ status: "incorrect", misconceptionId: "distribution.missed-term" });
+    expect(checked.hint).toContain("7 × (2)");
+    expect(result.text).not.toContain("14");
+  });
+  it.each([
+    ["7(6k+2)\n=42k+14", "7(6k+2)=42k+14"],
+    ["-4(x+3)\n=-4x+-12", "-4(x+3)=-4x+-12"],
+    ["42k+2", "42k+2"],
+    ["7(6k+?)\n=42k+2", "7(6k+?)=42k+2"],
+    [String.raw`4\times(x+3)=4x+12`, "4*(x+3)=4x+12"],
+  ])("preserves correct, negative, standalone and ambiguous content: %s", (text, expected) => {
+    expect(parseTranscription(JSON.stringify({ status: "transcribed", text }))).toEqual({ status: expected.includes("?") ? "ambiguous" : "transcribed", text: expected });
+  });
+  it.each([
+    "7(6k+2)\n42k+2", "4\n2k+2", "7(6k+2)\n=42k+2\nThe correct answer is 42k+14.",
+    "Here is the work: 7(6k+2)=42k+2", "7(6k+2)=42k+2 (incorrect)",
+    String.raw`\text{7(6k+2)=42k+2}`, String.raw`\frac{7}{2}`, "$7(6k+2)=42k+2",
+    "```math\n7(6k+2)=42k+2\n```\nAnswer: 42k+14", "7(6k+2)\n=42k+2\n=42k+14",
+  ])("does not recover math by discarding prose or inventing a line connection: %s", (text) => {
+    expect(() => parseTranscription(JSON.stringify({ status: "transcribed", text }))).toThrow(expect.objectContaining({ code: "invalid-response", reason: "model-math-format" }));
+  });
   it.each(["4(x+3)=4x+12", "-4(x+3)=-4x+-12", "4x+12"])("accepts an accurate plain transcription: %s", (text) => {
     expect(parseTranscription(JSON.stringify({ status: "transcribed", text }))).toEqual({ status: "transcribed", text });
   });

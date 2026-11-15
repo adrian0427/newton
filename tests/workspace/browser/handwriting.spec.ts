@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { drawMultilineExample } from "./freehand-example";
 
 // Real Excalidraw drawing, export, review UI and deterministic checker. The transcription endpoint is mocked:
 // these tests never call a vision model, Supabase or the network.
@@ -50,6 +51,51 @@ function mockTranscription(page: Page, replies: ((revisionId: string) => Reply)[
   }).then(() => bodies);
 }
 const transcribed = (text: string, status = "transcribed") => (revisionId: string) => ({ json: { transcription: { revisionId, status, text } } });
+
+test("two-line Excalidraw pen strokes export completely and confirmed text retains the incorrect constant", async ({ page }) => {
+  const bodies = await mockTranscription(page, [transcribed("7(6k+2)=42k+2")]);
+  await page.goto("/study");
+  await drawMultilineExample(page);
+  await page.getByRole("button", { name: "Capture snapshot", exact: true }).click();
+  const download = page.getByRole("link", { name: "Download snapshot (JSON)" });
+  await expect(download).toBeVisible();
+  const original = await download.evaluate(async (link) => {
+    const snapshot = await (await fetch((link as HTMLAnchorElement).href)).json();
+    const bitmap = await createImageBitmap(await (await fetch(snapshot.image.value)).blob());
+    const dimensions = { width: bitmap.width, height: bitmap.height };
+    bitmap.close();
+    return dimensions;
+  });
+  await page.getByRole("button", { name: "Read handwriting", exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "What you wrote" })).toHaveValue("7(6k+2)=42k+2");
+  const png = Buffer.from(String(bodies[0].image).split(",")[1], "base64");
+  expect(png.readUInt32BE(16)).toBeGreaterThan(150);
+  expect(png.readUInt32BE(20)).toBeGreaterThan(100); // includes both rows plus export padding
+  expect(Math.abs(png.readUInt32BE(16) - original.width * 2)).toBeLessThanOrEqual(1);
+  expect(Math.abs(png.readUInt32BE(20) - original.height * 2)).toBeLessThanOrEqual(1);
+  expect(Math.max(png.readUInt32BE(16), png.readUInt32BE(20))).toBeLessThanOrEqual(2048);
+  await page.getByRole("button", { name: "Confirm transcription", exact: true }).click();
+  await checkInPanel(page, "Ask for a hint");
+  await expect(page.getByText("Submitted:", { exact: false })).toContainText("7*(6*k+2)=42*k+2");
+  await expect(page.getByText("Recheck 7 × (2).", { exact: false })).toBeVisible();
+  await expect(page.locator(".tutor-feedback")).not.toContainText("14");
+  expect(bodies).toHaveLength(1);
+});
+
+test("a digit-letter misread remains editable and is never silently repaired from the active problem", async ({ page }) => {
+  await mockTranscription(page, [transcribed("7(b+2)=4b+2")]);
+  await page.goto("/study");
+  await draw(page);
+  await page.getByRole("button", { name: "Read handwriting", exact: true }).click();
+  const field = page.getByRole("textbox", { name: "What you wrote" });
+  await expect(field).toHaveValue("7(b+2)=4b+2");
+  await field.fill("7(6k+2)=42k+2"); // explicit student correction of transcription, not of mathematics
+  await page.getByRole("button", { name: "Confirm transcription", exact: true }).click();
+  await checkInPanel(page, "Ask for a hint");
+  await expect(page.getByText("Submitted:", { exact: false })).toContainText("7*(6*k+2)=42*k+2");
+  await expect(page.getByText("Recheck 7 × (2).", { exact: false })).toBeVisible();
+  await expect(page.locator(".tutor-feedback")).not.toContainText("14");
+});
 
 async function checkInPanel(page: Page, button: "Check work" | "Ask for a hint") {
   const open = page.getByRole("button", { name: "Open Newton" });
@@ -105,6 +151,23 @@ test("editing the whiteboard discards a pending transcription and ignores its la
   await draw(page, -40);
   await checkInPanel(page, "Check work");
   await expect(page.getByText("Your whiteboard hasn't been read yet.", { exact: false })).toBeVisible();
+});
+
+test("switching input source cancels a pending read and discards its late transcription", async ({ page }) => {
+  let release = () => {};
+  const gate = new Promise<void>((resolve) => { release = resolve; });
+  await mockTranscription(page, [transcribed("7(6k+2)=42k+2")], gate);
+  await page.goto("/study");
+  await draw(page);
+  await page.getByRole("button", { name: "Read handwriting", exact: true }).click();
+  await expect(page.getByText("Reading your handwriting", { exact: false })).toBeVisible();
+  await page.getByRole("radio", { name: "Structured input" }).check();
+  await page.getByRole("radio", { name: "Whiteboard", exact: true }).check();
+  release();
+  await expect(page.getByRole("button", { name: "Read handwriting", exact: true })).toBeEnabled();
+  await expect(page.getByRole("textbox", { name: "What you wrote" })).toHaveCount(0);
+  await checkInPanel(page, "Check work");
+  await expect(page.getByRole("heading", { name: "Not checked", exact: true })).toBeVisible();
 });
 
 test("ambiguous symbols must be resolved by the student; a standalone expansion is checked", async ({ page }) => {

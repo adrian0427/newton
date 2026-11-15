@@ -57,6 +57,14 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
 
   const worksheetChanged = changed;
 
+  function selectSource(next: "whiteboard" | "expression") {
+    revisions.invalidate();
+    downloads.clear(); setDownload(null); setMessage("");
+    reading.current?.abort(); reading.current = null;
+    setHandwriting(null); setReviewOpen(false);
+    setSource(next);
+  }
+
   useEffect(() => {
     if (!focusMode) return;
     function escape(event: KeyboardEvent) {
@@ -111,7 +119,7 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
     setHandwriting({ revisionId: requested, phase: "reading" });
     const current = () => alive.current && !controller.signal.aborted && revisions.current === requested;
     try {
-      const snapshot = await (board.current?.capture() ?? Promise.reject(new Error("The whiteboard is still loading. Please try again.")));
+      const snapshot = await (board.current?.capture({ forTranscription: true }) ?? Promise.reject(new Error("The whiteboard is still loading. Please try again.")));
       if (!current() || snapshot.revisionId !== requested) return;
       const result = await requestTranscription(snapshot, controller.signal);
       // Late responses for an older drawing are discarded, even if cancellation did not reach the server.
@@ -161,8 +169,8 @@ export default function StudentWorkspace({ developmentVoiceCapability }: { devel
       <section className="work-area" data-source={source} aria-label="Your working space">
 
         <div className="work-toolbar"><button className="small-button focus-toggle" type="button" aria-pressed={focusMode} onClick={() => { setFocusMode(!focusMode); setMobilePane("work"); }}>{focusMode ? "Exit focus" : "Focus mode"}</button><fieldset className="source-picker"><legend>Snapshot source</legend>
-          <label><input type="radio" name="source" value="whiteboard" checked={source === "whiteboard"} onChange={() => { revisions.invalidate(); downloads.clear(); setDownload(null); setMessage(""); setSource("whiteboard"); }} />Whiteboard</label>
-          <label><input type="radio" name="source" value="expression" checked={source === "expression"} onChange={() => { revisions.invalidate(); downloads.clear(); setDownload(null); setMessage(""); setSource("expression"); }} />Structured input</label>
+          <label><input type="radio" name="source" value="whiteboard" checked={source === "whiteboard"} onChange={() => selectSource("whiteboard")} />Whiteboard</label>
+          <label><input type="radio" name="source" value="expression" checked={source === "expression"} onChange={() => selectSource("expression")} />Structured input</label>
         </fieldset><button type="button" className="icon-button" aria-label="Clear local work" title="Clear local work" onClick={clear}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M20 7v5h-5" />

@@ -55,7 +55,7 @@ async function post(fetchImpl: typeof fetch, url: string, headers: Record<string
     throw new VisionError("upstream-unavailable", "The handwriting service is unavailable. Try again, or use Structured input.");
   }
   const text = await boundedText(response);
-  try { return JSON.parse(text); } catch { throw new VisionError("invalid-response", "Newton couldn't produce a plain transcription. Try again, or use Structured input."); }
+  try { return JSON.parse(text); } catch { throw new VisionError("invalid-response", "Newton couldn't produce a plain transcription. Try again, or use Structured input.", undefined, "provider-json"); }
 }
 
 async function boundedText(response: Response): Promise<string> {
@@ -78,11 +78,11 @@ async function boundedText(response: Response): Promise<string> {
 
 function tooLarge(response?: Response) {
   void response?.body?.cancel().catch(() => undefined);
-  return new VisionError("invalid-response", "Newton couldn't produce a plain transcription. Try again, or use Structured input.");
+  return new VisionError("invalid-response", "Newton couldn't produce a plain transcription. Try again, or use Structured input.", undefined, "provider-size");
 }
 
 function invalidShape() {
-  return new VisionError("invalid-response", "Newton couldn't produce a plain transcription. Try again, or use Structured input.");
+  return new VisionError("invalid-response", "Newton couldn't produce a plain transcription. Try again, or use Structured input.", undefined, "provider-shape");
 }
 
 /** Groq's OpenAI-compatible chat completions with image input. Reasoning is disabled to keep output to the transcription. */
@@ -101,6 +101,8 @@ function groqAdapter(apiKey: string, modelId: string, fetchImpl: typeof fetch): 
         ],
         temperature: 0, max_completion_tokens: MAX_OUTPUT_TOKENS, reasoning_effort: "none", stream: false,
       }, signal);
+      const finish = (payload as { choices?: { finish_reason?: unknown }[] })?.choices?.[0]?.finish_reason;
+      if (finish === "length") throw new VisionError("invalid-response", "Newton couldn't produce a plain transcription. Try again, or use Structured input.", undefined, "provider-truncated");
       const content = (payload as { choices?: { message?: { content?: unknown } }[] })?.choices?.[0]?.message?.content;
       if (typeof content !== "string") throw invalidShape();
       return content;

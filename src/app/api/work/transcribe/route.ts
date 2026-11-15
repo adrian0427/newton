@@ -3,6 +3,7 @@ import { isSameOrigin } from "@/lib/supabase/origin";
 import { readBoundedText, RequestBodyTooLargeError } from "@/lib/http/body";
 import { decodePngDataUrl, transcribeHandwriting, VisionError, MAX_IMAGE_BYTES } from "@/lib/vision/handwriting";
 import { takeTranscriptionAttempt } from "@/lib/vision/limits";
+import type { VisionFailureReason } from "@/lib/vision/errors";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -16,8 +17,10 @@ function respond(status: number, body: unknown, headers?: Headers, retryAfter?: 
   return Response.json(body, { status, headers: responseHeaders });
 }
 
-function failure(status: number, code: string, message: string, headers?: Headers, retryAfter?: number) {
-  return respond(status, { error: { code, message, retryable: status === 429 || status >= 500 } }, headers, retryAfter);
+function failure(status: number, code: string, message: string, headers?: Headers, retryAfter?: number, reason?: VisionFailureReason) {
+  return respond(status, { error: { code, message, retryable: status === 429 || status >= 500,
+    ...(process.env.NODE_ENV === "development" && reason ? { diagnostic: reason } : {}),
+  } }, headers, retryAfter);
 }
 
 const visionStatus = { "not-configured": 503, "rate-limited": 429, timeout: 504, cancelled: 499, "upstream-unavailable": 502, "invalid-response": 502 } as const;
@@ -52,7 +55,7 @@ export async function POST(request: Request) {
   } catch (error) {
     if (error instanceof BackendError) return failure(error.status, error.code, error.message, headers ?? error.headers);
     if (error instanceof VisionError) {
-      return failure(visionStatus[error.code], error.code === "not-configured" ? "vision-not-configured" : error.code, error.message, headers, error.retryAfterSeconds);
+      return failure(visionStatus[error.code], error.code === "not-configured" ? "vision-not-configured" : error.code, error.message, headers, error.retryAfterSeconds, error.reason);
     }
     return failure(502, "upstream-unavailable", "The handwriting service is unavailable. Try again, or use Structured input.", headers);
   }

@@ -2,6 +2,14 @@ import type { WorkSnapshot } from "@/types/tutoring";
 import { normalizeExpression } from "./expressions";
 
 export const MAX_TRANSCRIPTION_LENGTH = 200;
+
+/** Render original scene strokes at higher resolution, never resize a raster or
+ * change its shapes. Excalidraw includes scene padding in these dimensions. */
+export function handwritingExportDimensions(width: number, height: number) {
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) throw new Error("Invalid drawing dimensions.");
+  const scale = Math.min(2, 2048 / Math.max(width, height));
+  return { width: Math.max(1, Math.floor(width * scale)), height: Math.max(1, Math.floor(height * scale)), scale };
+}
 export type Transcription =
   | { revisionId: string; status: "transcribed" | "ambiguous"; text: string }
   | { revisionId: string; status: "unreadable" };

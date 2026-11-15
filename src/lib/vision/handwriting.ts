@@ -1,6 +1,6 @@
 import "server-only";
 import { selectVisionAdapter, type VisionEnvironment } from "./providers";
-import { VisionError } from "./errors";
+import { VisionError, type VisionFailureReason } from "./errors";
 
 export { VisionError } from "./errors";
 
@@ -35,29 +35,61 @@ export function decodePngDataUrl(value: unknown): Uint8Array | null {
   return new Uint8Array(bytes);
 }
 
-function invalidOutput(): VisionError {
-  return new VisionError("invalid-response", "Newton couldn't produce a plain transcription. Try again, or use Structured input.");
+function invalidOutput(reason: VisionFailureReason): VisionError {
+  return new VisionError("invalid-response", "Newton couldn't produce a plain transcription. Try again, or use Structured input.", undefined, reason);
+}
+
+/** Presentation-only normalization. Never extract a math substring from prose,
+ * insert an operator, join split numbers, or repair an incomplete expression. */
+function plainMath(text: string): string {
+  let math = text.trim();
+  const fence = /^```(?:math|latex|text)?\s*\n([\s\S]*?)\n```$/i.exec(math);
+  if (fence) math = fence[1].trim();
+  for (const [open, close] of [["$$", "$$"], ["$", "$"], ["\\[", "\\]"], ["\\(", "\\)"]]) {
+    if (math.startsWith(open) && math.endsWith(close) && math.length >= open.length + close.length) {
+      math = math.slice(open.length, -close.length).trim();
+      break;
+    }
+  }
+  // Accept only this equation-alignment environment, never general LaTeX/prose.
+  if (math.startsWith("\\begin{aligned}") && math.endsWith("\\end{aligned}")) {
+    math = math.slice("\\begin{aligned}".length, -"\\end{aligned}".length).replaceAll(/&(?=\s*=)/g, "");
+  }
+  math = math.replaceAll(/\\left(?=\s*\()/g, "").replaceAll(/\\right(?=\s*\))/g, "")
+    .replaceAll(/\\(?:times|cdot)(?![A-Za-z])/g, "*").replaceAll(/\\div(?![A-Za-z])/g, "/")
+    .replaceAll(/\\\\/g, "\n")
+    .replaceAll(/[\u2212\u2013\u2014]/g, "-").replaceAll(/[\u00d7\u00b7\u22c5]/g, "*").replaceAll("\u00f7", "/")
+    .replaceAll("\u00b2", "^2").replaceAll("\u00b3", "^3");
+  const lines = math.split(/[\r\n]+/).map((line) => line.trim()).filter(Boolean);
+  let joined = lines.shift() ?? "";
+  for (const line of lines) {
+    // A continuation needs an explicit existing operator at its boundary.
+    // In particular, `4` then `2k` must never become 42k or 4*2k.
+    if (!/[=+*/^-]$/.test(joined) && !/^[=+*/^-]/.test(line)) throw invalidOutput("model-math-format");
+    joined += line;
+  }
+  return joined.replaceAll(/\s+/g, " ").trim();
 }
 
 /** Model output is untrusted. Only a bounded status/text pair survives; any other field or prose is discarded. */
 export function parseTranscription(raw: unknown): HandwritingTranscription {
-  if (typeof raw !== "string" || raw.length > MAX_MODEL_OUTPUT) throw invalidOutput();
+  if (typeof raw !== "string" || raw.length > MAX_MODEL_OUTPUT) throw invalidOutput("model-size");
   const body = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
   let value: unknown;
   try { value = JSON.parse(body); } catch {
     const start = body.indexOf("{"), end = body.lastIndexOf("}");
-    if (start < 0 || end <= start) throw invalidOutput();
-    try { value = JSON.parse(body.slice(start, end + 1)); } catch { throw invalidOutput(); }
+    if (start < 0 || end <= start) throw invalidOutput("model-json");
+    try { value = JSON.parse(body.slice(start, end + 1)); } catch { throw invalidOutput("model-json"); }
   }
-  if (!value || typeof value !== "object" || Array.isArray(value)) throw invalidOutput();
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw invalidOutput("model-shape");
   const { status, text } = value as Record<string, unknown>;
   if (status === "unreadable") return { status: "unreadable" };
-  if (status !== "transcribed" || typeof text !== "string") throw invalidOutput();
-  const normalized = text.replaceAll(/[\u2212\u2013\u2014]/g, "-").replaceAll(/[\u00d7\u00b7\u22c5]/g, "*").replaceAll("\u00f7", "/")
-    .replaceAll("\u00b2", "^2").replaceAll("\u00b3", "^3").replaceAll(/\s+/g, " ").trim();
+  if (status !== "transcribed" || typeof text !== "string") throw invalidOutput("model-shape");
+  const normalized = plainMath(text);
   if (!normalized) return { status: "unreadable" };
   // Words (for example "should be 4x+12") indicate commentary rather than a transcription.
-  if (normalized.length > MAX_TRANSCRIPTION_LENGTH || /[^0-9A-Za-z .+\-*/^()=?]/.test(normalized) || /[A-Za-z]{3,}/.test(normalized)) throw invalidOutput();
+  if (normalized.length > MAX_TRANSCRIPTION_LENGTH || /[^0-9A-Za-z .+\-*/^()=?]/.test(normalized) || /[A-Za-z]{3,}/.test(normalized)
+    || (normalized.match(/=/g)?.length ?? 0) > 1) throw invalidOutput("model-math-format");
   return normalized.includes("?") ? { status: "ambiguous", text: normalized } : { status: "transcribed", text: normalized };
 }
 

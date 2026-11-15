@@ -87,3 +87,43 @@ it("returns ambiguous and unreadable results as distinct, non-error states", asy
   provider.mockResolvedValueOnce(groqReply('{"status":"unreadable"}'));
   expect(await (await POST(request(valid))).json()).toEqual({ transcription: { revisionId: valid.revisionId, status: "unreadable" } });
 });
+
+it.each([
+  ["provider-json", () => new Response("not-json", { status: 200 })],
+  ["provider-shape", () => Response.json({ choices: [] })],
+  ["provider-truncated", () => Response.json({ choices: [{ finish_reason: "length", message: { content: "PRIVATE" } }] })],
+  ["model-json", () => groqReply("PRIVATE explanatory prose")],
+  ["model-shape", () => groqReply('{"status":"transcribed","text":42}')],
+  ["model-math-format", () => groqReply('{"status":"transcribed","text":"PRIVATE commentary"}')],
+])("distinguishes HTTP-200 %s rejection with a fixed development-only diagnostic", async (diagnostic, reply) => {
+  vi.stubEnv("NODE_ENV", "development");
+  provider.mockImplementationOnce(async () => reply());
+  const response = await POST(request(valid));
+  expect(response.status).toBe(502);
+  const payload = await response.json();
+  expect(payload).toMatchObject({ error: { code: "invalid-response", diagnostic } });
+  expect(JSON.stringify(payload)).not.toContain("PRIVATE");
+  vi.stubEnv("NODE_ENV", "production");
+  provider.mockImplementationOnce(async () => reply());
+  const production = await (await POST(request(valid))).json();
+  expect(production.error).not.toHaveProperty("diagnostic");
+});
+
+it("distinguishes failed upstream HTTP from a rejected successful response", async () => {
+  vi.stubEnv("NODE_ENV", "development");
+  provider.mockResolvedValueOnce(new Response("PRIVATE", { status: 500 }));
+  const response = await POST(request(valid));
+  expect(response.status).toBe(502);
+  const payload = await response.json();
+  expect(payload.error.code).toBe("upstream-unavailable");
+  expect(payload.error).not.toHaveProperty("diagnostic");
+  expect(JSON.stringify(payload)).not.toContain("PRIVATE");
+});
+
+it("returns a faithful multiline equation from a successful provider response without grading or correcting it", async () => {
+  provider.mockResolvedValueOnce(groqReply(JSON.stringify({ status: "transcribed", text: "7(6k+2)\n=42k+2" })));
+  const response = await POST(request(valid));
+  expect(response.status).toBe(200);
+  expect(await response.json()).toEqual({ transcription: { revisionId: valid.revisionId, status: "transcribed", text: "7(6k+2)=42k+2" } });
+  expect(provider).toHaveBeenCalledOnce();
+});

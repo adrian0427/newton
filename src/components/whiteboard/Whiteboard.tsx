@@ -6,9 +6,10 @@ import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import type { WorkSnapshot } from "@/types/tutoring";
 import { useAppearance } from "../appearance/Appearance";
 import { contentSignature, pngContent, type WorkRevision } from "./snapshots";
+import { handwritingExportDimensions } from "./handwriting";
 import "@excalidraw/excalidraw/index.css";
 
-export type WhiteboardHandle = { capture(): Promise<WorkSnapshot>; clear(): void };
+export type WhiteboardHandle = { capture(options?: { forTranscription: boolean }): Promise<WorkSnapshot>; clear(): void };
 
 declare global { interface Window { EXCALIDRAW_ASSET_PATH: string } }
 if (typeof window !== "undefined") window.EXCALIDRAW_ASSET_PATH = "/vendor/excalidraw/";
@@ -49,7 +50,7 @@ export default function Whiteboard({ ref, revisions, onContentChange, onActivity
       api.current?.updateScene({ elements: [], captureUpdate: CaptureUpdateAction.IMMEDIATELY });
       signature.current = "[]";
     },
-    async capture() {
+    async capture(options) {
       const board = api.current;
       if (!board) throw new Error("The whiteboard is still loading.");
       const elements = structuredClone(board.getSceneElements());
@@ -61,7 +62,8 @@ export default function Whiteboard({ ref, revisions, onContentChange, onActivity
         appState: { exportBackground: true, viewBackgroundColor: "#ffffff", exportEmbedScene: false },
         mimeType: "image/png",
         exportPadding: 24,
-        maxWidthOrHeight: 2048,
+        // maxWidthOrHeight overrides getDimensions in the installed SDK.
+        ...(options?.forTranscription ? { getDimensions: handwritingExportDimensions } : { maxWidthOrHeight: 2048 }),
       })));
     },
   }), [revisions]);
