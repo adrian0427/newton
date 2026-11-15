@@ -9,6 +9,37 @@ import type { WorkSnapshot } from "@/types/tutoring";
 import { useAppearance } from "../appearance/Appearance";
 import { contentSignature, pngContent, type WorkRevision } from "./snapshots";
 import { deletePart, loadPart, savePart } from "./persistence";
+import { createPortal } from "react-dom";
+import { TOOL_ICONS, type ToolIcon } from "./board-tool-icons";
+
+/**
+ * Excalidraw's full tool bar, moved into the work toolbar. Each button clicks
+ * Excalidraw's own (hidden) tool input, so behavior such as the image picker
+ * and tool lock stays exactly Excalidraw's.
+ */
+const TOOLS = [
+  { id: "lock", label: "Keep selected tool active after drawing", shortcut: "Q", key: null },
+  "divider",
+  { id: "hand", label: "Hand (panning tool)", shortcut: "H", key: null },
+  { id: "selection", label: "Selection", shortcut: "V or 1", key: "1" },
+  { id: "rectangle", label: "Rectangle", shortcut: "R or 2", key: "2" },
+  { id: "diamond", label: "Diamond", shortcut: "D or 3", key: "3" },
+  { id: "ellipse", label: "Ellipse", shortcut: "O or 4", key: "4" },
+  { id: "arrow", label: "Arrow", shortcut: "A or 5", key: "5" },
+  { id: "line", label: "Line", shortcut: "L or 6", key: "6" },
+  { id: "freedraw", label: "Draw", shortcut: "P or 7", key: "7" },
+  { id: "text", label: "Text", shortcut: "T or 8", key: "8" },
+  { id: "image", label: "Insert image", shortcut: "9", key: "9" },
+  { id: "eraser", label: "Eraser", shortcut: "E or 0", key: "0" },
+] as const;
+
+const STYLES_KEY = "newton.board-styles.v1";
+const camel = (name: string) => name.replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase());
+function Icon({ icon }: { icon: ToolIcon }) {
+  const attrs = Object.fromEntries(Object.entries(icon.attrs).map(([name, value]) => [camel(name), value]));
+  // Static markup copied from Excalidraw's icons in board-tool-icons.ts; never user data.
+  return <svg aria-hidden="true" focusable="false" viewBox={icon.viewBox} {...attrs} dangerouslySetInnerHTML={{ __html: icon.body }} />;
+}
 import "@excalidraw/excalidraw/index.css";
 
 export type WhiteboardHandle = { capture(): Promise<WorkSnapshot>; clear(): void };
@@ -24,8 +55,10 @@ function loadBoard(storageScope?: string) {
   }));
 }
 
-export default function Whiteboard({ storageScope, ref, revisions, onContentChange, onActivityChange, onCapture, capturing, captureDisabled }: {
+export default function Whiteboard({ storageScope, toolsSlot = null, ref, revisions, onContentChange, onActivityChange, onCapture, capturing, captureDisabled }: {
   storageScope?: string;
+  /** Element in the work toolbar where the drawing tools render. */
+  toolsSlot?: HTMLElement | null;
   ref: Ref<WhiteboardHandle>;
   revisions: WorkRevision;
   onCapture(): void;
@@ -45,7 +78,17 @@ export default function Whiteboard({ storageScope, ref, revisions, onContentChan
     return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
   }, [initialData]);
   const [settings, setSettings] = useState(false);
-  const [more, setMore] = useState(false);
+  const boardRoot = useRef<HTMLDivElement>(null);
+  const [toolLocked, setToolLocked] = useState(false);
+  // Excalidraw's Stroke / Background / ... card. Remembered on this device; client-only component.
+  const [stylesHidden, setStylesHidden] = useState(() => { try { return window.localStorage.getItem(STYLES_KEY) === "hidden"; } catch { return false; } });
+  function toggleStyles() {
+    const next = !stylesHidden;
+    setStylesHidden(next);
+    try { if (next) window.localStorage.setItem(STYLES_KEY, "hidden"); else window.localStorage.removeItem(STYLES_KEY); } catch { /* this page only */ }
+  }
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeTool, setActiveTool] = useState<string>("freedraw");
   const [stroke, setStroke] = useState("#39352f");
   const [width, setWidth] = useState(1);
   const [zoom, setZoom] = useState(1);
@@ -84,11 +127,25 @@ export default function Whiteboard({ storageScope, ref, revisions, onContentChan
     },
   }), [revisions, storageScope]);
 
-  return <div className={`board-canvas ${more ? "show-extra-tools" : "compact-tools"}`} aria-label="Student whiteboard" onPointerUp={() => onActivityChange(false)} onPointerCancel={() => onActivityChange(false)} onBlur={() => onActivityChange(false)}>
+  const tools = <div className="board-tools" role="toolbar" aria-label="Drawing tools">
+    {TOOLS.map((tool, index) => tool === "divider" ? <span key={`divider-${index}`} className="board-tool-divider" aria-hidden="true" /> : <button key={tool.id} type="button" className="board-tool"
+      aria-label={tool.label} title={`${tool.label} — ${tool.shortcut}`} aria-pressed={tool.id === "lock" ? toolLocked : activeTool === tool.id}
+      onClick={() => boardRoot.current?.querySelector<HTMLInputElement>(`.excalidraw [data-testid="toolbar-${tool.id}"]`)?.click()}>
+      <Icon icon={TOOL_ICONS[tool.id]} />{tool.key && <span className="board-tool-key" aria-hidden="true">{tool.key}</span>}
+    </button>)}
+  </div>;
+
+  return <div ref={boardRoot} className="board-canvas compact-tools" data-styles={stylesHidden ? "hidden" : "shown"} aria-label="Student whiteboard" onPointerUp={() => onActivityChange(false)} onPointerCancel={() => onActivityChange(false)} onBlur={() => onActivityChange(false)}>
+    {toolsSlot ? createPortal(tools, toolsSlot) : null}
     <div className="board-options" aria-label="Drawing options">
+      {/* Opens Excalidraw's main menu; data-prevent-outside-click keeps its outside-click handler from re-closing it. */}
+      <button className="small-button board-menu-button" type="button" aria-label="Whiteboard menu" aria-haspopup="menu" aria-expanded={menuOpen} data-prevent-outside-click="true"
+        onClick={() => api.current?.updateScene({ appState: { openMenu: api.current.getAppState().openMenu === "canvas" ? null : "canvas" } })}>
+        <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 16 16"><path d="M2.5 4h11M2.5 8h11M2.5 12h11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+      </button>
       <button className="small-button capture-button" type="button" disabled={captureDisabled} onClick={onCapture}>{capturing ? "Capturing..." : "Capture snapshot"}</button>
-      <button ref={settingsButton} className="small-button" type="button" aria-expanded={settings} aria-controls="pen-settings" onClick={() => { setSettings(!settings); setMore(false); }}>Pen settings</button>
-      <button className="small-button" type="button" aria-expanded={more} onClick={() => { setMore(!more); setSettings(false); }}>{more ? "Fewer tools" : "More tools"}</button>
+      <button ref={settingsButton} className="small-button" type="button" aria-expanded={settings} aria-controls="pen-settings" onClick={() => setSettings(!settings)}>Pen settings</button>
+      <button className="small-button" type="button" aria-pressed={stylesHidden} title="Show or hide the Stroke, Background, and other style options for the selected shape" onClick={toggleStyles}>{stylesHidden ? "Show styles" : "Hide styles"}</button>
       <button className="small-button library-toggle" type="button" onClick={() => api.current?.toggleSidebar({ name: "default", tab: "library" })}>Library</button>
     </div>
     {settings && <section className="pen-settings" id="pen-settings" role="dialog" aria-label="Pen settings">
@@ -106,6 +163,9 @@ export default function Whiteboard({ storageScope, ref, revisions, onContentChan
       initialData={initialData}
       onChange={(elements, state, files) => {
         setZoom(state.zoom.value);
+        setMenuOpen(state.openMenu === "canvas");
+        setActiveTool(state.activeTool.type);
+        setToolLocked(state.activeTool.locked);
         const next = contentSignature(elements);
         if (signature.current === next || !restored.current) { signature.current = next; return; }
         signature.current = next;

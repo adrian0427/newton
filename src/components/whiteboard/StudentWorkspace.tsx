@@ -21,6 +21,7 @@ export default function StudentWorkspace({ developmentVoiceCapability, storageSc
   const alive = useRef(true);
   const split = useRef<HTMLDivElement>(null);
   const [focusMode, setFocusMode] = useState(false);
+  const [toolsSlot, setToolsSlot] = useState<HTMLDivElement | null>(null);
   const [splitWidth, setSplitWidth] = useState(44);
   const [mobilePane, setMobilePane] = useState<"worksheet" | "work">("worksheet");
   const [source, setSource] = useState<"whiteboard" | "expression">("whiteboard");
@@ -131,7 +132,9 @@ export default function StudentWorkspace({ developmentVoiceCapability, storageSc
         }}><span /></div>
       <section className="work-area" data-source={source} aria-label="Your working space">
 
-        <div className="work-toolbar"><button className="small-button focus-toggle" type="button" aria-pressed={focusMode} onClick={() => { setFocusMode(!focusMode); setMobilePane("work"); }}>{focusMode ? "Exit focus" : "Focus mode"}</button><fieldset className="source-picker"><legend>Snapshot source</legend>
+        <div className="work-toolbar"><button className="small-button focus-toggle" type="button" aria-pressed={focusMode} onClick={() => { setFocusMode(!focusMode); setMobilePane("work"); }}>{focusMode ? "Exit focus" : "Focus mode"}</button>
+        {/* The whiteboard renders its drawing tools here, between Focus mode and the source picker. */}
+        <div ref={setToolsSlot} className="board-tools-slot" hidden={source !== "whiteboard"} /><fieldset className="source-picker"><legend>Snapshot source</legend>
           <label><input type="radio" name="source" value="whiteboard" checked={source === "whiteboard"} onChange={() => { revisions.invalidate(); downloads.clear(); setDownload(null); setMessage(""); setSource("whiteboard"); }} />Whiteboard</label>
           <label><input type="radio" name="source" value="expression" checked={source === "expression"} onChange={() => { revisions.invalidate(); downloads.clear(); setDownload(null); setMessage(""); setSource("expression"); }} />Structured input</label>
         </fieldset><button type="button" className="icon-button" aria-label="Clear local work" title="Clear local work" onClick={clear}>
@@ -140,7 +143,7 @@ export default function StudentWorkspace({ developmentVoiceCapability, storageSc
             <path d="M19.3 12a7.5 7.5 0 1 0-1.8 5.3M20 12l-3-3" />
           </svg>
         </button></div>
-        <div className="whiteboard-frame" hidden={source !== "whiteboard"}><WorkspaceBoundary><Whiteboard storageScope={storageScope} ref={board} revisions={revisions} onContentChange={changed} onActivityChange={setEditing} onCapture={capture} capturing={capturing} captureDisabled={capturing || editing} /></WorkspaceBoundary></div>
+        <div className="whiteboard-frame" hidden={source !== "whiteboard"}><WorkspaceBoundary><Whiteboard storageScope={storageScope} toolsSlot={toolsSlot} ref={board} revisions={revisions} onContentChange={changed} onActivityChange={setEditing} onCapture={capture} capturing={capturing} captureDisabled={capturing || editing} /></WorkspaceBoundary></div>
         <div className="expression-area" hidden={source !== "expression"}>
           <div className="expression-actions"><button className="small-button capture-button" type="button" disabled={capturing} onClick={capture}>{capturing ? "Capturing..." : "Capture snapshot"}</button></div>
           <h3>Your next step</h3><MathInput key={inputKey} value={expression} onChange={(value, error) => { changed(); setExpression(value); setInputError(error ?? ""); }} onActivityChange={setEditing} />

@@ -181,7 +181,7 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .pen-settings label { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 11px; margin-top: 14px; }
 .pen-settings input[type="range"] { width: 100%; accent-color: var(--paper-accent); }
 .pen-settings input[type="color"] { width: 38px; height: 28px; border: 0; padding: 0; background: none; cursor: pointer; }
-.compact-tools .selected-shape-actions, .compact-tools .excalidraw button[aria-label="Edit"], .compact-tools .excalidraw button[title="Edit"] { display: none !important; }
+.compact-tools .excalidraw button[aria-label="Edit"], .compact-tools .excalidraw button[title="Edit"] { display: none !important; }
 .compact-tools .App-toolbar label.ToolIcon:not(:has([data-testid="toolbar-freedraw"], [data-testid="toolbar-eraser"], [data-testid="toolbar-selection"])) { display: none; }
 .compact-tools .App-toolbar button[aria-label="More tools"] { display: none; }
 .board-canvas .excalidraw .zoom-actions, .board-canvas .excalidraw .undo-redo-buttons { --lg-button-size: 26px; --lg-icon-size: 13px; }
@@ -211,11 +211,51 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .board-options .library-toggle { min-width: 52px; }
 @media (max-width: 760px) { .board-options { gap: 4px; padding: 10px 10px 0; } .board-options .small-button { padding: 4px 6px; font-size: 10px; } }
 
-.workspace-account { padding: 0.75rem 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border, #ccc); overflow-wrap: anywhere; }
-.workspace-account p { margin: 0.5rem 0; }
-.workspace-account .workspace-button { display: inline-block; margin: 0.25rem 0.5rem 0.25rem 0; }
+/* One compact row above the workspace. flex-shrink: 0 so the shell's overflow never clips it. */
+.workspace-account { flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; min-height: 48px; padding: 8px 24px; border-bottom: 1px solid var(--paper-line); background: var(--paper-shell); overflow-wrap: anywhere; }
+.workspace-account p { margin: 0; font-size: 12px; line-height: 1.5; color: var(--paper-muted); }
+.workspace-account p[role="status"] { flex: 1 1 260px; }
+.workspace-account p[role="alert"] { color: var(--paper-error); }
+.workspace-account .workspace-button { display: inline-flex; flex-shrink: 0; gap: 0; min-height: 32px; margin: 0; padding: 6px 14px; font-size: 12px; text-decoration: none; white-space: nowrap; }
+@media (max-width: 760px) { .workspace-account { padding: 8px 16px; } }
 .settings-panel { max-height: calc(100dvh - 88px); overflow-y: auto; }
 .settings-email { overflow-wrap: anywhere; font-size: 14px; }
 .settings-account-action { border-top: 1px solid var(--paper-line); padding-top: 14px; }
 .settings-sign-out, .text-button { font: inherit; color: var(--paper-text); background: transparent; border: 1px solid var(--paper-line); border-radius: 6px; padding: 10px 14px; cursor: pointer; }
 .settings-sign-out:disabled, .text-button:disabled { opacity: 0.6; cursor: wait; }
+
+/* Main menu button sits in the whiteboard's top-left corner, in the options row. Excalidraw clips its own
+   UI to the drawing area, so its trigger is hidden and the menu column is raised so the dropdown opens just
+   under our button. --board-options-height matches .board-options: 12px top padding + 28px buttons. */
+.board-canvas { --board-options-height: 40px; }
+@media (max-width: 760px) { .board-canvas { --board-options-height: 38px; } }
+.board-menu-button { display: inline-grid; place-items: center; width: 32px; min-height: 28px; margin-right: auto; padding: 0; color: var(--paper-text); }
+.board-menu-button[aria-expanded="true"] { background: var(--paper-selected); }
+.board-canvas .excalidraw .main-menu-trigger { visibility: hidden; }
+.board-canvas .excalidraw .App-menu_top__left { transform: translateY(calc(-1 * var(--board-options-height, 40px))); }
+
+/* Drawing tools live in the work toolbar, right of Focus mode and left of the source picker.
+   Excalidraw's own tool bar only appears with More tools. Tools stay visible in focus mode. */
+.work-toolbar .focus-toggle { margin-right: 0; }
+.board-tools-slot { display: flex; align-items: center; margin-right: auto; }
+.board-tools-slot[hidden] { display: none; }
+.workspace-split[data-focus="true"] .work-toolbar > .board-tools-slot:not([hidden]) { display: flex; }
+.workspace-split[data-focus="true"] .work-toolbar .focus-toggle { margin-right: 0; }
+/* Matches Excalidraw's own tool bar island (36px tools, 8px radius, corner shortcut, dividers). */
+/* When the row is too narrow, the source picker wraps to a second line rather than hiding tools. */
+.work-toolbar { flex-wrap: wrap; row-gap: 2px; }
+.board-tools-slot { flex-shrink: 0; padding: 4px 2px; }
+.board-tools { display: flex; flex-shrink: 0; align-items: center; padding: 4px; border-radius: 8px; background: var(--paper-shell); box-shadow: 0 0 .93px #0000002b, 0 0 3.13px #00000014, 0 7px 14px #0000000d; }
+.board-tool { position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--paper-text); cursor: pointer; }
+.board-tool svg { width: 20px; height: 20px; }
+.board-tool:hover { background: var(--paper-reference); }
+.board-tool[aria-pressed="true"] { background: var(--paper-selected); }
+.board-tool:focus-visible { outline: 2px solid var(--paper-accent); outline-offset: -2px; }
+.board-tool-key { position: absolute; right: 4px; bottom: 4px; font-size: 10px; line-height: 1; color: var(--paper-muted); opacity: .75; }
+.board-tool-divider { flex-shrink: 0; width: 1px; height: 24px; margin: 0 4px; background: var(--paper-selected); }
+/* "Hide styles" removes Excalidraw's Stroke / Background / ... card for selected shapes. */
+.board-canvas[data-styles="hidden"] .excalidraw .selected-shape-actions { display: none !important; }
+/* Hide Excalidraw's own shape tools (desktop section, mobile island); its undo/redo footer stays. */
+.board-canvas .excalidraw .shapes-section, .board-canvas .excalidraw .App-toolbar--mobile { display: none !important; }
+/* Phones: the tools get their own row and scroll sideways if wider than the screen. */
+@media (max-width: 760px) { .board-tools-slot { flex: 1 1 100%; order: 3; min-width: 0; overflow-x: auto; scrollbar-width: thin; } }

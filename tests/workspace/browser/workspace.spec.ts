@@ -76,8 +76,9 @@ test("real whiteboard draw, PNG export, undo, redo and erase", async ({ page }) 
   await page.getByRole("button", { name: "Capture snapshot" }).click();
   await expect(page.getByRole("img", { name: "Captured student whiteboard" })).toBeVisible();
   await page.getByRole("button", { name: "Dismiss snapshot" }).click();
-  await page.getByRole("radio", { name: "Eraser", exact: true }).locator("..").click();
-  await expect(page.getByRole("radio", { name: "Eraser", exact: true })).toBeChecked();
+  const eraser = page.getByRole("toolbar", { name: "Drawing tools" }).getByRole("button", { name: "Eraser" });
+  await eraser.click();
+  await expect(eraser).toHaveAttribute("aria-pressed", "true");
   await canvas.scrollIntoViewIfNeeded();
   const eraseBox = (await canvas.boundingBox())!;
   await page.mouse.move(eraseBox.x + eraseBox.width * 0.6 + 30, eraseBox.y + 260);

@@ -13,9 +13,9 @@ test("compact tools and focus mode keep work intact and controls recoverable", a
   await page.getByRole("slider", { name: "Stroke width" }).fill("3");
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog", { name: "Pen settings" })).toHaveCount(0);
-  await page.getByRole("button", { name: "More tools", exact: true }).click();
-  await expect(page.getByRole("radio", { name: "Rectangle", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Fewer tools" }).click();
+  // Every tool is in the work toolbar; there is no More tools toggle.
+  await expect(page.getByRole("button", { name: "More tools", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("toolbar", { name: "Drawing tools" }).getByRole("button", { name: "Rectangle" })).toBeVisible();
   await page.getByRole("radio", { name: "Structured input" }).check();
   await page.locator("math-field").click();
   await expect(page.locator("math-field")).toBeFocused();
