@@ -20,6 +20,8 @@ describe("Newton indicator presentation", () => {
       }
     }
     if (indicator === "idle") expect(html).not.toContain("noticed an error");
-    else expect(html).toContain('aria-describedby="newton-indicator-status"');
+    else expect(html).toContain('aria-describedby="newton-move-hint newton-indicator-status"');
+    // Server render always starts docked at the edge; a saved position applies after hydration.
+    expect(html).toContain('data-mode="dock"');
   });
 });

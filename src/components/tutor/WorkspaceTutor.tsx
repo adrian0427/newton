@@ -8,6 +8,7 @@ import { submittedContext, type TutoringContext } from "@/lib/ai/tutoring-contex
 import TutorControls from "./TutorControls";
 import { useWorkspaceAccount } from "../whiteboard/workspace-account-context";
 import TutorLauncher from "./TutorLauncher";
+import { shouldCelebrate } from "./celebration";
 
 export type TutorWork = { revisionId: string; source: "whiteboard" | "expression"; expression: string; inputError: string };
 
@@ -26,6 +27,9 @@ export default function WorkspaceTutor({ work, developmentVoiceCapability }: { w
   const workKey = JSON.stringify([work.revisionId, work.source, work.expression, work.inputError]);
   const [feedback, setFeedback] = useState<{ key: string; result: DistributionCheck; showHint: boolean; delivery: string } | null>(null);
   const spokenHint = useRef<string | null>(null);
+  // Decoration for a confirmed correct check; rechecking the same revision does not replay it.
+  const celebratedKey = useRef<string | null>(null);
+  const [celebration, setCelebration] = useState<string | null>(null);
   const current = feedback?.key === workKey ? feedback : null;
   const context = useMemo<TutoringContext>(() => current && work.source === "expression" && !work.inputError
     ? submittedContext(work.revisionId, current.result)
@@ -66,6 +70,10 @@ export default function WorkspaceTutor({ work, developmentVoiceCapability }: { w
     const delivery = session.updateContext(nextContext);
     const next = { key: workKey, result, showHint, delivery: "" };
     setFeedback(next);
+    if (shouldCelebrate(result, showHint, workKey, celebratedKey.current)) {
+      celebratedKey.current = workKey;
+      setCelebration(workKey);
+    }
     if (!showHint || result.status === "unsupported" || !voiceAvailable || !["listening", "interrupted"].includes(session.getState())) return;
     spokenHint.current = workKey;
     // The effect may install the same context; equality in the session coalesces it.
@@ -93,7 +101,7 @@ export default function WorkspaceTutor({ work, developmentVoiceCapability }: { w
     void session.start({ sessionId }).catch(() => {});
   }
 
-  return <TutorLauncher indicator={voice.state === "error" ? "error" : current?.result.status === "incorrect" ? "question" : "idle"}
+  return <TutorLauncher celebration={celebration} indicator={voice.state === "error" ? "error" : current?.result.status === "incorrect" ? "question" : "idle"}
     controls={<TutorControls voice={voice} voiceAvailable={voiceAvailable} feedback={current}
       onStart={startVoice}
       onStop={() => { spokenHint.current = null; void session.stop(); }} onInterrupt={() => session.interrupt()}
