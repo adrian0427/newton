@@ -5,6 +5,8 @@ import { createSdkVoiceConnection } from "@/lib/ai/sdk-voice-connection";
 import { PRACTICE_EXPRESSION, checkDistribution, distributionVoiceMessage, unsupportedWork, type DistributionCheck } from "@/lib/math/check-distribution";
 import { submittedContext, type TutoringContext } from "@/lib/ai/tutoring-context";
 import TutorControls from "./TutorControls";
+import { createTutoringMemory, emptyTutoringMemory } from "@/lib/learning/tutoring-memory";
+import LearningMemoryStatus from "./LearningMemoryStatus";
 import { useWorkspaceAccount } from "../whiteboard/workspace-account-context";
 import TutorLauncher from "./TutorLauncher";
 import { shouldCelebrate } from "./celebration";
@@ -15,7 +17,14 @@ export default function WorkspaceTutor({ work, developmentVoiceCapability }: { w
   const account = useWorkspaceAccount();
   const accountState = useSyncExternalStore(account?.subscribe ?? noSubscribe, account?.getSnapshot ?? noAccount, account?.getSnapshot ?? noAccount);
   const harness = process.env.NODE_ENV === "development" && !!developmentVoiceCapability;
-  const voiceAvailable = process.env.NODE_ENV === "development" && (harness || (!!accountState?.sessionId && !accountState.busy && !accountState.error));
+  const ownedSessionId = !harness && accountState?.status === "signed-in" && accountState.busy !== "logout" ? accountState.sessionId : null;
+  const [memory] = useState(() => createTutoringMemory());
+  const memorySnapshot = useSyncExternalStore(memory.subscribe, memory.getSnapshot, memory.getSnapshot);
+  const memoryState = memorySnapshot.sessionId === ownedSessionId ? memorySnapshot : emptyTutoringMemory(ownedSessionId);
+  useLayoutEffect(() => { void memory.open(ownedSessionId); }, [memory, ownedSessionId]);
+  useEffect(() => () => memory.dispose(), [memory]);
+  const historySettled = memoryState.history.status === "ready" || memoryState.history.status === "failed";
+  const voiceAvailable = process.env.NODE_ENV === "development" && (harness || (!!ownedSessionId && historySettled && !accountState?.busy && !accountState?.error));
   const [session] = useState(() => createVoiceSession({
     createConnection: () => createSdkVoiceConnection(),
     credentialProvider: harness ? createCredentialProvider({ "X-Newton-Voice-Dev": developmentVoiceCapability! }) : undefined,
@@ -37,12 +46,15 @@ export default function WorkspaceTutor({ work, developmentVoiceCapability }: { w
     ? submittedContext(work.revisionId, current.result, submissionSource)
     : { revisionId: work.revisionId, problem, submission: null },
   [current, checkable, submissionSource, work.revisionId, work.inputError, problem]);
+  const learningHistory = memoryState.history.status === "ready" ? memoryState.history.summary : "";
+  const rememberedContext = useMemo<TutoringContext>(() => learningHistory ? { ...context, learningHistory } : context, [context, learningHistory]);
+  useLayoutEffect(() => { memory.setWork(workKey); }, [memory, workKey, ownedSessionId]);
   const hintGeneration = useRef(0);
   useLayoutEffect(() => { hintGeneration.current++; spokenHint.current = null; }, [workKey]);
   useLayoutEffect(() => {
     // Draft edits invalidate evidence; only Check work / Ask for a hint submit it.
-    void session.updateContext(context);
-  }, [session, context]);
+    void session.updateContext(rememberedContext);
+  }, [session, rememberedContext]);
   useEffect(() => {
     const stop = () => { void session.stop(); };
     window.addEventListener("pagehide", stop);
@@ -67,9 +79,12 @@ export default function WorkspaceTutor({ work, developmentVoiceCapability }: { w
       ? submittedContext(work.revisionId, result, submissionSource)
       : { revisionId: work.revisionId, problem, submission: null };
     // Install context silently even for Check work, so microphone requests know it.
-    const delivery = session.updateContext(nextContext);
+    const delivery = session.updateContext(learningHistory ? { ...nextContext, learningHistory } : nextContext);
     const next = { key: workKey, result, showHint, delivery: "" };
     setFeedback(next);
+    if (ownedSessionId && !accountState?.busy && !accountState?.error && checkable && !work.inputError && result.status !== "unsupported") {
+      void memory.save({ sessionId: ownedSessionId, sourceRevisionId: work.revisionId, source: submissionSource, problem, expression: work.expression }, workKey);
+    } else if (ownedSessionId && result.status === "unsupported") { memory.skip(workKey); }
     if (shouldCelebrate(result, showHint, workKey, celebratedKey.current)) {
       celebratedKey.current = workKey;
       setCelebration(workKey);
@@ -97,12 +112,15 @@ export default function WorkspaceTutor({ work, developmentVoiceCapability }: { w
     const currentAccount = account?.getSnapshot();
     const sessionId = harness ? "local-study-test" : currentAccount?.sessionId;
     if (!sessionId || (!harness && (currentAccount?.busy || currentAccount?.error))) return;
-    void session.updateContext(context);
+    void session.updateContext(rememberedContext);
     void session.start({ sessionId }).catch(() => {});
   }
 
   return <TutorLauncher celebration={celebration} indicator={voice.state === "error" ? "error" : current?.result.status === "incorrect" ? "question" : "idle"}
     controls={<TutorControls voice={voice} voiceAvailable={voiceAvailable} feedback={current} problem={problem} onProblemChange={setProblem}
+      memoryControls={!harness ? <LearningMemoryStatus active={!!ownedSessionId} history={memoryState.history}
+        save={memoryState.save.key === workKey ? memoryState.save : {key:workKey,status:"idle"}}
+        onRetrySave={() => check(false)} onRetryHistory={() => { void memory.reload(); }} /> : undefined}
       onStart={startVoice}
       onStop={() => { spokenHint.current = null; void session.stop(); }} onInterrupt={() => session.interrupt()}
       onCheck={() => check(false)} onHint={() => check(true)} />} />;

@@ -131,6 +131,28 @@ it("verifies hosted Auth, cookie routes, writer retries, cross-session retrieval
     const persisted = await browsers[0].get(historyPath); assert.equal(persisted.status(), 200); noStore(persisted);
     check((await persisted.json()).events.some((event: { id: string }) => event.id === saved.id), "History did not persist across sign-out/in and a new session.");
     console.log("PASS: sign-out/in, a later study session and persisted cross-session retrieval.");
+    // C2: exercise the actual server checker + event writer, not a direct helper call.
+    const submitted = { sessionId: laterId, sourceRevisionId: randomUUID(), source: "confirmed_handwriting", problem: "7(6k+2)", expression: "7(6k+2)=42k+2" };
+    const analysis = await browsers[0].post("/api/work/analyze", { data: submitted });
+    assert.equal(analysis.status(), 200); noStore(analysis);
+    const checked = await analysis.json();
+    assert.equal(checked.analysis.status, "incorrect"); assert.equal(checked.memory.status, "saved");
+    const repeated = await browsers[0].post("/api/work/analyze", { data: submitted });
+    assert.equal((await repeated.json()).memory.eventId, checked.memory.eventId, "Repeated submitted revision created another observation");
+    const foreignAnalysis = await browsers[1].post("/api/work/analyze", { data: submitted });
+    assert.equal(foreignAnalysis.status(), 404); noStore(foreignAnalysis);
+    const forged = await browsers[0].post("/api/work/analyze", { data: { ...submitted, outcome: "self-corrected" } });
+    assert.equal(forged.status(), 400);
+    const unsupported = await browsers[0].post("/api/work/analyze", { data: { ...submitted, sourceRevisionId: randomUUID(), expression: "x^2" } });
+    assert.equal((await unsupported.json()).memory.status, "not-saved");
+    const c2HistoryA = await (await browsers[0].get(historyPath)).json();
+    const c2HistoryB = await (await browsers[1].get(historyPath)).json();
+    check(c2HistoryA.events.some((event: {id:string}) => event.id === checked.memory.eventId), "Server-checked observation missing from own context");
+    check(!c2HistoryB.events.some((event: {id:string}) => event.id === checked.memory.eventId), "Server-checked observation exposed to another account");
+    assert.equal((await browsers[0].post("/api/study-sessions")).status(), 201);
+    const c2LaterHistory = await (await browsers[0].get(historyPath)).json();
+    check(c2LaterHistory.events.some((event: {id:string}) => event.id === checked.memory.eventId), "Server-checked observation missing in next session");
+    console.log(`PASS: C2 server validation, idempotent event ${checked.memory.eventId}, cross-session retrieval, and foreign-session denial. No vision/voice calls.`);
     console.log(`Synthetic fixture cleanup reference: event ${saved.id}; sessions ${sessions.join(", ")}. Keep history append-only; administrative cleanup is separate.`);
   } finally {
     for (const browser of browsers) {

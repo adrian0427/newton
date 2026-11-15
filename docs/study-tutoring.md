@@ -136,3 +136,48 @@ Device-local persisted drawings restore before recognition and remain unchanged 
 Final integration validation on 2026-11-14: ESLint, TypeScript, all 530 unit tests (34 files), and the credential-free webpack production build passed. The complete Chromium desktop/360px suite passed all 86 cases in a serial run, including the owned-session and isolated harness voice cases. Additional desktop/iPad WebKit checks passed 38 cases using fresh persistent profiles; two opt-in voice cases were skipped there and covered in Chromium. WebKit checks reused the committed scenarios through a temporary local persistent-profile fixture. Earlier parallel runs had loading/audio-drain timeouts; final serial validation had no failures. These are mocked provider/auth/transport checks, not post-merge live model, acoustic or physical iPad acceptance. No live provider calls were made.
 
 This final validation includes main through PR #17 (`b7766c2`), preserving draggable/dockable Newton, gaze, reduced-motion celebrations and confirmed-handwriting checking together. The explicit correct Check work path celebrates once for a confirmed handwritten submission; unread drafts and hint requests do not.
+
+## C2: checked observations and later-session memory
+
+The ordinary signed-in workspace now loads `GET /api/learning-context` after a
+real study session starts. Empty history and failed loading are distinct. A
+failed load offers retry and allows tutoring without prior observations. The
+latest-ten/2,000-character server bounds remain unchanged; no model call is
+needed to summarize history. History is cleared on session/account changes and
+logout, and stale responses cannot populate a later account's context.
+
+Check work or Ask for a hint still immediately uses A's bounded local checker.
+For supported typed or explicitly confirmed handwriting, the account-based path
+also sends `{sessionId, sourceRevisionId, source, problem, expression}` to
+`POST /api/work/analyze`. The server verifies login and session ownership,
+validates a strict input allowlist, and reruns that same exact checker. No
+posted correctness, owner, outcome, evidence, image, or confidence is accepted.
+
+Supported missed-term patterns become `misconception-observed`; other supported
+checks become `practiced`, with factual evidence distinguishing equivalent and
+non-equivalent expansions. The evidence contains the selected mathematical
+problem and a short derived finding, not the submitted step, image, audio or
+conversation. Unsupported work writes nothing. No mastery, self-correction or
+guidance-caused correction is inferred. The existing append-only writer and
+uniqueness constraints coalesce retries; conflicts preserve the old observation.
+
+The panel reports saving, confirmed success, unsupported work or failure and
+provides explicit retries when appropriate. A failed save never discards the
+student's work or local feedback. Edits/session changes invalidate pending UI
+responses; a valid already-submitted observation can finish server-side after
+browser cancellation. Repeating a changed observation for the same immutable
+revision may conflict; edit the work to create a new revision before saving it.
+
+Previously loaded history is included in the existing revision-aware tutoring
+context, quoted as untrusted advisory data. It does not replace current work or
+supply instructions, capability claims, grades or ability ratings. The SDK's
+normal prompt/update path carries it; provider configuration and deployed voice
+restrictions are unchanged. The local capability harness remains isolated and
+never creates or saves account observations.
+
+This checks the student's submitted text, not its image provenance. Confirmation
+is an explicit UI action, but an authenticated caller could submit other text;
+the route does not attest that a camera/image/model actually produced it. Direct
+self-owned Supabase writes also remain possible under existing RLS. Memory is
+advisory, not tamper-proof learning evidence. No schema, service-role access,
+provider dependency or raw-work storage was added.
