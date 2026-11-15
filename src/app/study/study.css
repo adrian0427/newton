@@ -111,7 +111,7 @@ button:disabled { cursor: not-allowed; opacity: .5; }
   .toolbar-actions .small-button { border: 0; background: none; padding: 5px; font-size: 10px; }
   .work-toolbar { padding: 4px 12px; gap: 7px; }
   .source-picker { gap: 10px; }
-  .capture-popover { right: 16px; max-height: 60%; }
+  .capture-popover { right: 64px; max-height: 60%; }
   .tutor-launcher { right: 0; top: 50%; bottom: auto; width: 56px; height: 88px; }
   .tutor-popover { right: 62px; top: 50%; bottom: auto; transform: translateY(-50%); width: calc(100vw - 76px); padding: 20px; }
   .worksheet-empty h2 { font-size: 24px; }
@@ -215,3 +215,16 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .problem-row { display: flex; gap: 6px; margin-top: 4px; }
 .problem-row input { flex: 1; min-width: 0; }
 @media (max-width: 760px) { .board-options { flex-wrap: wrap; } .work-area[data-source="whiteboard"] .capture-popover { top: 150px; } }
+/* Account status and Read handwriting can move controls alongside the fixed launcher. */
+@media (max-width: 760px) { .work-toolbar, .board-options, .worksheet-file-toolbar { padding-right: 70px; } .pen-settings { right: 70px; } }
+@media (max-width: 760px) { .work-area[data-source="whiteboard"] .capture-popover:not(.handwriting-review) { bottom: 70px; max-height: none; } }
+
+
+.workspace-account { padding: 0.75rem 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border, #ccc); overflow-wrap: anywhere; }
+.workspace-account p { margin: 0.5rem 0; }
+.workspace-account .workspace-button { display: inline-block; margin: 0.25rem 0.5rem 0.25rem 0; }
+.settings-panel { max-height: calc(100dvh - 88px); overflow-y: auto; }
+.settings-email { overflow-wrap: anywhere; font-size: 14px; }
+.settings-account-action { border-top: 1px solid var(--paper-line); padding-top: 14px; }
+.settings-sign-out, .text-button { font: inherit; color: var(--paper-text); background: transparent; border: 1px solid var(--paper-line); border-radius: 6px; padding: 10px 14px; cursor: pointer; }
+.settings-sign-out:disabled, .text-button:disabled { opacity: 0.6; cursor: wait; }

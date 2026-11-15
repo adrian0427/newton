@@ -6,6 +6,7 @@ import { drawMultilineExample } from "./freehand-example";
 type Reply = { status?: number; json: object };
 
 async function enterStep(page: Page, value: string) {
+  await expect(page.locator(".workspace-split")).toBeAttached();
   const tab = page.getByRole("button", { name: "Whiteboard", exact: true });
   if (await tab.isVisible()) await tab.click();
   await page.getByRole("radio", { name: "Structured input" }).check();
@@ -17,6 +18,7 @@ async function enterStep(page: Page, value: string) {
 }
 
 async function draw(page: Page, offset = 0) {
+  await expect(page.locator(".workspace-split")).toBeAttached();
   const tab = page.getByRole("button", { name: "Whiteboard", exact: true });
   if (await tab.isVisible()) await tab.click();
   const canvas = page.locator("canvas.excalidraw__canvas.interactive");

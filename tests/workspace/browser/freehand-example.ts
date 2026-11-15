@@ -15,6 +15,7 @@ const glyphs: Record<string, number[][][]> = {
 };
 
 export async function drawMultilineExample(page: Page) {
+  await page.locator(".workspace-split").waitFor({ state: "attached" });
   const tab = page.getByRole("button", { name: "Whiteboard", exact: true });
   if (await tab.isVisible()) await tab.click();
   const canvas = page.locator("canvas.excalidraw__canvas.interactive");
@@ -22,15 +23,20 @@ export async function drawMultilineExample(page: Page) {
   await canvas.scrollIntoViewIfNeeded();
   const box = (await canvas.boundingBox())!;
   await page.getByRole("radio", { name: "Draw", exact: true }).check();
-  const scale = Math.min(1, (box.width - 50) / 260);
+  // Account status and compact controls reduce the available canvas on mobile.
+  // Keep both rows above the bottom drawing controls, rather than drawing off-canvas.
+  const top = Math.min(140, box.height * 0.3);
+  const scale = Math.min(1, (box.width - 50) / 260, (box.height - top - 60) / 140);
   for (const [row, line] of ["7(6k+2)", "=42k+2"].entries()) {
     for (const [index, char] of [...line].entries()) {
       for (const stroke of glyphs[char]) {
-        const points = stroke.map(([x, y]) => ({ x: box.x + 25 + (index * 35 + x) * scale, y: box.y + 140 + (row * 85 + y) * scale }));
+        const points = stroke.map(([x, y]) => ({ x: box.x + 25 + (index * 35 + x) * scale, y: box.y + top + (row * 85 + y) * scale }));
         await page.mouse.move(points[0].x, points[0].y);
         await page.mouse.down();
         for (const point of points.slice(1)) await page.mouse.move(point.x, point.y, { steps: 3 });
         await page.mouse.up();
+        // Let Excalidraw commit this gesture before beginning the next stroke.
+        await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => resolve())));
       }
     }
   }

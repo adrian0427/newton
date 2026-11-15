@@ -5,16 +5,21 @@ import { createSdkVoiceConnection } from "@/lib/ai/sdk-voice-connection";
 import { PRACTICE_EXPRESSION, checkDistribution, distributionVoiceMessage, unsupportedWork, type DistributionCheck } from "@/lib/math/check-distribution";
 import { submittedContext, type TutoringContext } from "@/lib/ai/tutoring-context";
 import TutorControls from "./TutorControls";
+import { useWorkspaceAccount } from "../whiteboard/workspace-account-context";
 import TutorLauncher from "./TutorLauncher";
 /** `handwriting` is a transcription the student reviewed and confirmed for this exact board revision. */
 export type TutorWork = { revisionId: string; source: "whiteboard" | "expression" | "handwriting"; expression: string; inputError: string };
 /** Owns a single A01 session outside the open/closed guidance panel lifecycle. */
 export default function WorkspaceTutor({ work, developmentVoiceCapability }: { work: TutorWork; developmentVoiceCapability?: string }) {
-  const voiceAvailable = process.env.NODE_ENV === "development" && !!developmentVoiceCapability;
+  const account = useWorkspaceAccount();
+  const accountState = useSyncExternalStore(account?.subscribe ?? noSubscribe, account?.getSnapshot ?? noAccount, account?.getSnapshot ?? noAccount);
+  const harness = process.env.NODE_ENV === "development" && !!developmentVoiceCapability;
+  const voiceAvailable = process.env.NODE_ENV === "development" && (harness || (!!accountState?.sessionId && !accountState.busy && !accountState.error));
   const [session] = useState(() => createVoiceSession({
     createConnection: () => createSdkVoiceConnection(),
-    credentialProvider: voiceAvailable ? createCredentialProvider({ "X-Newton-Voice-Dev": developmentVoiceCapability! }) : undefined,
+    credentialProvider: harness ? createCredentialProvider({ "X-Newton-Voice-Dev": developmentVoiceCapability! }) : undefined,
   }));
+  useEffect(() => account?.registerStop(() => session.stop()), [account, session]);
   const voice = useSyncExternalStore(session.subscribe, session.getSnapshot, session.getSnapshot);
   // The student's chosen problem. Submitted equations must start from it; another written problem is never adopted silently.
   const [problem, setProblem] = useState(PRACTICE_EXPRESSION);
@@ -78,9 +83,22 @@ export default function WorkspaceTutor({ work, developmentVoiceCapability }: { w
         : "Voice is busy or could not accept the hint. Read the hint below; wait or end/start voice to retry." } : previous);
     });
   }
+
+  function startVoice() {
+    if (!voiceAvailable) return;
+    const currentAccount = account?.getSnapshot();
+    const sessionId = harness ? "local-study-test" : currentAccount?.sessionId;
+    if (!sessionId || (!harness && (currentAccount?.busy || currentAccount?.error))) return;
+    void session.updateContext(context);
+    void session.start({ sessionId }).catch(() => {});
+  }
+
   return <TutorLauncher indicator={voice.state === "error" ? "error" : current?.result.status === "incorrect" ? "question" : "idle"}
     controls={<TutorControls voice={voice} voiceAvailable={voiceAvailable} feedback={current} problem={problem} onProblemChange={setProblem}
-      onStart={() => { if (voiceAvailable) { void session.updateContext(context); void session.start({ sessionId: "local-study-test" }).catch(() => {}); } }}
+      onStart={startVoice}
       onStop={() => { spokenHint.current = null; void session.stop(); }} onInterrupt={() => session.interrupt()}
       onCheck={() => check(false)} onHint={() => check(true)} />} />;
 }
+
+const noSubscribe = () => () => {};
+const noAccount = () => null;

@@ -150,4 +150,29 @@ The 2026-11-14 original-image diagnostic reproduced a successful Groq HTTP respo
 
 Use Excalidraw's `getDimensions` for transcription captures to render at up to 2×, capped proportionally at 2048 pixels per side; retain the 2 MiB payload limit and ordinary snapshot behavior. The installed SDK ignores `getDimensions` when `maxWidthOrHeight` is present, so use only the former for this path. Avoid raster filters or mathematical repairs that might alter symbol evidence. Prompt for visual digit/letter separation and uncertainty markers without providing the target answer. Confident misreads remain student-editable; a single successful developer-performed real-handwriting acceptance is recorded separately from string-policy and mocked tests and does not measure general accuracy. No additional provider requests or retry/failover paths are introduced.
 
-**Live acceptance (developer-reported, 2026-11-14):** genuine two-line Excalidraw work `7(6k+2)=42k+2` was faithfully transcribed by Groq, including the mathematical error, explicitly confirmed, and checked with the targeted `7 × 2` hint. Mocked tests establish contracts/lifecycle; this manual example establishes the real recognition journey only. Matthew's voice authorization/workspace integration is separate.
+**Live acceptance (developer-reported, 2026-11-14):** genuine two-line Excalidraw work `7(6k+2)=42k+2` was faithfully transcribed by Groq, including the mathematical error, explicitly confirmed, and checked with the targeted `7 × 2` hint. Mocked tests establish contracts/lifecycle; this manual example establishes the real recognition journey only. The subsequent integration merge retains Matthew's owned-session voice and device-local persistence; this live handwriting example does not establish live voice acceptance.
+
+## 2026-11-14 — Local authenticated voice authorization
+
+Connect C's verified-user/session-ownership helpers to A's existing token route for local requests without a harness capability. Keep the explicitly guarded capability harness as an independent development path and retain all production/preview/CI/non-loopback restrictions. Do not introduce a new endpoint or change the rate-limit policy: the existing local process-wide limit remains pending team agreement on deployed controls. Workspace session-ID wiring was subsequently implemented below; deployed issuance remains disabled.
+
+## 2026-11-14 — Owned workspace sessions and device-local account separation
+
+The workspace reuses C's verified auth/session endpoints and A's ordinary
+credential provider. An explicit start action creates one confirmed session per
+workspace mount; voice restarts reuse its UUID. The isolated development harness
+keeps its capability/demo-ID flow, and deployed voice remains disabled.
+
+Matthew's Settings panel shares the workspace account lifecycle. Voice stops
+before logout, late responses cannot revive a logged-out session, and successful
+logout remounts the working area. Matthew's IndexedDB persistence is retained
+with optional compound account/part keys; unscoped legacy records remain guest
+work. Account identity comes from the verified endpoint's Google email, not a
+posted owner. This separates application views on a shared browser; it is not
+local encryption, device-access protection, or cloud work synchronization. Auth,
+owned-session checks, and database RLS remain server-side boundaries. Existing
+work is preserved, and no service-role credentials or new schema are required.
+
+### Integration follow-up — preserve owned sessions, persistence and handwriting
+
+Merge main normally into the handwriting branch. Keep account-scoped IndexedDB restoration/autosave and Safari/iPad behavior alongside ordinary snapshots and bounded 2× transcription captures. Draft/confirmed transcription and checker feedback remain transient; edits, source/worksheet changes, account teardown and remount invalidate them. Signed-in local `/study` voice retains the real owned session UUID and ordinary credential provider; only the separate capability harness uses `local-study-test`. An initial browser sign-in failure now falls back to the guest board with error/retry and no voice, instead of leaving the board hidden indefinitely. Small-screen controls reserve space beside the fixed tutor launcher after combined-browser tests exposed occluded drawing/clear buttons. No provider transport, authorization policy, database schema or persistence of recognized text is added. Combined browser regressions exercise restored freehand work, unchanged stored scenes, confirmed-work context, logout and account isolation with mocked service boundaries.

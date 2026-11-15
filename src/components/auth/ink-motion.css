@@ -1,0 +1,951 @@
+/* Timings from Newton's approved Figma motion tracks. */
+.ink-stroke-0-0{animation:ink-stroke-0-0 36s linear infinite}
+@keyframes ink-stroke-0-0{0%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}0.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-1{animation:ink-stroke-0-1 36s linear infinite}
+@keyframes ink-stroke-0-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}0.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}0.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-2{animation:ink-stroke-0-2 36s linear infinite}
+@keyframes ink-stroke-0-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}0.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-3{animation:ink-stroke-0-3 36s linear infinite}
+@keyframes ink-stroke-0-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}1.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-4{animation:ink-stroke-0-4 36s linear infinite}
+@keyframes ink-stroke-0-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}1.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}1.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-5{animation:ink-stroke-0-5 36s linear infinite}
+@keyframes ink-stroke-0-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}1.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-6{animation:ink-stroke-0-6 36s linear infinite}
+@keyframes ink-stroke-0-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}2.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-7{animation:ink-stroke-0-7 36s linear infinite}
+@keyframes ink-stroke-0-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}2.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}2.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-8{animation:ink-stroke-0-8 36s linear infinite}
+@keyframes ink-stroke-0-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}2.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-9{animation:ink-stroke-0-9 36s linear infinite}
+@keyframes ink-stroke-0-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}3.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-10{animation:ink-stroke-0-10 36s linear infinite}
+@keyframes ink-stroke-0-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}3.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}3.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-11{animation:ink-stroke-0-11 36s linear infinite}
+@keyframes ink-stroke-0-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}3.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-12{animation:ink-stroke-0-12 36s linear infinite}
+@keyframes ink-stroke-0-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}4.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-13{animation:ink-stroke-0-13 36s linear infinite}
+@keyframes ink-stroke-0-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}4.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}4.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-14{animation:ink-stroke-0-14 36s linear infinite}
+@keyframes ink-stroke-0-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}4.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}5.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-15{animation:ink-stroke-0-15 36s linear infinite}
+@keyframes ink-stroke-0-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}5.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-16{animation:ink-stroke-0-16 36s linear infinite}
+@keyframes ink-stroke-0-16{0%{stroke-dasharray:0 1;animation-timing-function:linear;}5.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}5.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-17{animation:ink-stroke-0-17 36s linear infinite}
+@keyframes ink-stroke-0-17{0%{stroke-dasharray:0 1;animation-timing-function:linear;}5.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}6.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-0-18{animation:ink-stroke-0-18 36s linear infinite}
+@keyframes ink-stroke-0-18{0%{stroke-dasharray:0 1;animation-timing-function:linear;}6.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}6.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-0{animation:ink-mark-0 36s linear infinite}
+@keyframes ink-mark-0{0%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}1.25%{opacity:0.65;animation-timing-function:linear;}10%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}15%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-1-0{animation:ink-stroke-1-0 36s linear infinite}
+@keyframes ink-stroke-1-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}2.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}2.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-1{animation:ink-stroke-1-1 36s linear infinite}
+@keyframes ink-stroke-1-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}2.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}2.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-2{animation:ink-stroke-1-2 36s linear infinite}
+@keyframes ink-stroke-1-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}2.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}3.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-3{animation:ink-stroke-1-3 36s linear infinite}
+@keyframes ink-stroke-1-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}3.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}3.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-4{animation:ink-stroke-1-4 36s linear infinite}
+@keyframes ink-stroke-1-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}3.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}3.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-5{animation:ink-stroke-1-5 36s linear infinite}
+@keyframes ink-stroke-1-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}3.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}3.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-6{animation:ink-stroke-1-6 36s linear infinite}
+@keyframes ink-stroke-1-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}3.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}3.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-7{animation:ink-stroke-1-7 36s linear infinite}
+@keyframes ink-stroke-1-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}3.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}4.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-8{animation:ink-stroke-1-8 36s linear infinite}
+@keyframes ink-stroke-1-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}4.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}4.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-9{animation:ink-stroke-1-9 36s linear infinite}
+@keyframes ink-stroke-1-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}4.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}4.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-10{animation:ink-stroke-1-10 36s linear infinite}
+@keyframes ink-stroke-1-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}4.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}4.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-11{animation:ink-stroke-1-11 36s linear infinite}
+@keyframes ink-stroke-1-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}4.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}4.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-12{animation:ink-stroke-1-12 36s linear infinite}
+@keyframes ink-stroke-1-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}4.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}5.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-13{animation:ink-stroke-1-13 36s linear infinite}
+@keyframes ink-stroke-1-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}5.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}5.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-14{animation:ink-stroke-1-14 36s linear infinite}
+@keyframes ink-stroke-1-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}5.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}5.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-15{animation:ink-stroke-1-15 36s linear infinite}
+@keyframes ink-stroke-1-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}5.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}5.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-16{animation:ink-stroke-1-16 36s linear infinite}
+@keyframes ink-stroke-1-16{0%{stroke-dasharray:0 1;animation-timing-function:linear;}5.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}5.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-17{animation:ink-stroke-1-17 36s linear infinite}
+@keyframes ink-stroke-1-17{0%{stroke-dasharray:0 1;animation-timing-function:linear;}5.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}6.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-18{animation:ink-stroke-1-18 36s linear infinite}
+@keyframes ink-stroke-1-18{0%{stroke-dasharray:0 1;animation-timing-function:linear;}6.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}6.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-19{animation:ink-stroke-1-19 36s linear infinite}
+@keyframes ink-stroke-1-19{0%{stroke-dasharray:0 1;animation-timing-function:linear;}6.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}6.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-20{animation:ink-stroke-1-20 36s linear infinite}
+@keyframes ink-stroke-1-20{0%{stroke-dasharray:0 1;animation-timing-function:linear;}6.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}6.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-21{animation:ink-stroke-1-21 36s linear infinite}
+@keyframes ink-stroke-1-21{0%{stroke-dasharray:0 1;animation-timing-function:linear;}6.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}6.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-22{animation:ink-stroke-1-22 36s linear infinite}
+@keyframes ink-stroke-1-22{0%{stroke-dasharray:0 1;animation-timing-function:linear;}6.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}7.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-23{animation:ink-stroke-1-23 36s linear infinite}
+@keyframes ink-stroke-1-23{0%{stroke-dasharray:0 1;animation-timing-function:linear;}7.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}7.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-24{animation:ink-stroke-1-24 36s linear infinite}
+@keyframes ink-stroke-1-24{0%{stroke-dasharray:0 1;animation-timing-function:linear;}7.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}7.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-25{animation:ink-stroke-1-25 36s linear infinite}
+@keyframes ink-stroke-1-25{0%{stroke-dasharray:0 1;animation-timing-function:linear;}7.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}7.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-26{animation:ink-stroke-1-26 36s linear infinite}
+@keyframes ink-stroke-1-26{0%{stroke-dasharray:0 1;animation-timing-function:linear;}7.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}7.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-27{animation:ink-stroke-1-27 36s linear infinite}
+@keyframes ink-stroke-1-27{0%{stroke-dasharray:0 1;animation-timing-function:linear;}7.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}8.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-28{animation:ink-stroke-1-28 36s linear infinite}
+@keyframes ink-stroke-1-28{0%{stroke-dasharray:0 1;animation-timing-function:linear;}8.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}8.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-29{animation:ink-stroke-1-29 36s linear infinite}
+@keyframes ink-stroke-1-29{0%{stroke-dasharray:0 1;animation-timing-function:linear;}8.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}8.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-30{animation:ink-stroke-1-30 36s linear infinite}
+@keyframes ink-stroke-1-30{0%{stroke-dasharray:0 1;animation-timing-function:linear;}8.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}8.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-1-31{animation:ink-stroke-1-31 36s linear infinite}
+@keyframes ink-stroke-1-31{0%{stroke-dasharray:0 1;animation-timing-function:linear;}8.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}8.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-1{animation:ink-mark-1 36s linear infinite}
+@keyframes ink-mark-1{0%{opacity:0;animation-timing-function:linear;}2.5%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}3.75%{opacity:0.65;animation-timing-function:linear;}12.5%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}17.5%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-2-0{animation:ink-stroke-2-0 36s linear infinite}
+@keyframes ink-stroke-2-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}7.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}8.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-2-1{animation:ink-stroke-2-1 36s linear infinite}
+@keyframes ink-stroke-2-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}8.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}9.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-2-2{animation:ink-stroke-2-2 36s linear infinite}
+@keyframes ink-stroke-2-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}9.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}11.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-2-3{animation:ink-stroke-2-3 36s linear infinite}
+@keyframes ink-stroke-2-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}11.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}12.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-2-4{animation:ink-stroke-2-4 36s linear infinite}
+@keyframes ink-stroke-2-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}12.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}13.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-2{animation:ink-mark-2 36s linear infinite}
+@keyframes ink-mark-2{0%{opacity:0;animation-timing-function:linear;}7.22%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}8.47%{opacity:0.65;animation-timing-function:linear;}17.22%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}22.22%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-3-0{animation:ink-stroke-3-0 36s linear infinite}
+@keyframes ink-stroke-3-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}11.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}12.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-1{animation:ink-stroke-3-1 36s linear infinite}
+@keyframes ink-stroke-3-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}12.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}12.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-2{animation:ink-stroke-3-2 36s linear infinite}
+@keyframes ink-stroke-3-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}12.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}12.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-3{animation:ink-stroke-3-3 36s linear infinite}
+@keyframes ink-stroke-3-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}12.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}13.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-4{animation:ink-stroke-3-4 36s linear infinite}
+@keyframes ink-stroke-3-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}13.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}13.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-5{animation:ink-stroke-3-5 36s linear infinite}
+@keyframes ink-stroke-3-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}13.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}13.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-6{animation:ink-stroke-3-6 36s linear infinite}
+@keyframes ink-stroke-3-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}13.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}14%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-7{animation:ink-stroke-3-7 36s linear infinite}
+@keyframes ink-stroke-3-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}14%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}14.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-8{animation:ink-stroke-3-8 36s linear infinite}
+@keyframes ink-stroke-3-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}14.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}14.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-9{animation:ink-stroke-3-9 36s linear infinite}
+@keyframes ink-stroke-3-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}14.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}14.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-10{animation:ink-stroke-3-10 36s linear infinite}
+@keyframes ink-stroke-3-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}14.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}15.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-11{animation:ink-stroke-3-11 36s linear infinite}
+@keyframes ink-stroke-3-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}15.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}15.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-12{animation:ink-stroke-3-12 36s linear infinite}
+@keyframes ink-stroke-3-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}15.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}15.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-13{animation:ink-stroke-3-13 36s linear infinite}
+@keyframes ink-stroke-3-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}15.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}16%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-14{animation:ink-stroke-3-14 36s linear infinite}
+@keyframes ink-stroke-3-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}16%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}16.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-15{animation:ink-stroke-3-15 36s linear infinite}
+@keyframes ink-stroke-3-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}16.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}16.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-16{animation:ink-stroke-3-16 36s linear infinite}
+@keyframes ink-stroke-3-16{0%{stroke-dasharray:0 1;animation-timing-function:linear;}16.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}16.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-17{animation:ink-stroke-3-17 36s linear infinite}
+@keyframes ink-stroke-3-17{0%{stroke-dasharray:0 1;animation-timing-function:linear;}16.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}17.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-18{animation:ink-stroke-3-18 36s linear infinite}
+@keyframes ink-stroke-3-18{0%{stroke-dasharray:0 1;animation-timing-function:linear;}17.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}17.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-19{animation:ink-stroke-3-19 36s linear infinite}
+@keyframes ink-stroke-3-19{0%{stroke-dasharray:0 1;animation-timing-function:linear;}17.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}17.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-20{animation:ink-stroke-3-20 36s linear infinite}
+@keyframes ink-stroke-3-20{0%{stroke-dasharray:0 1;animation-timing-function:linear;}17.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}18.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-3-21{animation:ink-stroke-3-21 36s linear infinite}
+@keyframes ink-stroke-3-21{0%{stroke-dasharray:0 1;animation-timing-function:linear;}18%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}18.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-3{animation:ink-mark-3 36s linear infinite}
+@keyframes ink-mark-3{0%{opacity:0;animation-timing-function:linear;}11.94%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}13.19%{opacity:0.65;animation-timing-function:linear;}21.94%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}26.94%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-4-0{animation:ink-stroke-4-0 36s linear infinite}
+@keyframes ink-stroke-4-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}16.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}16.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-1{animation:ink-stroke-4-1 36s linear infinite}
+@keyframes ink-stroke-4-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}16.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}17%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-6{animation:ink-stroke-4-6 36s linear infinite}
+@keyframes ink-stroke-4-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}18.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}18.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-7{animation:ink-stroke-4-7 36s linear infinite}
+@keyframes ink-stroke-4-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}18.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}18.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-8{animation:ink-stroke-4-8 36s linear infinite}
+@keyframes ink-stroke-4-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}18.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}18.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-9{animation:ink-stroke-4-9 36s linear infinite}
+@keyframes ink-stroke-4-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}18.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}19.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-10{animation:ink-stroke-4-10 36s linear infinite}
+@keyframes ink-stroke-4-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}19.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}19.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-11{animation:ink-stroke-4-11 36s linear infinite}
+@keyframes ink-stroke-4-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}19.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}19.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-12{animation:ink-stroke-4-12 36s linear infinite}
+@keyframes ink-stroke-4-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}19.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}20%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-13{animation:ink-stroke-4-13 36s linear infinite}
+@keyframes ink-stroke-4-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}20%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}20.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-14{animation:ink-stroke-4-14 36s linear infinite}
+@keyframes ink-stroke-4-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}20.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}20.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-15{animation:ink-stroke-4-15 36s linear infinite}
+@keyframes ink-stroke-4-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}20.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}20.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-16{animation:ink-stroke-4-16 36s linear infinite}
+@keyframes ink-stroke-4-16{0%{stroke-dasharray:0 1;animation-timing-function:linear;}20.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}21.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-17{animation:ink-stroke-4-17 36s linear infinite}
+@keyframes ink-stroke-4-17{0%{stroke-dasharray:0 1;animation-timing-function:linear;}21.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}21.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-18{animation:ink-stroke-4-18 36s linear infinite}
+@keyframes ink-stroke-4-18{0%{stroke-dasharray:0 1;animation-timing-function:linear;}21.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}21.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-19{animation:ink-stroke-4-19 36s linear infinite}
+@keyframes ink-stroke-4-19{0%{stroke-dasharray:0 1;animation-timing-function:linear;}21.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}22%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-20{animation:ink-stroke-4-20 36s linear infinite}
+@keyframes ink-stroke-4-20{0%{stroke-dasharray:0 1;animation-timing-function:linear;}21.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}22.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-21{animation:ink-stroke-4-21 36s linear infinite}
+@keyframes ink-stroke-4-21{0%{stroke-dasharray:0 1;animation-timing-function:linear;}22.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}22.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-4-22{animation:ink-stroke-4-22 36s linear infinite}
+@keyframes ink-stroke-4-22{0%{stroke-dasharray:0 1;animation-timing-function:linear;}22.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}22.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-4{animation:ink-mark-4 36s linear infinite}
+@keyframes ink-mark-4{0%{opacity:0;animation-timing-function:linear;}16.39%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}17.64%{opacity:0.65;animation-timing-function:linear;}26.39%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}31.39%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-5-0{animation:ink-stroke-5-0 36s linear infinite}
+@keyframes ink-stroke-5-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}21.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}22.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-5-1{animation:ink-stroke-5-1 36s linear infinite}
+@keyframes ink-stroke-5-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}22.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}24.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-5-2{animation:ink-stroke-5-2 36s linear infinite}
+@keyframes ink-stroke-5-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}24.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}26%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-5-3{animation:ink-stroke-5-3 36s linear infinite}
+@keyframes ink-stroke-5-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}25.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}27.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-5{animation:ink-mark-5 36s linear infinite}
+@keyframes ink-mark-5{0%{opacity:0;animation-timing-function:linear;}21.11%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}22.36%{opacity:0.65;animation-timing-function:linear;}31.11%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}36.11%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-6-0{animation:ink-stroke-6-0 36s linear infinite}
+@keyframes ink-stroke-6-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}25.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}25.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-1{animation:ink-stroke-6-1 36s linear infinite}
+@keyframes ink-stroke-6-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}25.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}26.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-2{animation:ink-stroke-6-2 36s linear infinite}
+@keyframes ink-stroke-6-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}26.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}26.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-3{animation:ink-stroke-6-3 36s linear infinite}
+@keyframes ink-stroke-6-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}26.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}26.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-4{animation:ink-stroke-6-4 36s linear infinite}
+@keyframes ink-stroke-6-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}26.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}27.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-5{animation:ink-stroke-6-5 36s linear infinite}
+@keyframes ink-stroke-6-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}27.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}27.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-6{animation:ink-stroke-6-6 36s linear infinite}
+@keyframes ink-stroke-6-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}27.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}28.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-7{animation:ink-stroke-6-7 36s linear infinite}
+@keyframes ink-stroke-6-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}28.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}28.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-8{animation:ink-stroke-6-8 36s linear infinite}
+@keyframes ink-stroke-6-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}28.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}28.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-9{animation:ink-stroke-6-9 36s linear infinite}
+@keyframes ink-stroke-6-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}28.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}29.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-10{animation:ink-stroke-6-10 36s linear infinite}
+@keyframes ink-stroke-6-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}29.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}29.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-11{animation:ink-stroke-6-11 36s linear infinite}
+@keyframes ink-stroke-6-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}29.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}30.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-12{animation:ink-stroke-6-12 36s linear infinite}
+@keyframes ink-stroke-6-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}30.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}30.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-13{animation:ink-stroke-6-13 36s linear infinite}
+@keyframes ink-stroke-6-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}30.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}30.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-14{animation:ink-stroke-6-14 36s linear infinite}
+@keyframes ink-stroke-6-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}30.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}31.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-6-15{animation:ink-stroke-6-15 36s linear infinite}
+@keyframes ink-stroke-6-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}31.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}31.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-6{animation:ink-mark-6 36s linear infinite}
+@keyframes ink-mark-6{0%{opacity:0;animation-timing-function:linear;}25.28%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}26.53%{opacity:0.65;animation-timing-function:linear;}35.28%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}40.28%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-7-0{animation:ink-stroke-7-0 36s linear infinite}
+@keyframes ink-stroke-7-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}30%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}30.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-1{animation:ink-stroke-7-1 36s linear infinite}
+@keyframes ink-stroke-7-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}30.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}30.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-2{animation:ink-stroke-7-2 36s linear infinite}
+@keyframes ink-stroke-7-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}30.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}30.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-3{animation:ink-stroke-7-3 36s linear infinite}
+@keyframes ink-stroke-7-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}30.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}30.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-4{animation:ink-stroke-7-4 36s linear infinite}
+@keyframes ink-stroke-7-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}30.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}30.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-5{animation:ink-stroke-7-5 36s linear infinite}
+@keyframes ink-stroke-7-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}30.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}30.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-6{animation:ink-stroke-7-6 36s linear infinite}
+@keyframes ink-stroke-7-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}30.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}31.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-7{animation:ink-stroke-7-7 36s linear infinite}
+@keyframes ink-stroke-7-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}31%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}31.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-8{animation:ink-stroke-7-8 36s linear infinite}
+@keyframes ink-stroke-7-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}31.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}31.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-9{animation:ink-stroke-7-9 36s linear infinite}
+@keyframes ink-stroke-7-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}31.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}31.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-10{animation:ink-stroke-7-10 36s linear infinite}
+@keyframes ink-stroke-7-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}31.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}31.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-11{animation:ink-stroke-7-11 36s linear infinite}
+@keyframes ink-stroke-7-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}31.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}31.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-12{animation:ink-stroke-7-12 36s linear infinite}
+@keyframes ink-stroke-7-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}31.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}32%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-13{animation:ink-stroke-7-13 36s linear infinite}
+@keyframes ink-stroke-7-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}31.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}32.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-14{animation:ink-stroke-7-14 36s linear infinite}
+@keyframes ink-stroke-7-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}32%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}32.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-15{animation:ink-stroke-7-15 36s linear infinite}
+@keyframes ink-stroke-7-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}32.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}32.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-16{animation:ink-stroke-7-16 36s linear infinite}
+@keyframes ink-stroke-7-16{0%{stroke-dasharray:0 1;animation-timing-function:linear;}32.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}32.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-17{animation:ink-stroke-7-17 36s linear infinite}
+@keyframes ink-stroke-7-17{0%{stroke-dasharray:0 1;animation-timing-function:linear;}32.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}32.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-18{animation:ink-stroke-7-18 36s linear infinite}
+@keyframes ink-stroke-7-18{0%{stroke-dasharray:0 1;animation-timing-function:linear;}32.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}32.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-19{animation:ink-stroke-7-19 36s linear infinite}
+@keyframes ink-stroke-7-19{0%{stroke-dasharray:0 1;animation-timing-function:linear;}32.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}33%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-20{animation:ink-stroke-7-20 36s linear infinite}
+@keyframes ink-stroke-7-20{0%{stroke-dasharray:0 1;animation-timing-function:linear;}32.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}33.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-21{animation:ink-stroke-7-21 36s linear infinite}
+@keyframes ink-stroke-7-21{0%{stroke-dasharray:0 1;animation-timing-function:linear;}33%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}33.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-22{animation:ink-stroke-7-22 36s linear infinite}
+@keyframes ink-stroke-7-22{0%{stroke-dasharray:0 1;animation-timing-function:linear;}33.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}33.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-23{animation:ink-stroke-7-23 36s linear infinite}
+@keyframes ink-stroke-7-23{0%{stroke-dasharray:0 1;animation-timing-function:linear;}33.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}33.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-24{animation:ink-stroke-7-24 36s linear infinite}
+@keyframes ink-stroke-7-24{0%{stroke-dasharray:0 1;animation-timing-function:linear;}33.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}33.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-25{animation:ink-stroke-7-25 36s linear infinite}
+@keyframes ink-stroke-7-25{0%{stroke-dasharray:0 1;animation-timing-function:linear;}33.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}33.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-26{animation:ink-stroke-7-26 36s linear infinite}
+@keyframes ink-stroke-7-26{0%{stroke-dasharray:0 1;animation-timing-function:linear;}33.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}34%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-27{animation:ink-stroke-7-27 36s linear infinite}
+@keyframes ink-stroke-7-27{0%{stroke-dasharray:0 1;animation-timing-function:linear;}33.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}34.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-28{animation:ink-stroke-7-28 36s linear infinite}
+@keyframes ink-stroke-7-28{0%{stroke-dasharray:0 1;animation-timing-function:linear;}34.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}34.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-29{animation:ink-stroke-7-29 36s linear infinite}
+@keyframes ink-stroke-7-29{0%{stroke-dasharray:0 1;animation-timing-function:linear;}34.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}34.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-30{animation:ink-stroke-7-30 36s linear infinite}
+@keyframes ink-stroke-7-30{0%{stroke-dasharray:0 1;animation-timing-function:linear;}34.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}34.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-31{animation:ink-stroke-7-31 36s linear infinite}
+@keyframes ink-stroke-7-31{0%{stroke-dasharray:0 1;animation-timing-function:linear;}34.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}34.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-32{animation:ink-stroke-7-32 36s linear infinite}
+@keyframes ink-stroke-7-32{0%{stroke-dasharray:0 1;animation-timing-function:linear;}34.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}34.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-33{animation:ink-stroke-7-33 36s linear infinite}
+@keyframes ink-stroke-7-33{0%{stroke-dasharray:0 1;animation-timing-function:linear;}34.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}35%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-34{animation:ink-stroke-7-34 36s linear infinite}
+@keyframes ink-stroke-7-34{0%{stroke-dasharray:0 1;animation-timing-function:linear;}34.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}35.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-35{animation:ink-stroke-7-35 36s linear infinite}
+@keyframes ink-stroke-7-35{0%{stroke-dasharray:0 1;animation-timing-function:linear;}35.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}35.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-36{animation:ink-stroke-7-36 36s linear infinite}
+@keyframes ink-stroke-7-36{0%{stroke-dasharray:0 1;animation-timing-function:linear;}35.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}35.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-37{animation:ink-stroke-7-37 36s linear infinite}
+@keyframes ink-stroke-7-37{0%{stroke-dasharray:0 1;animation-timing-function:linear;}35.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}35.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-38{animation:ink-stroke-7-38 36s linear infinite}
+@keyframes ink-stroke-7-38{0%{stroke-dasharray:0 1;animation-timing-function:linear;}35.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}35.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-39{animation:ink-stroke-7-39 36s linear infinite}
+@keyframes ink-stroke-7-39{0%{stroke-dasharray:0 1;animation-timing-function:linear;}35.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}35.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-40{animation:ink-stroke-7-40 36s linear infinite}
+@keyframes ink-stroke-7-40{0%{stroke-dasharray:0 1;animation-timing-function:linear;}35.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}36%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-41{animation:ink-stroke-7-41 36s linear infinite}
+@keyframes ink-stroke-7-41{0%{stroke-dasharray:0 1;animation-timing-function:linear;}36%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}36.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-42{animation:ink-stroke-7-42 36s linear infinite}
+@keyframes ink-stroke-7-42{0%{stroke-dasharray:0 1;animation-timing-function:linear;}36.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}36.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-7-43{animation:ink-stroke-7-43 36s linear infinite}
+@keyframes ink-stroke-7-43{0%{stroke-dasharray:0 1;animation-timing-function:linear;}36.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}36.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-7{animation:ink-mark-7 36s linear infinite}
+@keyframes ink-mark-7{0%{opacity:0;animation-timing-function:linear;}30%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}31.25%{opacity:0.65;animation-timing-function:linear;}40%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}45%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-8-0{animation:ink-stroke-8-0 36s linear infinite}
+@keyframes ink-stroke-8-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}34.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}36.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-8-1{animation:ink-stroke-8-1 36s linear infinite}
+@keyframes ink-stroke-8-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}36%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}37.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-8-2{animation:ink-stroke-8-2 36s linear infinite}
+@keyframes ink-stroke-8-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}37.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}39.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-8-3{animation:ink-stroke-8-3 36s linear infinite}
+@keyframes ink-stroke-8-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}39.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}40.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-8{animation:ink-mark-8 36s linear infinite}
+@keyframes ink-mark-8{0%{opacity:0;animation-timing-function:linear;}34.44%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}35.69%{opacity:0.65;animation-timing-function:linear;}44.44%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}49.44%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-9-0{animation:ink-stroke-9-0 36s linear infinite}
+@keyframes ink-stroke-9-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}5.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}5.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-1{animation:ink-stroke-9-1 36s linear infinite}
+@keyframes ink-stroke-9-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}5.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}5.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-2{animation:ink-stroke-9-2 36s linear infinite}
+@keyframes ink-stroke-9-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}5.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}6.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-3{animation:ink-stroke-9-3 36s linear infinite}
+@keyframes ink-stroke-9-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}6.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}6.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-4{animation:ink-stroke-9-4 36s linear infinite}
+@keyframes ink-stroke-9-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}6.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}6.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-5{animation:ink-stroke-9-5 36s linear infinite}
+@keyframes ink-stroke-9-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}6.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}7.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-6{animation:ink-stroke-9-6 36s linear infinite}
+@keyframes ink-stroke-9-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}7.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}7.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-7{animation:ink-stroke-9-7 36s linear infinite}
+@keyframes ink-stroke-9-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}7.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}7.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-8{animation:ink-stroke-9-8 36s linear infinite}
+@keyframes ink-stroke-9-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}7.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}8.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-9{animation:ink-stroke-9-9 36s linear infinite}
+@keyframes ink-stroke-9-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}8.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}8.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-10{animation:ink-stroke-9-10 36s linear infinite}
+@keyframes ink-stroke-9-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}8.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}8.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-11{animation:ink-stroke-9-11 36s linear infinite}
+@keyframes ink-stroke-9-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}8.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}9.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-12{animation:ink-stroke-9-12 36s linear infinite}
+@keyframes ink-stroke-9-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}9.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}9.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-13{animation:ink-stroke-9-13 36s linear infinite}
+@keyframes ink-stroke-9-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}9.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}9.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-14{animation:ink-stroke-9-14 36s linear infinite}
+@keyframes ink-stroke-9-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}9.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}10.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-15{animation:ink-stroke-9-15 36s linear infinite}
+@keyframes ink-stroke-9-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}10.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}10.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-16{animation:ink-stroke-9-16 36s linear infinite}
+@keyframes ink-stroke-9-16{0%{stroke-dasharray:0 1;animation-timing-function:linear;}10.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}10.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-17{animation:ink-stroke-9-17 36s linear infinite}
+@keyframes ink-stroke-9-17{0%{stroke-dasharray:0 1;animation-timing-function:linear;}10.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}11%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-18{animation:ink-stroke-9-18 36s linear infinite}
+@keyframes ink-stroke-9-18{0%{stroke-dasharray:0 1;animation-timing-function:linear;}11%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}11.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-9-19{animation:ink-stroke-9-19 36s linear infinite}
+@keyframes ink-stroke-9-19{0%{stroke-dasharray:0 1;animation-timing-function:linear;}11.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}11.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-9{animation:ink-mark-9 36s linear infinite}
+@keyframes ink-mark-9{0%{opacity:0;animation-timing-function:linear;}5.28%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}6.53%{opacity:0.65;animation-timing-function:linear;}15.28%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}20.28%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-10-0{animation:ink-stroke-10-0 36s linear infinite}
+@keyframes ink-stroke-10-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}19.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}19.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-1{animation:ink-stroke-10-1 36s linear infinite}
+@keyframes ink-stroke-10-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}19.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}19.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-2{animation:ink-stroke-10-2 36s linear infinite}
+@keyframes ink-stroke-10-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}19.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}19.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-3{animation:ink-stroke-10-3 36s linear infinite}
+@keyframes ink-stroke-10-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}19.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}19.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-4{animation:ink-stroke-10-4 36s linear infinite}
+@keyframes ink-stroke-10-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}19.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}20.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-5{animation:ink-stroke-10-5 36s linear infinite}
+@keyframes ink-stroke-10-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}20%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}20.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-6{animation:ink-stroke-10-6 36s linear infinite}
+@keyframes ink-stroke-10-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}20.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}20.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-8{animation:ink-stroke-10-8 36s linear infinite}
+@keyframes ink-stroke-10-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}20.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}20.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-9{animation:ink-stroke-10-9 36s linear infinite}
+@keyframes ink-stroke-10-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}20.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}20.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-11{animation:ink-stroke-10-11 36s linear infinite}
+@keyframes ink-stroke-10-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}21%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}21.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-12{animation:ink-stroke-10-12 36s linear infinite}
+@keyframes ink-stroke-10-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}21.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}21.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-13{animation:ink-stroke-10-13 36s linear infinite}
+@keyframes ink-stroke-10-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}21.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}21.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-14{animation:ink-stroke-10-14 36s linear infinite}
+@keyframes ink-stroke-10-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}21.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}21.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-15{animation:ink-stroke-10-15 36s linear infinite}
+@keyframes ink-stroke-10-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}21.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}21.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-16{animation:ink-stroke-10-16 36s linear infinite}
+@keyframes ink-stroke-10-16{0%{stroke-dasharray:0 1;animation-timing-function:linear;}21.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}22.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-17{animation:ink-stroke-10-17 36s linear infinite}
+@keyframes ink-stroke-10-17{0%{stroke-dasharray:0 1;animation-timing-function:linear;}22%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}22.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-18{animation:ink-stroke-10-18 36s linear infinite}
+@keyframes ink-stroke-10-18{0%{stroke-dasharray:0 1;animation-timing-function:linear;}22.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}22.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-19{animation:ink-stroke-10-19 36s linear infinite}
+@keyframes ink-stroke-10-19{0%{stroke-dasharray:0 1;animation-timing-function:linear;}22.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}22.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-21{animation:ink-stroke-10-21 36s linear infinite}
+@keyframes ink-stroke-10-21{0%{stroke-dasharray:0 1;animation-timing-function:linear;}22.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}22.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-22{animation:ink-stroke-10-22 36s linear infinite}
+@keyframes ink-stroke-10-22{0%{stroke-dasharray:0 1;animation-timing-function:linear;}22.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}23.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-23{animation:ink-stroke-10-23 36s linear infinite}
+@keyframes ink-stroke-10-23{0%{stroke-dasharray:0 1;animation-timing-function:linear;}23%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}23.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-24{animation:ink-stroke-10-24 36s linear infinite}
+@keyframes ink-stroke-10-24{0%{stroke-dasharray:0 1;animation-timing-function:linear;}23.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}23.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-25{animation:ink-stroke-10-25 36s linear infinite}
+@keyframes ink-stroke-10-25{0%{stroke-dasharray:0 1;animation-timing-function:linear;}23.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}23.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-26{animation:ink-stroke-10-26 36s linear infinite}
+@keyframes ink-stroke-10-26{0%{stroke-dasharray:0 1;animation-timing-function:linear;}23.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}23.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-27{animation:ink-stroke-10-27 36s linear infinite}
+@keyframes ink-stroke-10-27{0%{stroke-dasharray:0 1;animation-timing-function:linear;}23.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}23.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-28{animation:ink-stroke-10-28 36s linear infinite}
+@keyframes ink-stroke-10-28{0%{stroke-dasharray:0 1;animation-timing-function:linear;}23.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}24.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-29{animation:ink-stroke-10-29 36s linear infinite}
+@keyframes ink-stroke-10-29{0%{stroke-dasharray:0 1;animation-timing-function:linear;}24%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}24.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-30{animation:ink-stroke-10-30 36s linear infinite}
+@keyframes ink-stroke-10-30{0%{stroke-dasharray:0 1;animation-timing-function:linear;}24.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}24.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-31{animation:ink-stroke-10-31 36s linear infinite}
+@keyframes ink-stroke-10-31{0%{stroke-dasharray:0 1;animation-timing-function:linear;}24.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}24.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-32{animation:ink-stroke-10-32 36s linear infinite}
+@keyframes ink-stroke-10-32{0%{stroke-dasharray:0 1;animation-timing-function:linear;}24.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}24.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-33{animation:ink-stroke-10-33 36s linear infinite}
+@keyframes ink-stroke-10-33{0%{stroke-dasharray:0 1;animation-timing-function:linear;}24.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}24.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-34{animation:ink-stroke-10-34 36s linear infinite}
+@keyframes ink-stroke-10-34{0%{stroke-dasharray:0 1;animation-timing-function:linear;}24.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}25.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-35{animation:ink-stroke-10-35 36s linear infinite}
+@keyframes ink-stroke-10-35{0%{stroke-dasharray:0 1;animation-timing-function:linear;}25.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}25.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-36{animation:ink-stroke-10-36 36s linear infinite}
+@keyframes ink-stroke-10-36{0%{stroke-dasharray:0 1;animation-timing-function:linear;}25.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}25.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-10-37{animation:ink-stroke-10-37 36s linear infinite}
+@keyframes ink-stroke-10-37{0%{stroke-dasharray:0 1;animation-timing-function:linear;}25.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}25.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-10{animation:ink-mark-10 36s linear infinite}
+@keyframes ink-mark-10{0%{opacity:0;animation-timing-function:linear;}19.17%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}20.42%{opacity:0.65;animation-timing-function:linear;}29.17%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}34.17%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-11-0{animation:ink-stroke-11-0 36s linear infinite}
+@keyframes ink-stroke-11-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}31.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}32.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-11-1{animation:ink-stroke-11-1 36s linear infinite}
+@keyframes ink-stroke-11-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}32.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}33.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-11-2{animation:ink-stroke-11-2 36s linear infinite}
+@keyframes ink-stroke-11-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}33.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}33.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-11-3{animation:ink-stroke-11-3 36s linear infinite}
+@keyframes ink-stroke-11-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}33.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}34.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-11-4{animation:ink-stroke-11-4 36s linear infinite}
+@keyframes ink-stroke-11-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}34.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}34.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-11-5{animation:ink-stroke-11-5 36s linear infinite}
+@keyframes ink-stroke-11-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}34.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}35.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-11-6{animation:ink-stroke-11-6 36s linear infinite}
+@keyframes ink-stroke-11-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}35.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}36%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-11-7{animation:ink-stroke-11-7 36s linear infinite}
+@keyframes ink-stroke-11-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}36%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}36.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-11-8{animation:ink-stroke-11-8 36s linear infinite}
+@keyframes ink-stroke-11-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}36.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}37.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-11-9{animation:ink-stroke-11-9 36s linear infinite}
+@keyframes ink-stroke-11-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}37.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}37.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-11-10{animation:ink-stroke-11-10 36s linear infinite}
+@keyframes ink-stroke-11-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}37.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}38.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-11{animation:ink-mark-11 36s linear infinite}
+@keyframes ink-mark-11{0%{opacity:0;animation-timing-function:linear;}31.94%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}33.19%{opacity:0.65;animation-timing-function:linear;}41.94%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}46.94%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-12-0{animation:ink-stroke-12-0 36s linear infinite}
+@keyframes ink-stroke-12-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}50%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}50.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-1{animation:ink-stroke-12-1 36s linear infinite}
+@keyframes ink-stroke-12-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}50.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}50.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-2{animation:ink-stroke-12-2 36s linear infinite}
+@keyframes ink-stroke-12-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}50.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}51.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-3{animation:ink-stroke-12-3 36s linear infinite}
+@keyframes ink-stroke-12-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}51.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}51.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-4{animation:ink-stroke-12-4 36s linear infinite}
+@keyframes ink-stroke-12-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}51.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}51.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-5{animation:ink-stroke-12-5 36s linear infinite}
+@keyframes ink-stroke-12-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}51.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}52.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-6{animation:ink-stroke-12-6 36s linear infinite}
+@keyframes ink-stroke-12-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}52.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}52.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-7{animation:ink-stroke-12-7 36s linear infinite}
+@keyframes ink-stroke-12-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}52.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}53%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-8{animation:ink-stroke-12-8 36s linear infinite}
+@keyframes ink-stroke-12-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}53%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}53.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-9{animation:ink-stroke-12-9 36s linear infinite}
+@keyframes ink-stroke-12-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}53.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}53.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-10{animation:ink-stroke-12-10 36s linear infinite}
+@keyframes ink-stroke-12-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}53.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}54.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-11{animation:ink-stroke-12-11 36s linear infinite}
+@keyframes ink-stroke-12-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}54.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}54.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-12{animation:ink-stroke-12-12 36s linear infinite}
+@keyframes ink-stroke-12-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}54.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}54.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-13{animation:ink-stroke-12-13 36s linear infinite}
+@keyframes ink-stroke-12-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}54.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}55.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-14{animation:ink-stroke-12-14 36s linear infinite}
+@keyframes ink-stroke-12-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}55.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}55.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-15{animation:ink-stroke-12-15 36s linear infinite}
+@keyframes ink-stroke-12-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}55.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}56%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-12-16{animation:ink-stroke-12-16 36s linear infinite}
+@keyframes ink-stroke-12-16{0%{stroke-dasharray:0 1;animation-timing-function:linear;}56%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}56.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-12{animation:ink-mark-12 36s linear infinite}
+@keyframes ink-mark-12{0%{opacity:0;animation-timing-function:linear;}50%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}51.25%{opacity:0.65;animation-timing-function:linear;}60%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}65%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-13-0{animation:ink-stroke-13-0 36s linear infinite}
+@keyframes ink-stroke-13-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}52.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}52.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-1{animation:ink-stroke-13-1 36s linear infinite}
+@keyframes ink-stroke-13-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}52.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}52.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-2{animation:ink-stroke-13-2 36s linear infinite}
+@keyframes ink-stroke-13-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}52.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}53%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-3{animation:ink-stroke-13-3 36s linear infinite}
+@keyframes ink-stroke-13-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}52.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}53.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-4{animation:ink-stroke-13-4 36s linear infinite}
+@keyframes ink-stroke-13-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}53.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}53.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-5{animation:ink-stroke-13-5 36s linear infinite}
+@keyframes ink-stroke-13-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}53.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}53.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-6{animation:ink-stroke-13-6 36s linear infinite}
+@keyframes ink-stroke-13-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}53.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}53.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-7{animation:ink-stroke-13-7 36s linear infinite}
+@keyframes ink-stroke-13-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}53.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}53.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-8{animation:ink-stroke-13-8 36s linear infinite}
+@keyframes ink-stroke-13-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}53.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}53.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-9{animation:ink-stroke-13-9 36s linear infinite}
+@keyframes ink-stroke-13-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}53.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}54%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-10{animation:ink-stroke-13-10 36s linear infinite}
+@keyframes ink-stroke-13-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}53.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}54.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-11{animation:ink-stroke-13-11 36s linear infinite}
+@keyframes ink-stroke-13-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}54%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}54.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-12{animation:ink-stroke-13-12 36s linear infinite}
+@keyframes ink-stroke-13-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}54.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}54.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-13{animation:ink-stroke-13-13 36s linear infinite}
+@keyframes ink-stroke-13-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}54.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}54.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-14{animation:ink-stroke-13-14 36s linear infinite}
+@keyframes ink-stroke-13-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}54.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}54.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-15{animation:ink-stroke-13-15 36s linear infinite}
+@keyframes ink-stroke-13-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}54.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}54.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-16{animation:ink-stroke-13-16 36s linear infinite}
+@keyframes ink-stroke-13-16{0%{stroke-dasharray:0 1;animation-timing-function:linear;}54.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}54.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-17{animation:ink-stroke-13-17 36s linear infinite}
+@keyframes ink-stroke-13-17{0%{stroke-dasharray:0 1;animation-timing-function:linear;}54.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}55.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-18{animation:ink-stroke-13-18 36s linear infinite}
+@keyframes ink-stroke-13-18{0%{stroke-dasharray:0 1;animation-timing-function:linear;}55%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}55.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-19{animation:ink-stroke-13-19 36s linear infinite}
+@keyframes ink-stroke-13-19{0%{stroke-dasharray:0 1;animation-timing-function:linear;}55.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}55.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-20{animation:ink-stroke-13-20 36s linear infinite}
+@keyframes ink-stroke-13-20{0%{stroke-dasharray:0 1;animation-timing-function:linear;}55.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}55.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-21{animation:ink-stroke-13-21 36s linear infinite}
+@keyframes ink-stroke-13-21{0%{stroke-dasharray:0 1;animation-timing-function:linear;}55.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}55.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-22{animation:ink-stroke-13-22 36s linear infinite}
+@keyframes ink-stroke-13-22{0%{stroke-dasharray:0 1;animation-timing-function:linear;}55.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}55.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-23{animation:ink-stroke-13-23 36s linear infinite}
+@keyframes ink-stroke-13-23{0%{stroke-dasharray:0 1;animation-timing-function:linear;}55.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}55.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-24{animation:ink-stroke-13-24 36s linear infinite}
+@keyframes ink-stroke-13-24{0%{stroke-dasharray:0 1;animation-timing-function:linear;}55.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}56.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-25{animation:ink-stroke-13-25 36s linear infinite}
+@keyframes ink-stroke-13-25{0%{stroke-dasharray:0 1;animation-timing-function:linear;}56%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}56.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-26{animation:ink-stroke-13-26 36s linear infinite}
+@keyframes ink-stroke-13-26{0%{stroke-dasharray:0 1;animation-timing-function:linear;}56.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}56.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-27{animation:ink-stroke-13-27 36s linear infinite}
+@keyframes ink-stroke-13-27{0%{stroke-dasharray:0 1;animation-timing-function:linear;}56.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}56.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-28{animation:ink-stroke-13-28 36s linear infinite}
+@keyframes ink-stroke-13-28{0%{stroke-dasharray:0 1;animation-timing-function:linear;}56.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}56.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-29{animation:ink-stroke-13-29 36s linear infinite}
+@keyframes ink-stroke-13-29{0%{stroke-dasharray:0 1;animation-timing-function:linear;}56.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}56.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-30{animation:ink-stroke-13-30 36s linear infinite}
+@keyframes ink-stroke-13-30{0%{stroke-dasharray:0 1;animation-timing-function:linear;}56.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}56.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-31{animation:ink-stroke-13-31 36s linear infinite}
+@keyframes ink-stroke-13-31{0%{stroke-dasharray:0 1;animation-timing-function:linear;}56.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}57%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-32{animation:ink-stroke-13-32 36s linear infinite}
+@keyframes ink-stroke-13-32{0%{stroke-dasharray:0 1;animation-timing-function:linear;}56.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}57.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-33{animation:ink-stroke-13-33 36s linear infinite}
+@keyframes ink-stroke-13-33{0%{stroke-dasharray:0 1;animation-timing-function:linear;}57.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}57.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-34{animation:ink-stroke-13-34 36s linear infinite}
+@keyframes ink-stroke-13-34{0%{stroke-dasharray:0 1;animation-timing-function:linear;}57.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}57.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-35{animation:ink-stroke-13-35 36s linear infinite}
+@keyframes ink-stroke-13-35{0%{stroke-dasharray:0 1;animation-timing-function:linear;}57.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}57.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-36{animation:ink-stroke-13-36 36s linear infinite}
+@keyframes ink-stroke-13-36{0%{stroke-dasharray:0 1;animation-timing-function:linear;}57.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}57.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-37{animation:ink-stroke-13-37 36s linear infinite}
+@keyframes ink-stroke-13-37{0%{stroke-dasharray:0 1;animation-timing-function:linear;}57.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}57.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-38{animation:ink-stroke-13-38 36s linear infinite}
+@keyframes ink-stroke-13-38{0%{stroke-dasharray:0 1;animation-timing-function:linear;}57.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}58%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-39{animation:ink-stroke-13-39 36s linear infinite}
+@keyframes ink-stroke-13-39{0%{stroke-dasharray:0 1;animation-timing-function:linear;}57.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}58.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-40{animation:ink-stroke-13-40 36s linear infinite}
+@keyframes ink-stroke-13-40{0%{stroke-dasharray:0 1;animation-timing-function:linear;}58.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}58.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-41{animation:ink-stroke-13-41 36s linear infinite}
+@keyframes ink-stroke-13-41{0%{stroke-dasharray:0 1;animation-timing-function:linear;}58.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}58.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-42{animation:ink-stroke-13-42 36s linear infinite}
+@keyframes ink-stroke-13-42{0%{stroke-dasharray:0 1;animation-timing-function:linear;}58.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}58.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-43{animation:ink-stroke-13-43 36s linear infinite}
+@keyframes ink-stroke-13-43{0%{stroke-dasharray:0 1;animation-timing-function:linear;}58.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}58.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-44{animation:ink-stroke-13-44 36s linear infinite}
+@keyframes ink-stroke-13-44{0%{stroke-dasharray:0 1;animation-timing-function:linear;}58.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}58.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-13-45{animation:ink-stroke-13-45 36s linear infinite}
+@keyframes ink-stroke-13-45{0%{stroke-dasharray:0 1;animation-timing-function:linear;}58.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}59%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-13{animation:ink-mark-13 36s linear infinite}
+@keyframes ink-mark-13{0%{opacity:0;animation-timing-function:linear;}52.5%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}53.75%{opacity:0.65;animation-timing-function:linear;}62.5%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}67.5%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-14-0{animation:ink-stroke-14-0 36s linear infinite}
+@keyframes ink-stroke-14-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}57.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}58.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-14-1{animation:ink-stroke-14-1 36s linear infinite}
+@keyframes ink-stroke-14-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}58.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}60.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-14-2{animation:ink-stroke-14-2 36s linear infinite}
+@keyframes ink-stroke-14-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}60.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}62.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-14-3{animation:ink-stroke-14-3 36s linear infinite}
+@keyframes ink-stroke-14-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}62%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}63.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-14{animation:ink-mark-14 36s linear infinite}
+@keyframes ink-mark-14{0%{opacity:0;animation-timing-function:linear;}57.22%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}58.47%{opacity:0.65;animation-timing-function:linear;}67.22%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}72.22%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-15-0{animation:ink-stroke-15-0 36s linear infinite}
+@keyframes ink-stroke-15-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}61.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}62.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-1{animation:ink-stroke-15-1 36s linear infinite}
+@keyframes ink-stroke-15-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}62.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}62.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-2{animation:ink-stroke-15-2 36s linear infinite}
+@keyframes ink-stroke-15-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}62.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}63.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-3{animation:ink-stroke-15-3 36s linear infinite}
+@keyframes ink-stroke-15-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}63.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}63.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-4{animation:ink-stroke-15-4 36s linear infinite}
+@keyframes ink-stroke-15-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}63.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}64%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-5{animation:ink-stroke-15-5 36s linear infinite}
+@keyframes ink-stroke-15-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}63.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}64.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-6{animation:ink-stroke-15-6 36s linear infinite}
+@keyframes ink-stroke-15-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}64.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}64.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-7{animation:ink-stroke-15-7 36s linear infinite}
+@keyframes ink-stroke-15-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}64.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}65.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-8{animation:ink-stroke-15-8 36s linear infinite}
+@keyframes ink-stroke-15-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}65.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}65.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-9{animation:ink-stroke-15-9 36s linear infinite}
+@keyframes ink-stroke-15-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}65.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}66%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-10{animation:ink-stroke-15-10 36s linear infinite}
+@keyframes ink-stroke-15-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}65.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}66.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-11{animation:ink-stroke-15-11 36s linear infinite}
+@keyframes ink-stroke-15-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}66.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}66.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-12{animation:ink-stroke-15-12 36s linear infinite}
+@keyframes ink-stroke-15-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}66.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}67.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-13{animation:ink-stroke-15-13 36s linear infinite}
+@keyframes ink-stroke-15-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}67.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}67.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-14{animation:ink-stroke-15-14 36s linear infinite}
+@keyframes ink-stroke-15-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}67.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}68%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-15-15{animation:ink-stroke-15-15 36s linear infinite}
+@keyframes ink-stroke-15-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}67.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}68.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-15{animation:ink-mark-15 36s linear infinite}
+@keyframes ink-mark-15{0%{opacity:0;animation-timing-function:linear;}61.94%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}63.19%{opacity:0.65;animation-timing-function:linear;}71.94%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}76.94%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-16-0{animation:ink-stroke-16-0 36s linear infinite}
+@keyframes ink-stroke-16-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}66.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}66.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-1{animation:ink-stroke-16-1 36s linear infinite}
+@keyframes ink-stroke-16-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}66.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}66.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-2{animation:ink-stroke-16-2 36s linear infinite}
+@keyframes ink-stroke-16-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}66.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}66.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-3{animation:ink-stroke-16-3 36s linear infinite}
+@keyframes ink-stroke-16-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}66.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}67%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-4{animation:ink-stroke-16-4 36s linear infinite}
+@keyframes ink-stroke-16-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}66.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}67.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-5{animation:ink-stroke-16-5 36s linear infinite}
+@keyframes ink-stroke-16-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}67%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}67.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-6{animation:ink-stroke-16-6 36s linear infinite}
+@keyframes ink-stroke-16-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}67.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}67.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-7{animation:ink-stroke-16-7 36s linear infinite}
+@keyframes ink-stroke-16-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}67.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}67.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-8{animation:ink-stroke-16-8 36s linear infinite}
+@keyframes ink-stroke-16-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}67.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}67.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-9{animation:ink-stroke-16-9 36s linear infinite}
+@keyframes ink-stroke-16-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}67.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}67.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-10{animation:ink-stroke-16-10 36s linear infinite}
+@keyframes ink-stroke-16-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}67.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}67.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-11{animation:ink-stroke-16-11 36s linear infinite}
+@keyframes ink-stroke-16-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}67.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}68%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-12{animation:ink-stroke-16-12 36s linear infinite}
+@keyframes ink-stroke-16-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}68%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}68.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-13{animation:ink-stroke-16-13 36s linear infinite}
+@keyframes ink-stroke-16-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}68.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}68.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-14{animation:ink-stroke-16-14 36s linear infinite}
+@keyframes ink-stroke-16-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}68.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}68.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-15{animation:ink-stroke-16-15 36s linear infinite}
+@keyframes ink-stroke-16-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}68.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}68.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-16{animation:ink-stroke-16-16 36s linear infinite}
+@keyframes ink-stroke-16-16{0%{stroke-dasharray:0 1;animation-timing-function:linear;}68.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}68.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-17{animation:ink-stroke-16-17 36s linear infinite}
+@keyframes ink-stroke-16-17{0%{stroke-dasharray:0 1;animation-timing-function:linear;}68.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}68.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-18{animation:ink-stroke-16-18 36s linear infinite}
+@keyframes ink-stroke-16-18{0%{stroke-dasharray:0 1;animation-timing-function:linear;}68.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}69%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-19{animation:ink-stroke-16-19 36s linear infinite}
+@keyframes ink-stroke-16-19{0%{stroke-dasharray:0 1;animation-timing-function:linear;}68.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}69.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-20{animation:ink-stroke-16-20 36s linear infinite}
+@keyframes ink-stroke-16-20{0%{stroke-dasharray:0 1;animation-timing-function:linear;}69%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}69.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-21{animation:ink-stroke-16-21 36s linear infinite}
+@keyframes ink-stroke-16-21{0%{stroke-dasharray:0 1;animation-timing-function:linear;}69.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}69.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-22{animation:ink-stroke-16-22 36s linear infinite}
+@keyframes ink-stroke-16-22{0%{stroke-dasharray:0 1;animation-timing-function:linear;}69.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}69.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-23{animation:ink-stroke-16-23 36s linear infinite}
+@keyframes ink-stroke-16-23{0%{stroke-dasharray:0 1;animation-timing-function:linear;}69.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}69.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-24{animation:ink-stroke-16-24 36s linear infinite}
+@keyframes ink-stroke-16-24{0%{stroke-dasharray:0 1;animation-timing-function:linear;}69.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}69.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-25{animation:ink-stroke-16-25 36s linear infinite}
+@keyframes ink-stroke-16-25{0%{stroke-dasharray:0 1;animation-timing-function:linear;}69.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}69.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-26{animation:ink-stroke-16-26 36s linear infinite}
+@keyframes ink-stroke-16-26{0%{stroke-dasharray:0 1;animation-timing-function:linear;}69.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}70%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-27{animation:ink-stroke-16-27 36s linear infinite}
+@keyframes ink-stroke-16-27{0%{stroke-dasharray:0 1;animation-timing-function:linear;}69.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}70.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-28{animation:ink-stroke-16-28 36s linear infinite}
+@keyframes ink-stroke-16-28{0%{stroke-dasharray:0 1;animation-timing-function:linear;}70%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}70.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-29{animation:ink-stroke-16-29 36s linear infinite}
+@keyframes ink-stroke-16-29{0%{stroke-dasharray:0 1;animation-timing-function:linear;}70.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}70.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-30{animation:ink-stroke-16-30 36s linear infinite}
+@keyframes ink-stroke-16-30{0%{stroke-dasharray:0 1;animation-timing-function:linear;}70.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}70.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-31{animation:ink-stroke-16-31 36s linear infinite}
+@keyframes ink-stroke-16-31{0%{stroke-dasharray:0 1;animation-timing-function:linear;}70.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}70.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-32{animation:ink-stroke-16-32 36s linear infinite}
+@keyframes ink-stroke-16-32{0%{stroke-dasharray:0 1;animation-timing-function:linear;}70.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}70.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-33{animation:ink-stroke-16-33 36s linear infinite}
+@keyframes ink-stroke-16-33{0%{stroke-dasharray:0 1;animation-timing-function:linear;}70.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}70.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-34{animation:ink-stroke-16-34 36s linear infinite}
+@keyframes ink-stroke-16-34{0%{stroke-dasharray:0 1;animation-timing-function:linear;}70.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}71%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-35{animation:ink-stroke-16-35 36s linear infinite}
+@keyframes ink-stroke-16-35{0%{stroke-dasharray:0 1;animation-timing-function:linear;}71%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}71.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-36{animation:ink-stroke-16-36 36s linear infinite}
+@keyframes ink-stroke-16-36{0%{stroke-dasharray:0 1;animation-timing-function:linear;}71.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}71.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-37{animation:ink-stroke-16-37 36s linear infinite}
+@keyframes ink-stroke-16-37{0%{stroke-dasharray:0 1;animation-timing-function:linear;}71.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}71.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-38{animation:ink-stroke-16-38 36s linear infinite}
+@keyframes ink-stroke-16-38{0%{stroke-dasharray:0 1;animation-timing-function:linear;}71.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}71.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-39{animation:ink-stroke-16-39 36s linear infinite}
+@keyframes ink-stroke-16-39{0%{stroke-dasharray:0 1;animation-timing-function:linear;}71.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}71.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-40{animation:ink-stroke-16-40 36s linear infinite}
+@keyframes ink-stroke-16-40{0%{stroke-dasharray:0 1;animation-timing-function:linear;}71.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}71.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-41{animation:ink-stroke-16-41 36s linear infinite}
+@keyframes ink-stroke-16-41{0%{stroke-dasharray:0 1;animation-timing-function:linear;}71.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}72%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-42{animation:ink-stroke-16-42 36s linear infinite}
+@keyframes ink-stroke-16-42{0%{stroke-dasharray:0 1;animation-timing-function:linear;}71.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}72.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-43{animation:ink-stroke-16-43 36s linear infinite}
+@keyframes ink-stroke-16-43{0%{stroke-dasharray:0 1;animation-timing-function:linear;}72%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}72.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-44{animation:ink-stroke-16-44 36s linear infinite}
+@keyframes ink-stroke-16-44{0%{stroke-dasharray:0 1;animation-timing-function:linear;}72.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}72.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-45{animation:ink-stroke-16-45 36s linear infinite}
+@keyframes ink-stroke-16-45{0%{stroke-dasharray:0 1;animation-timing-function:linear;}72.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}72.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-46{animation:ink-stroke-16-46 36s linear infinite}
+@keyframes ink-stroke-16-46{0%{stroke-dasharray:0 1;animation-timing-function:linear;}72.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}72.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-47{animation:ink-stroke-16-47 36s linear infinite}
+@keyframes ink-stroke-16-47{0%{stroke-dasharray:0 1;animation-timing-function:linear;}72.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}72.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-16-48{animation:ink-stroke-16-48 36s linear infinite}
+@keyframes ink-stroke-16-48{0%{stroke-dasharray:0 1;animation-timing-function:linear;}72.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}72.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-16{animation:ink-mark-16 36s linear infinite}
+@keyframes ink-mark-16{0%{opacity:0;animation-timing-function:linear;}66.39%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}67.64%{opacity:0.65;animation-timing-function:linear;}76.39%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}81.39%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-17-0{animation:ink-stroke-17-0 36s linear infinite}
+@keyframes ink-stroke-17-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}71.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}71.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-17-1{animation:ink-stroke-17-1 36s linear infinite}
+@keyframes ink-stroke-17-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}71.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}72.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-17-2{animation:ink-stroke-17-2 36s linear infinite}
+@keyframes ink-stroke-17-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}72.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}72.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-17-3{animation:ink-stroke-17-3 36s linear infinite}
+@keyframes ink-stroke-17-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}72.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}73.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-17-4{animation:ink-stroke-17-4 36s linear infinite}
+@keyframes ink-stroke-17-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}73.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}73.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-17-5{animation:ink-stroke-17-5 36s linear infinite}
+@keyframes ink-stroke-17-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}73.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}74.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-17-6{animation:ink-stroke-17-6 36s linear infinite}
+@keyframes ink-stroke-17-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}74.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}74.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-17-7{animation:ink-stroke-17-7 36s linear infinite}
+@keyframes ink-stroke-17-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}74.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}75.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-17-8{animation:ink-stroke-17-8 36s linear infinite}
+@keyframes ink-stroke-17-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}75.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}75.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-17-9{animation:ink-stroke-17-9 36s linear infinite}
+@keyframes ink-stroke-17-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}75.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}76.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-17-10{animation:ink-stroke-17-10 36s linear infinite}
+@keyframes ink-stroke-17-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}76.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}77%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-17-11{animation:ink-stroke-17-11 36s linear infinite}
+@keyframes ink-stroke-17-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}77%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}77.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-17{animation:ink-mark-17 36s linear infinite}
+@keyframes ink-mark-17{0%{opacity:0;animation-timing-function:linear;}71.11%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}72.36%{opacity:0.65;animation-timing-function:linear;}81.11%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}86.11%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-18-0{animation:ink-stroke-18-0 36s linear infinite}
+@keyframes ink-stroke-18-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}75.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}75.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-18-1{animation:ink-stroke-18-1 36s linear infinite}
+@keyframes ink-stroke-18-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}75.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}76.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-18-2{animation:ink-stroke-18-2 36s linear infinite}
+@keyframes ink-stroke-18-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}76.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}76.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-18-3{animation:ink-stroke-18-3 36s linear infinite}
+@keyframes ink-stroke-18-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}76.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}77.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-18-4{animation:ink-stroke-18-4 36s linear infinite}
+@keyframes ink-stroke-18-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}77.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}77.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-18-5{animation:ink-stroke-18-5 36s linear infinite}
+@keyframes ink-stroke-18-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}77.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}78.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-18-6{animation:ink-stroke-18-6 36s linear infinite}
+@keyframes ink-stroke-18-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}78.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}78.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-18-7{animation:ink-stroke-18-7 36s linear infinite}
+@keyframes ink-stroke-18-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}78.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}79.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-18-8{animation:ink-stroke-18-8 36s linear infinite}
+@keyframes ink-stroke-18-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}79.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}79.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-18-9{animation:ink-stroke-18-9 36s linear infinite}
+@keyframes ink-stroke-18-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}79.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}80.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-18-10{animation:ink-stroke-18-10 36s linear infinite}
+@keyframes ink-stroke-18-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}80.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}80.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-18-11{animation:ink-stroke-18-11 36s linear infinite}
+@keyframes ink-stroke-18-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}80.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}81.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-18-12{animation:ink-stroke-18-12 36s linear infinite}
+@keyframes ink-stroke-18-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}81.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}81.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-18{animation:ink-mark-18 36s linear infinite}
+@keyframes ink-mark-18{0%{opacity:0;animation-timing-function:linear;}75.28%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}76.53%{opacity:0.65;animation-timing-function:linear;}85.28%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}90.28%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-19-0{animation:ink-stroke-19-0 36s linear infinite}
+@keyframes ink-stroke-19-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}80%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}80.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-1{animation:ink-stroke-19-1 36s linear infinite}
+@keyframes ink-stroke-19-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}80.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}80.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-2{animation:ink-stroke-19-2 36s linear infinite}
+@keyframes ink-stroke-19-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}80.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}81.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-3{animation:ink-stroke-19-3 36s linear infinite}
+@keyframes ink-stroke-19-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}81.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}81.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-4{animation:ink-stroke-19-4 36s linear infinite}
+@keyframes ink-stroke-19-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}81.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}82.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-5{animation:ink-stroke-19-5 36s linear infinite}
+@keyframes ink-stroke-19-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}82.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}82.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-6{animation:ink-stroke-19-6 36s linear infinite}
+@keyframes ink-stroke-19-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}82.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}83.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-7{animation:ink-stroke-19-7 36s linear infinite}
+@keyframes ink-stroke-19-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}83.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}83.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-8{animation:ink-stroke-19-8 36s linear infinite}
+@keyframes ink-stroke-19-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}83.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}84.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-9{animation:ink-stroke-19-9 36s linear infinite}
+@keyframes ink-stroke-19-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}84.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}84.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-10{animation:ink-stroke-19-10 36s linear infinite}
+@keyframes ink-stroke-19-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}84.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}85%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-11{animation:ink-stroke-19-11 36s linear infinite}
+@keyframes ink-stroke-19-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}85%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}85.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-12{animation:ink-stroke-19-12 36s linear infinite}
+@keyframes ink-stroke-19-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}85.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}86%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-19-13{animation:ink-stroke-19-13 36s linear infinite}
+@keyframes ink-stroke-19-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}85.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}86.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-19{animation:ink-mark-19 36s linear infinite}
+@keyframes ink-mark-19{0%{opacity:0;animation-timing-function:linear;}80%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}81.25%{opacity:0.65;animation-timing-function:linear;}90%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}95%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-20-0{animation:ink-stroke-20-0 36s linear infinite}
+@keyframes ink-stroke-20-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}84.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}85.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-20-1{animation:ink-stroke-20-1 36s linear infinite}
+@keyframes ink-stroke-20-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}85.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}86.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-20-2{animation:ink-stroke-20-2 36s linear infinite}
+@keyframes ink-stroke-20-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}86.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}87.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-20-3{animation:ink-stroke-20-3 36s linear infinite}
+@keyframes ink-stroke-20-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}87.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}88.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-20-4{animation:ink-stroke-20-4 36s linear infinite}
+@keyframes ink-stroke-20-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}88.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}89%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-20-5{animation:ink-stroke-20-5 36s linear infinite}
+@keyframes ink-stroke-20-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}89%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}90%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-20-6{animation:ink-stroke-20-6 36s linear infinite}
+@keyframes ink-stroke-20-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}89.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}90.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-20{animation:ink-mark-20 36s linear infinite}
+@keyframes ink-mark-20{0%{opacity:0;animation-timing-function:linear;}84.44%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}85.69%{opacity:0.65;animation-timing-function:linear;}94.44%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}99.44%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-21-0{animation:ink-stroke-21-0 36s linear infinite}
+@keyframes ink-stroke-21-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}55.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}55.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-1{animation:ink-stroke-21-1 36s linear infinite}
+@keyframes ink-stroke-21-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}55.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}55.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-3{animation:ink-stroke-21-3 36s linear infinite}
+@keyframes ink-stroke-21-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}56.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}56.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-4{animation:ink-stroke-21-4 36s linear infinite}
+@keyframes ink-stroke-21-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}56.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}56.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-5{animation:ink-stroke-21-5 36s linear infinite}
+@keyframes ink-stroke-21-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}56.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}56.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-7{animation:ink-stroke-21-7 36s linear infinite}
+@keyframes ink-stroke-21-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}57.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}57.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-8{animation:ink-stroke-21-8 36s linear infinite}
+@keyframes ink-stroke-21-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}57.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}57.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-9{animation:ink-stroke-21-9 36s linear infinite}
+@keyframes ink-stroke-21-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}57.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}58%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-10{animation:ink-stroke-21-10 36s linear infinite}
+@keyframes ink-stroke-21-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}57.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}58.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-11{animation:ink-stroke-21-11 36s linear infinite}
+@keyframes ink-stroke-21-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}58.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}58.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-12{animation:ink-stroke-21-12 36s linear infinite}
+@keyframes ink-stroke-21-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}58.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}58.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-13{animation:ink-stroke-21-13 36s linear infinite}
+@keyframes ink-stroke-21-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}58.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}59%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-14{animation:ink-stroke-21-14 36s linear infinite}
+@keyframes ink-stroke-21-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}59%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}59.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-15{animation:ink-stroke-21-15 36s linear infinite}
+@keyframes ink-stroke-21-15{0%{stroke-dasharray:0 1;animation-timing-function:linear;}59.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}59.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-16{animation:ink-stroke-21-16 36s linear infinite}
+@keyframes ink-stroke-21-16{0%{stroke-dasharray:0 1;animation-timing-function:linear;}59.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}59.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-17{animation:ink-stroke-21-17 36s linear infinite}
+@keyframes ink-stroke-21-17{0%{stroke-dasharray:0 1;animation-timing-function:linear;}59.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}60.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-18{animation:ink-stroke-21-18 36s linear infinite}
+@keyframes ink-stroke-21-18{0%{stroke-dasharray:0 1;animation-timing-function:linear;}60.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}60.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-19{animation:ink-stroke-21-19 36s linear infinite}
+@keyframes ink-stroke-21-19{0%{stroke-dasharray:0 1;animation-timing-function:linear;}60.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}60.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-20{animation:ink-stroke-21-20 36s linear infinite}
+@keyframes ink-stroke-21-20{0%{stroke-dasharray:0 1;animation-timing-function:linear;}60.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}60.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-21{animation:ink-stroke-21-21 36s linear infinite}
+@keyframes ink-stroke-21-21{0%{stroke-dasharray:0 1;animation-timing-function:linear;}60.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}61.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-22{animation:ink-stroke-21-22 36s linear infinite}
+@keyframes ink-stroke-21-22{0%{stroke-dasharray:0 1;animation-timing-function:linear;}61.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}61.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-21-23{animation:ink-stroke-21-23 36s linear infinite}
+@keyframes ink-stroke-21-23{0%{stroke-dasharray:0 1;animation-timing-function:linear;}61.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}61.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-21{animation:ink-mark-21 36s linear infinite}
+@keyframes ink-mark-21{0%{opacity:0;animation-timing-function:linear;}55.28%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}56.53%{opacity:0.65;animation-timing-function:linear;}65.28%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}70.28%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-22-0{animation:ink-stroke-22-0 36s linear infinite}
+@keyframes ink-stroke-22-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}69.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}69.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-1{animation:ink-stroke-22-1 36s linear infinite}
+@keyframes ink-stroke-22-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}69.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}70%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-2{animation:ink-stroke-22-2 36s linear infinite}
+@keyframes ink-stroke-22-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}70%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}70.5%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-3{animation:ink-stroke-22-3 36s linear infinite}
+@keyframes ink-stroke-22-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}70.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}70.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-4{animation:ink-stroke-22-4 36s linear infinite}
+@keyframes ink-stroke-22-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}70.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}71.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-5{animation:ink-stroke-22-5 36s linear infinite}
+@keyframes ink-stroke-22-5{0%{stroke-dasharray:0 1;animation-timing-function:linear;}71.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}71.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-6{animation:ink-stroke-22-6 36s linear infinite}
+@keyframes ink-stroke-22-6{0%{stroke-dasharray:0 1;animation-timing-function:linear;}71.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}72.2%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-7{animation:ink-stroke-22-7 36s linear infinite}
+@keyframes ink-stroke-22-7{0%{stroke-dasharray:0 1;animation-timing-function:linear;}72.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}72.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-8{animation:ink-stroke-22-8 36s linear infinite}
+@keyframes ink-stroke-22-8{0%{stroke-dasharray:0 1;animation-timing-function:linear;}72.6%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}73%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-9{animation:ink-stroke-22-9 36s linear infinite}
+@keyframes ink-stroke-22-9{0%{stroke-dasharray:0 1;animation-timing-function:linear;}73%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}73.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-10{animation:ink-stroke-22-10 36s linear infinite}
+@keyframes ink-stroke-22-10{0%{stroke-dasharray:0 1;animation-timing-function:linear;}73.4%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}73.9%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-11{animation:ink-stroke-22-11 36s linear infinite}
+@keyframes ink-stroke-22-11{0%{stroke-dasharray:0 1;animation-timing-function:linear;}73.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}74.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-12{animation:ink-stroke-22-12 36s linear infinite}
+@keyframes ink-stroke-22-12{0%{stroke-dasharray:0 1;animation-timing-function:linear;}74.3%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}74.7%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-13{animation:ink-stroke-22-13 36s linear infinite}
+@keyframes ink-stroke-22-13{0%{stroke-dasharray:0 1;animation-timing-function:linear;}74.7%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}75.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-22-14{animation:ink-stroke-22-14 36s linear infinite}
+@keyframes ink-stroke-22-14{0%{stroke-dasharray:0 1;animation-timing-function:linear;}75.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}75.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-22{animation:ink-mark-22 36s linear infinite}
+@keyframes ink-mark-22{0%{opacity:0;animation-timing-function:linear;}69.17%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}70.42%{opacity:0.65;animation-timing-function:linear;}79.17%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}84.17%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}
+.ink-stroke-23-0{animation:ink-stroke-23-0 36s linear infinite}
+@keyframes ink-stroke-23-0{0%{stroke-dasharray:0 1;animation-timing-function:linear;}81.9%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}83.3%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-23-1{animation:ink-stroke-23-1 36s linear infinite}
+@keyframes ink-stroke-23-1{0%{stroke-dasharray:0 1;animation-timing-function:linear;}83.2%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}84.6%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-23-2{animation:ink-stroke-23-2 36s linear infinite}
+@keyframes ink-stroke-23-2{0%{stroke-dasharray:0 1;animation-timing-function:linear;}84.5%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}85.8%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-23-3{animation:ink-stroke-23-3 36s linear infinite}
+@keyframes ink-stroke-23-3{0%{stroke-dasharray:0 1;animation-timing-function:linear;}85.8%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}87.1%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-stroke-23-4{animation:ink-stroke-23-4 36s linear infinite}
+@keyframes ink-stroke-23-4{0%{stroke-dasharray:0 1;animation-timing-function:linear;}87.1%{stroke-dasharray:0 1;animation-timing-function:cubic-bezier(0,0,.58,1);}88.4%{stroke-dasharray:1 1;animation-timing-function:linear;}100%{stroke-dasharray:1 1;}}
+.ink-mark-23{animation:ink-mark-23 36s linear infinite}
+@keyframes ink-mark-23{0%{opacity:0;animation-timing-function:linear;}81.94%{opacity:0;animation-timing-function:cubic-bezier(0,0,.58,1);}83.19%{opacity:0.65;animation-timing-function:linear;}91.94%{opacity:0.65;animation-timing-function:cubic-bezier(.42,0,.58,1);}96.94%{opacity:0;animation-timing-function:linear;}100%{opacity:0;}}

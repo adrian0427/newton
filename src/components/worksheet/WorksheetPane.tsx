@@ -3,12 +3,13 @@
 import { useEffect, useRef, useState, useCallback, type ClipboardEvent, type DragEvent } from "react";
 import dynamic from "next/dynamic";
 import { worksheetKind } from "./files";
+import { deletePart, loadPart, savePart } from "../whiteboard/persistence";
 
 const PdfPage = dynamic(() => import("./PdfPage"), { ssr: false, loading: () => <p className="viewer-status" role="status">Opening PDF viewer...</p> });
 
 type Worksheet = { file: File; kind: "pdf" | "image"; url: string };
 
-export default function WorksheetPane({ onDocumentChange }: { onDocumentChange(present: boolean): void }) {
+export default function WorksheetPane({ onDocumentChange, storageScope }: { onDocumentChange(present: boolean): void; storageScope?: string }) {
   const [worksheet, setWorksheet] = useState<Worksheet | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,7 +28,7 @@ export default function WorksheetPane({ onDocumentChange }: { onDocumentChange(p
     if (currentUrl.current) URL.revokeObjectURL(currentUrl.current);
   }, []);
 
-  const accept = useCallback(async (files: File[]) => {
+  const accept = useCallback(async (files: File[], persist = true) => {
     const generation = ++request.current;
     if (files.length !== 1) { setLoading(false); setError("Add one worksheet at a time."); return; }
     setLoading(true); setError("");
@@ -47,10 +48,19 @@ export default function WorksheetPane({ onDocumentChange }: { onDocumentChange(p
       setWorksheet({ file, kind, url });
       setZoom(1); setPage(1); setPageCount(0);
       onDocumentChange(true);
+      if (persist) void savePart("worksheet", { name: file.name, type: file.type, blob: file }, storageScope);
     } catch (reason) {
       if (generation === request.current) setError(reason instanceof Error ? reason.message : "This file could not be opened. Try a different PDF or image.");
     } finally { if (generation === request.current) setLoading(false); }
-  }, [onDocumentChange]);
+  }, [onDocumentChange, storageScope]);
+
+  useEffect(() => {
+    let active = true;
+    void loadPart("worksheet", storageScope).then((saved) => {
+      if (active && saved && !currentUrl.current) void accept([new File([saved.blob], saved.name, { type: saved.type })], false);
+    });
+    return () => { active = false; };
+  }, [accept, storageScope]);
 
   useEffect(() => {
     function pasteWithoutEditor(event: globalThis.ClipboardEvent) {
@@ -63,7 +73,7 @@ export default function WorksheetPane({ onDocumentChange }: { onDocumentChange(p
     }
     document.addEventListener("paste", pasteWithoutEditor);
     return () => document.removeEventListener("paste", pasteWithoutEditor);
-  }, [accept]);
+  }, [accept, storageScope]);
 
   function remove() {
     request.current++;
@@ -71,6 +81,7 @@ export default function WorksheetPane({ onDocumentChange }: { onDocumentChange(p
     currentUrl.current = null;
     setWorksheet(null); setError(""); setLoading(false); setPageCount(0);
     onDocumentChange(false);
+    void deletePart("worksheet", storageScope);
   }
   function paste(event: ClipboardEvent) {
     // Leave ordinary text paste alone; files are only read inside this pane.
@@ -111,7 +122,7 @@ export default function WorksheetPane({ onDocumentChange }: { onDocumentChange(p
       <h2>Bring something to work on.</h2><p>Drop a worksheet here,<br />or paste a screenshot with <kbd>⌘ / Ctrl V</kbd>.</p>
       <button className="workspace-button" type="button" onClick={() => input.current?.click()}>Upload worksheet <span aria-hidden="true">↗</span></button>
       <span className="file-formats">PDF, PNG, JPEG, WebP · Up to 20 MiB</span>
-      <p className="worksheet-privacy">Your files stay in this tab.<br />Nothing is uploaded or saved automatically.</p>
+      <p className="worksheet-privacy">Your files stay on this device.<br />Nothing is uploaded. Work is saved in this browser.</p>
     </div>}
     {dragging && <div className="drop-overlay" aria-hidden="true"><span>Drop your worksheet here</span></div>}
   </section>;

@@ -1,6 +1,6 @@
 # Structured-work tutoring slice
 
-A01 and B01 are connected through the real workspace, `VoiceSession`, and MathLive expression/revision contracts. C01's authentication, owned-session and learning-memory backend now exists, but this slice still does not create study sessions or write learning events, and the voice token handler does not yet call C's helpers. Public `/study` therefore supports local checking/hints, and handwriting reads for signed-in students, but keeps voice disabled. A guarded generated `/dev/study` page provides the combined voice demonstration without supplying a local capability to the public study route.
+A01 and B01 share the real workspace, voice adapter, deterministic checker and versioned work. C01 supplies authenticated identity and owned study sessions. Signed-in students can explicitly read and confirm handwriting; local development `/study` voice uses the real owned session UUID. Production/preview voice remains disabled. Learning-memory consumption and observation writing are not connected to tutoring. The generated `/dev/study` page remains a separate capability-guarded demonstration.
 
 `npm run voice:dev` now prepares workspace assets and generates both `/dev/voice` and `/dev/study`. The same development/loopback/preview/CI checks, per-run capability, same-origin POST validation and issuance limit protect them. Production issuance stays closed. No fake authenticated session or duplicate token endpoint was introduced. Do not expose this server through a public tunnel. Ctrl+C or `npm run voice:dev -- --clean` removes both generated pages and their stale route types.
 
@@ -12,7 +12,7 @@ Work is checked against the active problem, initially the practice expression `7
 
 Check work displays the submitted expression and result and silently supplies it to an active voice session. Start voice includes the latest still-current explicit submission in initial agent settings. Ask for a hint does the same, then sends exactly one requested user message after context acknowledgement. Ordinary spoken requests (for example “What did I do wrong?”) use the supplied context without injecting another user turn. Draft typing alone is not a submission. Unsupported input can be shared as explicitly unverified structured text, never as a verified correction.
 
-The provider-independent `VoiceSession.updateContext(context): Promise<boolean>` stores context while idle and awaits provider acknowledgement while connected. Context contains a bounded problem, revision ID, optional structured submission and local result/guiding hint. `VoiceSnapshot.context` reports stored/pending/applied/failed and a sanitized failure code; the local `/dev/study` controls display only its status and revision ID. The existing `sendText(message): boolean` remains the explicit response-triggering path. Neither operation starts a microphone automatically.
+The provider-independent `VoiceSession.updateContext(context): Promise<boolean>` stores context while idle and awaits provider acknowledgement while connected. Context contains a bounded problem, revision ID, optional structured submission and local result/guiding hint. `VoiceSnapshot.context` reports stored/pending/applied/failed and a sanitized failure code; development controls display only its status and revision ID. The existing `sendText(message): boolean` remains the explicit response-triggering path. Neither operation starts a microphone automatically.
 
 Deepgram's initial `agent.think.prompt` contains the base tutoring policy and one current-work block. For live changes, `updateThink()` sends the same managed model/provider with a complete replacement prompt and waits for `think-updated` (`ThinkUpdated`). `updatePrompt()` is deliberately not used: official documentation says it appends rather than replaces. Initial `agent.context.messages` supplies conversation history, not a revision-aware work slot. `injectUserMessage()` generates a response, so it is used only for the explicit hint button, never silent context synchronization. No transcript history is synthesized or replayed on restart.
 
@@ -20,7 +20,7 @@ Feedback is revision/source/input scoped. Edits, clear and worksheet/source chan
 
 Idle context changes pause audio forwarding until acknowledgement (maximum five seconds); no buffered microphone frames are replayed. New speech or output racing an update, delivery failures, or edits while a turn is pending/playing close the connection and show restart guidance. This is conservative because binary audio has no server response/revision IDs. Start again uses only the latest stored context. Edits arriving during an idle update are coalesced behind its acknowledgement, with no concurrent context requests. Successful idle replacements preserve the connection; the context remains in the prompt across subsequent spoken turns. Closing the panel preserves voice; navigation/pagehide stops it. Natural/manual interruption and existing audio-drain/stale-response guards remain in place.
 
-Checks are transient client-side assistance, not persistence-authorizing learning evidence. No work, audio, transcripts or learning events are logged/persisted by this slice. A future server path must recompute/validate work, and C must enforce identity, ownership and evidence eligibility before writing memory. No worksheet sharing, model-based grading, proactive controller, general verification tool, or persistent tutoring history is claimed.
+Checks are transient client-side assistance, not persistence-authorizing learning evidence. Recognition output, checks, audio, transcripts and learning events are not logged or persisted by tutoring. The workspace separately saves source drawings, worksheets and structured drafts in account-scoped device-local IndexedDB. A future server path must recompute/validate work, and C must enforce identity, ownership and evidence eligibility before writing memory. No worksheet sharing, model-based grading, proactive controller, general verification tool, or persistent tutoring history is claimed.
 
 ## Manual demo
 
@@ -32,7 +32,7 @@ Checks are transient client-side assistance, not persistence-authorizing learnin
 
 ## Automated validation boundaries
 
-Unit tests cover exact/unsupported mathematics, targeted hints, bounded context, SDK delivery, duplicate guards, errors and cleanup. Playwright uses the real workspace/MathLive at desktop and 360px widths. Its explicit `NEWTON_TEST_DEV_STUDY=1` cases run against `NEWTON_TEST_URL` with mocked credentials/Deepgram WebSocket and a synthetic microphone. These establish browser wiring, not live model behavior, audible human speech or acoustic stability; no billable service calls are required.
+Unit tests cover exact/unsupported mathematics, targeted hints, bounded context, SDK delivery, duplicate guards, errors and cleanup. Playwright uses the real workspace/MathLive at desktop and 360px widths. Its explicit `NEWTON_TEST_DEV_STUDY=1` cases run against `NEWTON_TEST_URL` with mocked credentials/Deepgram WebSocket and a synthetic microphone. These establish browser wiring, not live model behavior, audible human speech or acoustic stability; no billable service calls are required. To include both the isolated harness and ordinary owned-session voice cases, run a separate loopback `voice:dev` server and set `NEWTON_TEST_URL=http://127.0.0.1:3100 NEWTON_TEST_DEV_STUDY=1 NEWTON_TEST_LOCAL_VOICE=1` for `npm run test:e2e`. Tests intercept token, transcription, auth/session and Deepgram WebSocket boundaries; no provider key is needed for these mocked checks.
 
 ## Context-delivery references and regression checks
 
@@ -77,6 +77,60 @@ Automated tests verify export dimensions with actual Excalidraw freedraw strokes
 
 **Automated coverage is separate.** Vitest mocks provider HTTP/auth; Playwright draws synthetic pointer strokes using real Excalidraw export but mocks transcription and voice transport. It verifies image dimensions, editing/confirmation, ambiguity, error/rate-limit fallback, active-problem selection, source-switch cancellation and stale-result suppression. `npm run test:vision` uses real provider calls for rendered handwriting-font fixtures and is opt-in; it is not the genuine freehand browser acceptance above. Do not run it as part of default validation or as an unbounded retry loop.
 
-**Voice integration boundary.** This feature changes only the provenance of submitted text (`confirmed_handwriting`) and its use by the existing checker/context interface. Voice transport, microphone/playback lifecycle, token issuance and Supabase authorization are outside this PR. Matthew's token-authorization change has since merged to main; the newer owned-workspace/session integration remains separate. This branch was based before those changes. Shared workspace/context/doc files overlap and must preserve both implementations during subsequent integration. The live handwriting test does not establish authenticated voice readiness.
+**Voice integration boundary.** This feature changes only the provenance of submitted text (`confirmed_handwriting`) and its use by the existing checker/context interface. Voice transport, microphone/playback lifecycle, token issuance and Supabase authorization are outside this PR. Main's token authorization and owned-workspace/session changes are now integrated. Signed-in local `/study` uses the real owned UUID; the separate harness retains its demo ID. Account-scoped drawing persistence coexists with transient recognition; no voice transport or server authorization policy was replaced. The live handwriting test does not establish authenticated voice readiness.
 
-**Known limits.** VLMs can confidently misread symbols; confirmation stays mandatory. The checker supports bounded single-variable linear expansion, not general algebra or equation solving. Images are bounded to 2048 pixels per side and 2 MiB. The per-user limiter is process-local; provider free-tier quotas can still return 429. `Retry-After` is returned, but the client does not enforce a cooldown. No new persistence, proactive intervention, or recognition of uploaded worksheets is implemented.
+**Known limits.** VLMs can confidently misread symbols; confirmation stays mandatory. The checker supports bounded single-variable linear expansion, not general algebra or equation solving. Images are bounded to 2048 pixels per side and 2 MiB. The per-user limiter is process-local; provider free-tier quotas can still return 429. `Retry-After` is returned, but the client does not enforce a cooldown. Recognized text is not persisted; proactive intervention and recognition of uploaded worksheets remain unimplemented.
+
+## Authenticated workspace sessions
+
+`/study` checks `GET /auth/session` and keeps the local whiteboard available to
+signed-out visitors. A signed-in student explicitly chooses **Start study
+session**. `POST /api/study-sessions` receives no body; the returned UUID stays
+in memory for this workspace mount, including panel toggles and voice restarts.
+Concurrent start clicks are suppressed. Reloading or leaving the workspace ends
+this local attempt; starting again creates a new session. A lost network response
+can leave an unused server session; this does not claim exactly-once delivery.
+
+In local development, Start voice uses that UUID with the ordinary credential
+provider and no harness capability header. Production/preview issuance remains
+disabled by A's existing token route. `/dev/study` retains its isolated capability
+and `local-study-test` ID and does not create account sessions.
+
+The workspace exposes Sign out in Matthew’s Settings menu. It stops/cancels voice before requesting
+`DELETE /auth/session`, rejects late session responses, and remounts the local
+workspace to clear in-memory worksheets, snapshots, tutor state, and work after confirmed
+logout. Device-local work is stored separately by verified account email; a different
+account or guest cannot restore it through the application. Signing back into the
+same account restores its work on this browser. Existing unscoped work remains
+guest work; it is not silently assigned to an account. This is local UI separation,
+not encrypted storage or protection from someone with access to browser storage. Failed logout preserves work and offers retry. Returning focus rechecks
+login; expired or changed accounts invalidate the previous account's session
+and workspace. These are browser lifecycle controls; server authentication,
+owned-session checks, and RLS remain the actual permission boundaries.
+
+This slice creates study-session metadata in Supabase. Matthew’s local work
+persistence remains in IndexedDB, with account separation; it is not cloud-synced.
+Validated observation writing/history retrieval are still separate A/C
+integration tasks. Local tests mock voice credentials/providers; no paid call is
+required to verify the connection.
+
+Verification for this connection: all 411 default tests, ESLint, TypeScript,
+and the production build passed on Node 22. The full desktop/mobile suite
+initially passed 50 cases and skipped four opt-in harness cases; two worksheet
+cases still referenced the renamed Appearance button. After updating those
+selectors to Settings, all six worksheet regressions passed, covering the two
+failed cases. Across these runs, all 52 applicable browser scenarios were
+verified. The built production app separately passed six account/session/local
+storage scenarios and kept voice disabled; its four local-voice cases were
+intentionally skipped. Local active-voice tests used the real SDK with fake media
+and intercepted token/WebSocket responses, proving logout releases microphone
+tracks and closes the connection without making paid provider calls. The actual
+signed-in Google browser also created a hosted session from the new workspace.
+No new Google consent, live Deepgram speech, deployed-host testing, or live
+`/dev/study` acceptance was performed in this slice.
+
+## Integration acceptance after merging main
+
+Device-local persisted drawings restore before recognition and remain unchanged by Read handwriting, confirmation and checking. Recognition drafts/results and active tutor feedback are not persisted. An unavailable initial sign-in check leaves the guest board usable with an error/retry state and voice disabled. Account teardown cancels pending reads and clears confirmed work before logout; successful logout or a changed identity remounts the workspace. Switching back restores only that account's drawing, never its old transcription or voice context. Main's drawing load/save and worksheet behavior are retained. On small screens the work/drawing controls reserve space beside the fixed tutor launcher, avoiding overlaps introduced by account status and the extra handwriting action. WebKit Blob/File persistence requires a persistent profile in this local test build; ephemeral-profile errors are a test environment limitation, not evidence of successful Safari persistence. Combined automated evidence and remaining live checks are recorded in the PR; no live Groq or Deepgram calls are part of this merge validation.
+
+Final integration validation on 2026-11-14: ESLint, TypeScript, all 519 unit tests (32 files), and the credential-free webpack production build passed. The complete Chromium desktop/360px suite passed all 78 cases in a serial run, including the owned-session and isolated harness voice cases. Additional desktop/iPad WebKit checks passed 30 cases using fresh persistent profiles; two opt-in voice cases were skipped there and covered in Chromium. WebKit checks reused the committed scenarios through a temporary local persistent-profile fixture. Earlier parallel runs had loading/audio-drain timeouts; final serial validation had no failures. These are mocked provider/auth/transport checks, not post-merge live model, acoustic or physical iPad acceptance. No live provider calls were made.

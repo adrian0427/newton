@@ -57,6 +57,6 @@ export default function TutorControls({ voice = { state: "unavailable" }, voiceA
       {proposed && onProblemChange && <button className="small-button" type="button" onClick={() => onProblemChange(proposed)}>Use {proposed} as the active problem</button>}
       {feedback.delivery && <p role="status">{feedback.delivery}</p>}
     </div>}
-    <p className="helper">Checks compare linear expressions for all variable values; they do not solve equations. Handwriting is only transcribed for you to confirm, never graded by the reading service. No work or learning history is saved.</p>
+    <p className="helper">Checks compare linear expressions for all variable values; they do not solve equations. Handwriting is only transcribed for you to confirm, never graded by the reading service. Work is saved on this device; transcriptions, checks, hints and learning history are not saved.</p>
   </section>;
 }
