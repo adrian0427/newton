@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("compact tools and focus mode keep work intact and controls recoverable", async ({ page }) => {
   await page.goto("/study");
+  await expect(page.locator(".workspace-split")).toBeAttached();
   const tab = page.getByRole("button", { name: "Whiteboard", exact: true });
   if (await tab.isVisible()) await tab.click();
   await expect(page.getByText("Local workspace", { exact: true })).toHaveCount(0);

@@ -16,15 +16,16 @@ export type WhiteboardHandle = { capture(): Promise<WorkSnapshot>; clear(): void
 declare global { interface Window { EXCALIDRAW_ASSET_PATH: string } }
 if (typeof window !== "undefined") window.EXCALIDRAW_ASSET_PATH = "/vendor/excalidraw/";
 
-function loadBoard() {
-  return loadPart("board").then((saved) => ({
+function loadBoard(storageScope?: string) {
+  return loadPart("board", storageScope).then((saved) => ({
     elements: (saved?.elements ?? []) as ExcalidrawElements,
     files: (saved?.files ?? {}) as BinaryFiles,
     appState: { currentItemStrokeColor: "#39352f", currentItemFontFamily: 2 as const, activeTool: { type: "freedraw" as const, customType: null, lastActiveTool: null, locked: false } },
   }));
 }
 
-export default function Whiteboard({ ref, revisions, onContentChange, onActivityChange, onCapture, capturing, captureDisabled }: {
+export default function Whiteboard({ storageScope, ref, revisions, onContentChange, onActivityChange, onCapture, capturing, captureDisabled }: {
+  storageScope?: string;
   ref: Ref<WhiteboardHandle>;
   revisions: WorkRevision;
   onCapture(): void;
@@ -38,7 +39,7 @@ export default function Whiteboard({ ref, revisions, onContentChange, onActivity
   const signature = useRef("[]");
   const restored = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [initialData] = useState(loadBoard);
+  const [initialData] = useState(() => loadBoard(storageScope));
   useEffect(() => {
     void initialData.finally(() => { restored.current = true; });
     return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
@@ -64,7 +65,7 @@ export default function Whiteboard({ ref, revisions, onContentChange, onActivity
       api.current?.updateScene({ elements: [], captureUpdate: CaptureUpdateAction.IMMEDIATELY });
       signature.current = "[]";
       if (saveTimer.current) clearTimeout(saveTimer.current);
-      void deletePart("board");
+      void deletePart("board", storageScope);
     },
     async capture() {
       const board = api.current;
@@ -81,7 +82,7 @@ export default function Whiteboard({ ref, revisions, onContentChange, onActivity
         maxWidthOrHeight: 2048,
       })));
     },
-  }), [revisions]);
+  }), [revisions, storageScope]);
 
   return <div className={`board-canvas ${more ? "show-extra-tools" : "compact-tools"}`} aria-label="Student whiteboard" onPointerUp={() => onActivityChange(false)} onPointerCancel={() => onActivityChange(false)} onBlur={() => onActivityChange(false)}>
     <div className="board-options" aria-label="Drawing options">
@@ -114,7 +115,7 @@ export default function Whiteboard({ ref, revisions, onContentChange, onActivity
           const live = elements.filter((element) => !element.isDeleted);
           const used = new Set<string>(live.flatMap((element) => "fileId" in element && element.fileId ? [element.fileId] : []));
           // IndexedDB copies the value itself; avoid structuredClone (absent before Safari 15.4).
-          void savePart("board", { elements: live, files: Object.fromEntries(Object.entries(files).filter(([id]) => used.has(id))) });
+          void savePart("board", { elements: live, files: Object.fromEntries(Object.entries(files).filter(([id]) => used.has(id))) }, storageScope);
         }, 400);
       }}
       onPointerDown={() => onActivityChange(true)}
