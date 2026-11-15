@@ -75,7 +75,9 @@ test("account check failures offer retry while appearance stays usable", async (
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   const panel = page.getByRole("dialog", { name: "Settings" });
   await expect(panel.getByRole("alert")).toHaveText("Unable to verify your sign-in. Please retry.");
-  await expect(panel.getByText("Guest workspace")).toHaveCount(0);
+  // Auth failure leaves a usable local guest board, without authorizing voice.
+  await expect(panel.getByText("Guest workspace")).toBeVisible();
+  await expect(page.locator(".workspace-split")).toBeAttached();
   await panel.getByRole("radio", { name: "Dark", exact: true }).check();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   unavailable = false;

@@ -8,10 +8,11 @@ type ExcalidrawElements = NonNullable<ExcalidrawInitialDataState["elements"]>;
 import type { WorkSnapshot } from "@/types/tutoring";
 import { useAppearance } from "../appearance/Appearance";
 import { contentSignature, pngContent, type WorkRevision } from "./snapshots";
+import { handwritingExportDimensions } from "./handwriting";
 import { deletePart, loadPart, savePart } from "./persistence";
 import "@excalidraw/excalidraw/index.css";
 
-export type WhiteboardHandle = { capture(): Promise<WorkSnapshot>; clear(): void };
+export type WhiteboardHandle = { capture(options?: { forTranscription: boolean }): Promise<WorkSnapshot>; clear(): void };
 
 declare global { interface Window { EXCALIDRAW_ASSET_PATH: string } }
 if (typeof window !== "undefined") window.EXCALIDRAW_ASSET_PATH = "/vendor/excalidraw/";
@@ -24,13 +25,16 @@ function loadBoard(storageScope?: string) {
   }));
 }
 
-export default function Whiteboard({ storageScope, ref, revisions, onContentChange, onActivityChange, onCapture, capturing, captureDisabled }: {
+export default function Whiteboard({ storageScope, ref, revisions, onContentChange, onActivityChange, onCapture, capturing, captureDisabled, onRead, reading, readDisabled }: {
   storageScope?: string;
   ref: Ref<WhiteboardHandle>;
   revisions: WorkRevision;
   onCapture(): void;
   capturing: boolean;
   captureDisabled: boolean;
+  onRead(): void;
+  reading: boolean;
+  readDisabled: boolean;
   onContentChange(): void;
   onActivityChange(active: boolean): void;
 }) {
@@ -67,7 +71,7 @@ export default function Whiteboard({ storageScope, ref, revisions, onContentChan
       if (saveTimer.current) clearTimeout(saveTimer.current);
       void deletePart("board", storageScope);
     },
-    async capture() {
+    async capture(options) {
       const board = api.current;
       if (!board) throw new Error("The whiteboard is still loading.");
       const elements = structuredClone(board.getSceneElements());
@@ -79,7 +83,8 @@ export default function Whiteboard({ storageScope, ref, revisions, onContentChan
         appState: { exportBackground: true, viewBackgroundColor: "#ffffff", exportEmbedScene: false },
         mimeType: "image/png",
         exportPadding: 24,
-        maxWidthOrHeight: 2048,
+        // maxWidthOrHeight overrides getDimensions in the installed SDK.
+        ...(options?.forTranscription ? { getDimensions: handwritingExportDimensions } : { maxWidthOrHeight: 2048 }),
       })));
     },
   }), [revisions, storageScope]);
@@ -87,6 +92,7 @@ export default function Whiteboard({ storageScope, ref, revisions, onContentChan
   return <div className={`board-canvas ${more ? "show-extra-tools" : "compact-tools"}`} aria-label="Student whiteboard" onPointerUp={() => onActivityChange(false)} onPointerCancel={() => onActivityChange(false)} onBlur={() => onActivityChange(false)}>
     <div className="board-options" aria-label="Drawing options">
       <button className="small-button capture-button" type="button" disabled={captureDisabled} onClick={onCapture}>{capturing ? "Capturing..." : "Capture snapshot"}</button>
+      <button className="small-button read-button" type="button" disabled={readDisabled} onClick={onRead}>{reading ? "Reading..." : "Read handwriting"}</button>
       <button ref={settingsButton} className="small-button" type="button" aria-expanded={settings} aria-controls="pen-settings" onClick={() => { setSettings(!settings); setMore(false); }}>Pen settings</button>
       <button className="small-button" type="button" aria-expanded={more} onClick={() => { setMore(!more); setSettings(false); }}>{more ? "Fewer tools" : "More tools"}</button>
       <button className="small-button library-toggle" type="button" onClick={() => api.current?.toggleSidebar({ name: "default", tab: "library" })}>Library</button>

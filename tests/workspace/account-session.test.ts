@@ -5,6 +5,17 @@ const user = () => Response.json({ user: { email: "synthetic@example.com" } });
 const saved = () => Response.json({ session: { id, startedAt: new Date().toISOString(), endedAt: null } }, { status: 201 });
 const deferred = () => { let resolve!: (value: Response) => void; const promise = new Promise<Response>(r => { resolve = r; }); return { promise, resolve }; };
 describe("workspace account lifecycle", () => {
+  it("keeps the guest board available after an initial auth failure, then recovers without a fabricated session", async () => {
+    const request = vi.fn().mockRejectedValueOnce(new Error("offline")).mockResolvedValueOnce(user());
+    const account = createWorkspaceAccount(request);
+    await account.check();
+    expect(account.getSnapshot()).toMatchObject({ status: "signed-out", email: null, sessionId: null });
+    expect(account.getSnapshot().error).toContain("retry");
+    await account.start();
+    expect(request).toHaveBeenCalledTimes(1);
+    await account.check();
+    expect(account.getSnapshot()).toMatchObject({ status: "signed-in", email: "synthetic@example.com", sessionId: null, error: "" });
+  });
   it("checks login without creating sessions; coalesces creation and reuses it", async () => {
     const pending = deferred();
     const request = vi.fn().mockResolvedValueOnce(user()).mockReturnValueOnce(pending.promise);

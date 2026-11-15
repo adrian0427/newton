@@ -7,6 +7,8 @@ export type DistributionCheck = {
   feedback: string;
   hint: string;
   misconceptionId?: "distribution.missed-term";
+  /** A different distributive problem the student wrote; adopted only after explicit choice. */
+  proposedProblem?: string;
 };
 type Rational = { n: bigint; d: bigint };
 const rational = (n: bigint, d = BigInt(1)): Rational => {
@@ -91,34 +93,60 @@ function parse(input: string, variable: { name?: string }): Node {
   return result;
 }
 
-export function unsupportedWork(submission = "", reason = "Use a single-variable linear expansion with numbers, parentheses, +, -, *, or constant division. Powers, functions and variable denominators are not checked."): DistributionCheck {
-  return { status: "unsupported", submission: submission.slice(0, 500), problem: PRACTICE_EXPRESSION, feedback: reason, hint: "Switch to Structured input and enter your expansion, for example the original expression followed by = and your next step. Handwriting and worksheets are not analyzed." };
+export function unsupportedWork(submission = "", reason = "Use a single-variable linear expansion with numbers, parentheses, +, -, *, or constant division. Powers, functions and variable denominators are not checked.", problem = PRACTICE_EXPRESSION): DistributionCheck {
+  return { status: "unsupported", submission: submission.slice(0, 500), problem: problem.slice(0, 500), feedback: reason, hint: "Enter your expansion in Structured input, or use Read handwriting on the whiteboard and confirm the transcription. You can write the original expression followed by = and your next step. Worksheets are not analyzed." };
 }
 
-export function checkDistribution(submission: string): DistributionCheck {
+type Problem = { node: Node & { distribution: NonNullable<Node["distribution"]> }; variable: string };
+function parseProblem(text: string): Problem | null {
+  try {
+    const variable: { name?: string } = {};
+    const node = parse(text.trim().replaceAll("−", "-").replaceAll("×", "*").replaceAll("·", "*"), variable);
+    return node.distribution && variable.name ? { node: node as Problem["node"], variable: variable.name } : null;
+  } catch { return null; }
+}
+
+/** An active problem must be one nonzero constant times a linear binomial, e.g. 4(x+3). */
+export function isSupportedProblem(text: string): boolean {
+  return text.trim().length > 0 && text.length <= 500 && parseProblem(text) !== null;
+}
+
+export function checkDistribution(submission: string, activeProblem = PRACTICE_EXPRESSION): DistributionCheck {
   const input = submission.trim().replaceAll("−", "-").replaceAll("×", "*").replaceAll("·", "*");
-  if (!input || input.length > 500) return unsupportedWork(input, "Enter a structured expansion of 500 characters or fewer.");
+  const active = activeProblem.length <= 500 ? parseProblem(activeProblem) : null;
+  if (!active) return unsupportedWork(input, "The active problem must be a constant times a linear expression, such as 4(x+3).", PRACTICE_EXPRESSION);
+  const problem = activeProblem.trim();
+  if (!input || input.length > 500) return unsupportedWork(input, "Enter a structured expansion of 500 characters or fewer.", problem);
   try {
     const parts = input.split("=");
     if (parts.length > 2 || parts.some((part) => !part.trim())) throw new Error("equality");
     const variable: { name?: string } = {};
     const left = parse(parts[0], variable);
     const right = parts[1] === undefined ? undefined : parse(parts[1], variable);
-    let reference: Node, candidate: Node, problem: string;
-    if (right && left.distribution) { reference = left; candidate = right; problem = parts[0]; }
-    else if (right?.distribution) { reference = right; candidate = left; problem = parts[1]; }
-    else {
-      if (variable.name && variable.name !== "k") throw new Error("reference");
-      const practice = parse(PRACTICE_EXPRESSION, { name: "k" });
-      reference = practice; candidate = left; problem = PRACTICE_EXPRESSION;
-      if (right) {
-        if (same(left.value, practice.value)) candidate = right;
-        else if (!same(right.value, practice.value)) throw new Error("reference");
+    const { factor, inside } = active.node.distribution;
+    // The original side must be the active problem itself; a different written problem is never trusted.
+    const isActive = (node: Node) => !!node.distribution && variable.name === active.variable
+      && equal(node.distribution.factor, factor) && same(node.distribution.inside, inside);
+    let candidate: Node;
+    if (right) {
+      if (isActive(left)) candidate = right;
+      else if (isActive(right)) candidate = left;
+      else {
+        const written = left.distribution ? parts[0].trim() : right.distribution ? parts[1].trim() : "";
+        return written
+          ? { ...unsupportedWork(input, `This equation starts from ${written}, which is not the active problem ${problem}. Check a step for ${problem}, or choose ${written} as the active problem.`, problem), proposedProblem: written }
+          : unsupportedWork(input, `Write the active problem ${problem} on one side of =, or check just your expansion.`, problem);
       }
+    } else {
+      if (variable.name && variable.name !== active.variable) {
+        return unsupportedWork(input, `The active problem ${problem} uses ${active.variable}. Check an expansion in ${active.variable}, or write your original expression followed by = and your step.`, problem);
+      }
+      candidate = left;
     }
     // A bare equation such as 2(x+3)=14 may be a problem to solve, not an expansion.
-    if (!candidate.value.a.n) return unsupportedWork(input, "This checks expansion identities, not equations to solve. Include your expanded variable term.");
-    const { factor, inside } = reference.distribution!;
+    if (!candidate.value.a.n) return unsupportedWork(input, "This checks expansion identities, not equations to solve. Include your expanded variable term.", problem);
+    const reference = active.node;
+    const name = active.variable;
     const correct = same(reference.value, candidate.value);
     const variableTermMatches = equal(reference.value.a, candidate.value.a);
     const constantMatches = equal(reference.value.b, candidate.value.b);
@@ -126,17 +154,17 @@ export function checkDistribution(submission: string): DistributionCheck {
     const hint = correct
       ? `Your expressions are equivalent. How could factoring out ${show(factor)} help you check your expansion?`
       : variableTermMatches
-        ? `Your ${variable.name ?? "k"}-term matches. In ${problem.trim()}, what must ${show(factor)} multiply besides the variable term? Recheck ${show(factor)} × (${show(inside.b)}).`
+        ? `Your ${name}-term matches. In ${problem}, what must ${show(factor)} multiply besides the variable term? Recheck ${show(factor)} × (${show(inside.b)}).`
         : constantMatches
-          ? `Your constant term matches. Recheck ${show(factor)} × (${show(inside.a)}${variable.name ?? "k"}). What coefficient should that multiplication produce?`
-          : `Compare each term of your step with ${problem.trim()}. What happens when ${show(factor)} multiplies each term inside the parentheses?`;
+          ? `Your constant term matches. Recheck ${show(factor)} × (${show(inside.a)}${name}). What coefficient should that multiplication produce?`
+          : `Compare each term of your step with ${problem}. What happens when ${show(factor)} multiplies each term inside the parentheses?`;
     return {
-      status: correct ? "correct" : "incorrect", submission: input, problem: problem.trim(),
+      status: correct ? "correct" : "incorrect", submission: input, problem,
       feedback: correct ? "Correct equivalence for this expansion. This does not establish mastery or require that the expression is fully expanded."
         : "Your submitted expressions are not equivalent for all values of the variable. Reconsider the distribution or arithmetic.",
       hint, ...(missed ? { misconceptionId: "distribution.missed-term" as const } : {}),
     };
-  } catch { return unsupportedWork(input); }
+  } catch { return unsupportedWork(input, undefined, problem); }
 }
 
 /** Explicitly requested conversation context, never a persistence-authorizing event. */

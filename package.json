@@ -18,6 +18,7 @@
     "prebuild": "node scripts/prepare-workspace-assets.mjs",
     "test:e2e": "playwright test",
     "test:hosted": "node --env-file=.env.local --env-file=.env.hosted-test.local ./node_modules/vitest/vitest.mjs run --config vitest.hosted.config.mts",
+    "test:vision": "node --env-file-if-exists=.env.local ./node_modules/vitest/vitest.mjs run --config vitest.live.config.mts",
     "voice:dev": "node scripts/dev-voice.mjs"
   },
   "dependencies": {

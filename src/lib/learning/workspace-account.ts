@@ -37,7 +37,10 @@ export function createWorkspaceAccount(request: typeof fetch = fetch) {
         if (attempt === generation) {
           await stop();
           if (attempt !== generation) return;
-          update({ error: "Unable to verify your sign-in. Please retry.", sessionId: null });
+          // An unavailable initial auth check must not hide the credential-free local board.
+          // A previously verified account retains its scope, but can no longer start voice.
+          update({ status: state.status === "checking" ? "signed-out" : state.status,
+            error: "Unable to verify your sign-in. Please retry.", sessionId: null });
         }
       }
     },

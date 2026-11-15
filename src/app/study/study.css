@@ -210,6 +210,20 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .board-canvas .excalidraw .default-sidebar-trigger { display: none !important; }
 .board-options .library-toggle { min-width: 52px; }
 @media (max-width: 760px) { .board-options { gap: 4px; padding: 10px 10px 0; } .board-options .small-button { padding: 4px 6px; font-size: 10px; } }
+/* Handwriting transcription review and active problem (explicit, student-confirmed). */
+.transcription-review { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 4px; }
+.transcription-review label, .problem-form label { font-size: 11px; font-weight: 600; }
+.transcription-input, .problem-form input { width: 100%; min-height: 36px; padding: 6px 10px; border: 1px solid var(--paper-line); border-radius: 6px; background: var(--paper-canvas); color: var(--paper-text); font: 15px ui-monospace, SFMono-Regular, Menlo, monospace; }
+.transcription-input[aria-invalid="true"], .problem-form input[aria-invalid="true"] { border-color: var(--paper-error); }
+.transcription-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 6px; }
+.problem-form { margin: 0 0 14px; }
+.problem-row { display: flex; gap: 6px; margin-top: 4px; }
+.problem-row input { flex: 1; min-width: 0; }
+@media (max-width: 760px) { .board-options { flex-wrap: wrap; } .work-area[data-source="whiteboard"] .capture-popover { top: 150px; } }
+/* Account status and Read handwriting can move controls alongside the fixed launcher. */
+@media (max-width: 760px) { .work-toolbar, .board-options, .worksheet-file-toolbar { padding-right: 70px; } .pen-settings { right: 70px; } }
+@media (max-width: 760px) { .work-area[data-source="whiteboard"] .capture-popover:not(.handwriting-review) { bottom: 70px; max-height: none; } }
+
 
 .workspace-account { padding: 0.75rem 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border, #ccc); overflow-wrap: anywhere; }
 .workspace-account p { margin: 0.5rem 0; }
