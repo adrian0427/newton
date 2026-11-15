@@ -178,3 +178,20 @@ work is preserved, and no service-role credentials or new schema are required.
 Merge main normally into the handwriting branch. Keep account-scoped IndexedDB restoration/autosave and Safari/iPad behavior alongside ordinary snapshots and bounded 2× transcription captures. Draft/confirmed transcription and checker feedback remain transient; edits, source/worksheet changes, account teardown and remount invalidate them. Signed-in local `/study` voice retains the real owned session UUID and ordinary credential provider; only the separate capability harness uses `local-study-test`. An initial browser sign-in failure now falls back to the guest board with error/retry and no voice, instead of leaving the board hidden indefinitely. Small-screen controls reserve space beside the fixed tutor launcher after combined-browser tests exposed occluded drawing/clear buttons. No provider transport, authorization policy, database schema or persistence of recognized text is added. Combined browser regressions exercise restored freehand work, unchanged stored scenes, confirmed-work context, logout and account isolation with mocked service boundaries.
 
 The subsequent normal merge of PR #17 preserves Newton dragging, gaze and correct-step decoration alongside the handwritten/typed work union and active-problem controls. Only the deterministic current Check work result authorizes a decoration; transcription output itself does not. No learning observation or extra voice response is created.
+
+## 2026-11-14 — C2 server-checked submitted-work observations
+
+The existing transcription/confirmation and local checking flow now calls the
+coordinated
+`POST /api/work/analyze` boundary for owned account sessions. It accepts text and
+reference IDs only, recomputes the bounded distributive-property result, and
+calls C's existing append-only writer with server-derived outcomes/evidence.
+Unsupported work, images and client-provided grading claims are ineligible.
+Correction/mastery claims and stronger image provenance remain out of scope.
+
+History uses the existing user-scoped retrieval endpoint, loaded separately for
+each session, bounded to ten events and a 2,000-character summary. It joins the
+SDK prompt as quoted advisory data while current work keeps its revision
+semantics. Save/load failures are visible and retryable without losing work;
+late responses are ignored after work/account changes. No schema/dependency
+change, new provider request or deployed voice enablement is required.
